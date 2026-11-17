@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "jalyclient",
+  "version": "${version}",
+  "name": "JalyClient",
+  "description": "The jolliest free Minecraft client: snowy menus, HUD mods, festive cosmetics, Christmas resource packs and more.",
+  "authors": ["DarkerDawnFR"],
+  "license": "All-Rights-Reserved",
+  "icon": "assets/jalyclient/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["fr.darkerdawn.jaly.JalyClient"],
+    "modmenu": ["fr.darkerdawn.jaly.ModMenuCompat"]
+  },
+  "accessWidener": "jalyclient.accesswidener",
+  "mixins": ["jalyclient.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "${minecraft_version}",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

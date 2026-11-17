@@ -1,0 +1,10 @@
+{
+  "jingle": { "sounds": ["jalyclient:jingle"] },
+  "sleigh": { "sounds": ["jalyclient:sleigh"] },
+  "chime": { "sounds": ["jalyclient:chime"] },
+  "click": { "sounds": ["jalyclient:click"] },
+  "hover": { "sounds": ["jalyclient:hover"] },
+  "kill": { "sounds": ["jalyclient:kill"] },
+  "unwrap": { "sounds": ["jalyclient:unwrap"] },
+  "menu_music": { "sounds": [{ "name": "jalyclient:menu_music", "stream": true }] }
+}

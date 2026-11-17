@@ -1,0 +1,9 @@
+.gradle/
+build/
+run/
+*.iml
+.idea/
+launcher/embed/*.jar
+launcher/*.exe
+launcher/*.syso
+dist/
