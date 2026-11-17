@@ -63,7 +63,7 @@ public class CosmeticsScreen extends JalyScreen {
         ClientPlayerEntity p = client.player;
         if (p != null) {
             ctx.enableScissor(bx + 1, by + 1, bx + bw - 1, by + bh - 1);
-            drawSpinning(ctx, pcx, pby, Math.min(60, bh / 3), p);
+            drawSpinning(ctx, pcx, pby - 6, Math.min(56, bh / 3), p);
             ctx.disableScissor();
         } else {
             String cape = JalyConfig.get().cape;

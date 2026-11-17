@@ -73,7 +73,7 @@ public class JalyClient implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((ctx, tickCounter) -> Hud.render(ctx, MinecraftClient.getInstance()));
-        WorldRenderEvents.LAST.register(SkyLyrics::render);
+        WorldRenderEvents.AFTER_ENTITIES.register(SkyLyrics::render);
 
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
             if (renderer.getModel() instanceof BipedEntityModel) {

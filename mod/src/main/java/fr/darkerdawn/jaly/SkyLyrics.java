@@ -39,8 +39,8 @@ public final class SkyLyrics {
         double rad = Math.toRadians(yaw);
         Vec3d at = new Vec3d(-Math.sin(rad) * dist, c.skyLyricsHeight, Math.cos(rad) * dist);
 
+        // After entities the model-view already holds the camera rotation, so start from identity (camera-relative).
         MatrixStack ms = new MatrixStack();
-        ms.multiplyPositionMatrix(context.positionMatrix());
         ms.translate(at.x, at.y, at.z);
         ms.multiply(cam.getRotation());
         float k = 0.22f * c.skyLyricsSize;

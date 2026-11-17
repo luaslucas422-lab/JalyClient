@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerWarningScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -48,7 +47,9 @@ public class JalyTitleScreen extends Screen {
         if (firstShown < 0) firstShown = Gfx.now();
         menuButtons.clear();
         int bw = 200, bh = 20, x = width / 2 - bw / 2;
-        int y = Math.max((int) (height * 0.44f), 100);
+        float ls = logoScale();
+        int pillBottom = (int) (height * 0.10f) + Math.round(37 * ls) + 4 + 13 + 13;
+        int y = Math.max((int) (height * 0.44f), pillBottom + 16);
         add(new JalyButton(x, y, bw, bh, Text.literal("Singleplayer"), b -> client.setScreen(new SelectWorldScreen(this))));
         add(new JalyButton(x, y + 24, bw, bh, Text.literal("Multiplayer"), b -> {
             Screen s = client.options.skipMultiplayerWarning ? new MultiplayerScreen(this) : new MultiplayerWarningScreen(this);
@@ -157,10 +158,16 @@ public class JalyTitleScreen extends Screen {
         }
     }
 
+    /** Logo size that always leaves room for the five menu buttons below it. */
+    private float logoScale() {
+        float byHeight = (height - 30 - 100 - 26 - 16 - height * 0.10f - 8) / 37f;
+        return Math.max(0.8f, Math.min(2.4f, Math.min((width * 0.62f) / 188f, byHeight)));
+    }
+
     private void drawLogo(DrawContext ctx, long now) {
         float intro = Math.min(1f, (now - firstShown) / 900f);
         float drop = Gfx.easeOutBack(intro);
-        float scale = Math.min(2.4f, (width * 0.62f) / 188f);
+        float scale = logoScale();
         int lw = Math.round(188 * scale), lh = Math.round(37 * scale);
         int lx = (width - lw) / 2;
         int ly = (int) (height * 0.10f + (1 - drop) * -60 + Math.sin(now / 700.0) * 2);
@@ -204,6 +211,4 @@ public class JalyTitleScreen extends Screen {
         }
     }
 
-    @SuppressWarnings("unused")
-    private static ButtonWidget unused() { return null; }
 }

@@ -144,7 +144,7 @@ public final class Hud {
         private static final EquipmentSlot[] SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND};
         private static final ItemStack[] DEMO = {new ItemStack(Items.DIAMOND_HELMET), new ItemStack(Items.DIAMOND_CHESTPLATE), new ItemStack(Items.DIAMOND_LEGGINGS), new ItemStack(Items.DIAMOND_BOOTS), new ItemStack(Items.DIAMOND_SWORD)};
 
-        Armor() { super("armor", "Armor Status", "Your armor and held item with durability", true, 0.006f, 0.48f); }
+        Armor() { super("armor", "Armor Status", "Your armor and held item with durability", true, 0.006f, 0.55f); }
 
         private ItemStack stack(MinecraftClient mc, int i, boolean preview) {
             if (mc.player == null) return preview ? DEMO[i] : ItemStack.EMPTY;

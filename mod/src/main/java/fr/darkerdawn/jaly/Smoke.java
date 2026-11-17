@@ -51,7 +51,7 @@ final class Smoke {
     static void tick(MinecraftClient c) {
         ticks++;
         if (c.getOverlay() != null) {
-            if (!loadingShot && ticks > 8) { loadingShot = true; shot(c, "loading screen"); }
+            if (!loadingShot && ticks > 30) { loadingShot = true; shot(c, "loading screen"); }
             return;
         }
         if (titleTicks >= 0) {
@@ -105,7 +105,7 @@ final class Smoke {
                         BlockPos base = p.getBlockPos();
                         w.setBlockState(base.add(1, 0, 3), Blocks.CHEST.getDefaultState());
                         w.setBlockState(base.add(2, 0, 3), Blocks.OAK_LEAVES.getDefaultState());
-                        ZombieEntity z = EntityType.ZOMBIE.create(w);
+                        ZombieEntity z = EntityType.HUSK.create(w);
                         if (z != null) {
                             z.refreshPositionAndAngles(p.getX() - 1.5, p.getY(), p.getZ() + 3.5, 180, 0);
                             z.setAiDisabled(true);
@@ -117,7 +117,10 @@ final class Smoke {
                 });
             }
             case 80 -> shot(c, "in-game hud");
-            case 85 -> { c.options.setPerspective(Perspective.THIRD_PERSON_BACK); c.player.setPitch(10); }
+            case 82 -> c.player.setPitch(-28);
+            case 84 -> shot(c, "sky lyrics");
+            case 86 -> c.player.setPitch(-8);
+            case 88 -> { c.options.setPerspective(Perspective.THIRD_PERSON_BACK); c.player.setPitch(10); }
             case 110 -> shot(c, "cape from behind");
             case 112 -> { c.options.setPerspective(Perspective.THIRD_PERSON_FRONT); cfg.hat = "antlers"; }
             case 135 -> shot(c, "front with antlers");
