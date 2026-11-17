@@ -105,7 +105,7 @@ public final class Mods {
         add(new Entry("mob_hats", "Mob Hats", "Zombies, skeletons and friends wear Santa hats", Category.FESTIVE, false, null));
         add(new Entry("player_hats", "Hats on Players", "Other players get a Santa hat too (only you see it)", Category.FESTIVE, false, null));
         add(new Entry("sky_lyrics", "Sky Lyrics", "The lyrics of your Spotify song float in the sky", Category.MUSIC, false, null))
-            .with(new Slider("Text size", 0.5, 3, 0.1, () -> c.skyLyricsSize, v -> { c.skyLyricsSize = v.floatValue(); JalyConfig.save(); }, "x"))
+            .with(new Slider("Text size", 1, 6, 0.1, () -> c.skyLyricsSize, v -> { c.skyLyricsSize = v.floatValue(); JalyConfig.save(); }, "x"))
             .with(new Slider("Height in the sky", 10, 60, 1, () -> c.skyLyricsHeight, v -> { c.skyLyricsHeight = v.floatValue(); JalyConfig.save(); }, ""))
             .with(new Swatch("Colour", TEXT_COLORS, () -> c.skyLyricsColor, v -> { c.skyLyricsColor = v; JalyConfig.save(); }))
             .with(new Toggle("Show next line", () -> c.skyLyricsNext, v -> { c.skyLyricsNext = v; JalyConfig.save(); }));

@@ -43,7 +43,7 @@ public class JalyConfig {
     public boolean zoomSmooth = true;
     public boolean zoomCinematic = true;
     public double prevGamma = 0.5;
-    public float skyLyricsSize = 1.5f;
+    public float skyLyricsSize = 3.0f;
     public float skyLyricsHeight = 28f;
     public int skyLyricsColor = 0xFFFDE68A;
     public boolean skyLyricsNext = true;

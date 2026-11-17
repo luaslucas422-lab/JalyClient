@@ -48,7 +48,7 @@ public final class LoadingScreen {
         }
     }
 
-    public static void render(DrawContext ctx, int w, int h, float alpha, float progress) {
+    public static void render(DrawContext ctx, int w, int h, float alpha, float progress, boolean fontReady) {
         ensureLogo();
         long t = Gfx.now();
         ctx.getMatrices().push();
@@ -69,7 +69,7 @@ public final class LoadingScreen {
         int lw = (int) (logoW * scale), lh = (int) (logoH * scale);
         int lx = (w - lw) / 2, ly = (int) (h * 0.30f) - lh / 2 + (int) (Math.sin(t / 600.0) * 2);
         if (logoOk) Gfx.tex(ctx, LOGO, lx, ly, lw, lh, 0, 0, logoW, logoH, logoW, logoH, alpha);
-        else Gfx.scaledText(ctx, "JalyClient", w / 2f - 60, ly, 3f, Gfx.alpha(Gfx.GOLD_LIGHT, alpha), true);
+        else if (fontReady) Gfx.scaledText(ctx, "JalyClient", w / 2f - 60, ly, 3f, Gfx.alpha(Gfx.GOLD_LIGHT, alpha), true);
         // progress bar
         shown = shown + (progress - shown) * 0.2f;
         int bw = Math.min(240, w - 40), bh = 8;
@@ -81,6 +81,7 @@ public final class LoadingScreen {
         Gfx.snowCap(ctx, bx, by - 2, bw, 0.5f, alpha);
         // a little present riding the bar
         Gfx.sprite(ctx, new String[]{"..YY..", "RRYYRR", "RRYYRR", "YYYYYY", "RRYYRR", "RRYYRR"}, new int[]{0xFFB11A33, 0xFFFDE68A}, "RY", bx + fill - 3, by - 9, 1, alpha);
+        if (!fontReady) { ctx.getMatrices().pop(); return; } // the game font isn't loaded yet on first boot
         String tip = TIPS[(int) (t / 1600 % TIPS.length)];
         Gfx.centered(ctx, tip, w / 2, by + 16, Gfx.alpha(0xFFDCE6F2, alpha));
         Gfx.centered(ctx, (int) (Math.max(0, Math.min(1, shown)) * 100) + "%", w / 2, by + 28, Gfx.alpha(Gfx.GOLD_LIGHT, alpha));

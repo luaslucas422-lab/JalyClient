@@ -32,6 +32,6 @@ public abstract class SplashOverlayMixin {
         else if (this.reloading) alpha = MathHelper.clamp(g, 0.0F, 1.0F);
         else alpha = 1.0F;
         if (alpha <= 0.01F) return;
-        LoadingScreen.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight(), alpha, this.progress);
+        LoadingScreen.render(context, context.getScaledWindowWidth(), context.getScaledWindowHeight(), alpha, this.progress, this.reloading || this.reloadCompleteTime > -1L);
     }
 }
