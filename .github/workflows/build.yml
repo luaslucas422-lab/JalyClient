@@ -62,15 +62,18 @@ jobs:
           & .\dist\JalyClient-selftest.exe --selftest $dir
           if ($LASTEXITCODE -ne 0) { throw "launcher self-test failed" }
           Get-ChildItem (Join-Path $dir ".jalyclient\mods") | Select-Object Name, Length | Format-Table -AutoSize
-      - name: Check the Spotify reader and lyrics service
-        shell: pwsh
-        continue-on-error: true
+      - name: Check the Spotify reader (Windows PowerShell 5.1, same as the mod)
+        shell: powershell
         run: |
           Add-Type -AssemblyName System.Runtime.WindowsRuntime
           [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager,Windows.Media.Control,ContentType=WindowsRuntime] | Out-Null
-          Write-Host "media controls type loads: OK"
+          Write-Output "PASS media controls type loads"
+      - name: Check the lyrics service
+        shell: pwsh
+        continue-on-error: true
+        run: |
           $r = Invoke-RestMethod "https://lrclib.net/api/get?artist_name=Bobby%20Helms&track_name=Jingle%20Bell%20Rock" -Headers @{ "User-Agent" = "JalyClient-CI" }
-          Write-Host ("lrclib synced lyrics lines: " + (($r.syncedLyrics -split "`n").Count))
+          Write-Output ("PASS lrclib synced lyric lines: " + (($r.syncedLyrics -split "`n").Count))
       - name: Build the setup wizard
         shell: pwsh
         run: |
