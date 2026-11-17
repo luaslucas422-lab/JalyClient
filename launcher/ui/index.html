@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>JalyClient</title>
+<style>
+:root{--pine:#192C0C;--pine2:#122312;--pine3:#203A18;--gold:#C99E02;--gold2:#FDE68A;--red:#B11A33;--red2:#E0384F;--snow:#F6F4F7;--ice:#9BC3E7;--muted:#8FA088;--green:#3FB950}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070d06;color:var(--snow);font-family:"Segoe UI",system-ui,sans-serif;user-select:none}
+img.px{image-rendering:pixelated}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+#app{display:flex;height:100%}
+/* ---------- sidebar */
+#side{width:212px;background:linear-gradient(180deg,#132211,#0b150a);border-right:1px solid #2a3f1e;display:flex;flex-direction:column;padding:16px 12px;position:relative;z-index:2}
+#brand{display:flex;align-items:center;gap:10px;margin:0 4px 22px}
+#brand img{width:42px;height:42px;border-radius:9px;box-shadow:0 0 0 1px var(--gold)}
+#brand b{font-size:19px;letter-spacing:.3px}#brand b i{font-style:normal;color:var(--red2)}
+#brand small{display:block;color:var(--muted);font-size:11px}
+.nav{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;color:#c9d4c2;font-weight:600;font-size:14px;margin-bottom:4px;position:relative;transition:background .2s,color .2s,transform .2s}
+.nav svg{width:18px;height:18px;fill:currentColor;opacity:.85}
+.nav:hover{background:#1c3317;color:#fff;transform:translateX(2px)}
+.nav.on{background:linear-gradient(90deg,#2a4a1e,#1c3317);color:var(--gold2)}
+.nav.on::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:repeating-linear-gradient(45deg,var(--red) 0 4px,var(--snow) 4px 8px)}
+#side .grow{flex:1}
+.musicbtn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;background:#152714;border:1px solid #2a3f1e;font-size:13px;color:#c9d4c2}
+.musicbtn .dot{width:9px;height:9px;border-radius:50%;background:#555}.musicbtn.on .dot{background:var(--green);box-shadow:0 0 8px var(--green)}
+#side .ver{color:#56664f;font-size:11px;margin:10px 4px 0}
+/* ---------- pages */
+#main{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;overflow-y:auto;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .28s,transform .28s;padding:0}
+.page.on{opacity:1;pointer-events:auto;transform:none}
+.page::-webkit-scrollbar{width:8px}.page::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px}
+.inner{padding:26px 30px 40px}
+h1{font-size:26px;margin-bottom:4px}h1+p{color:var(--muted);margin-bottom:20px}
+h2{font-size:15px;color:var(--gold2);margin:22px 0 10px;letter-spacing:.4px;text-transform:uppercase}
+/* ---------- hero */
+#hero{position:relative;height:430px;overflow:hidden;border-bottom:1px solid #2a3f1e}
+.layer{position:absolute;inset:0;background-repeat:repeat-x;background-size:auto 100%;image-rendering:pixelated;background-position:0 100%}
+#l-sky{background-repeat:no-repeat;background-size:cover}
+@keyframes scroll{from{background-position-x:0}to{background-position-x:calc(var(--w) * -1)}}
+.mov{animation:scroll linear infinite}
+#hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#sleigh{position:absolute;top:40px;width:96px;height:24px;image-rendering:pixelated;animation:fly 36s linear infinite;opacity:.95}
+@keyframes fly{0%{left:110%;top:42px}12%{top:30px}24%{top:44px}35%{left:-15%;top:36px}100%{left:-15%}}
+.lights{position:absolute;left:0;right:0;top:0;height:22px;display:flex;justify-content:space-around;pointer-events:none;z-index:3}
+.lights::before{content:"";position:absolute;left:0;right:0;top:4px;height:2px;background:#1e3a1a}
+.bulb{width:8px;height:12px;border-radius:50% 50% 45% 45%;margin-top:5px;position:relative;animation:tw 1.8s ease-in-out infinite;box-shadow:0 0 10px currentColor;background:currentColor}
+.bulb::before{content:"";position:absolute;top:-3px;left:2px;width:4px;height:4px;background:#333;border-radius:1px}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.35}}
+#heroText{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding-top:44px;z-index:4;text-shadow:0 2px 6px #000}
+#logo{width:min(56%,520px);filter:drop-shadow(0 6px 10px #0009);animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-5px)}}
+#sub{color:var(--gold2);font-weight:600;margin-top:6px;letter-spacing:.3px}
+.pill{margin-top:10px;background:#0f1d0dcc;border:1px solid #c99e0288;border-radius:20px;padding:5px 14px;font-size:13px;display:flex;gap:7px;align-items:center}
+.pill b{color:var(--gold2)}
+/* ---------- play button */
+#playWrap{margin-top:26px;display:flex;flex-direction:column;align-items:center}
+#play{position:relative;width:300px;height:64px;border-radius:14px;background:linear-gradient(180deg,#2f8f3c,#1b5e20);font-size:24px;font-weight:800;letter-spacing:2px;color:#fff;box-shadow:0 6px 0 #0d3612,0 10px 24px #000a;transition:transform .15s,box-shadow .15s,filter .2s;overflow:hidden}
+#play::before{content:"";position:absolute;left:0;right:0;top:-2px;height:9px;background:radial-gradient(circle at 6px 10px,#fff 6px,transparent 7px) 0 0/14px 10px repeat-x;transition:height .2s}
+#play::after{content:"";position:absolute;inset:0;border-radius:14px;border:3px solid transparent;background:repeating-linear-gradient(45deg,var(--red) 0 10px,var(--snow) 10px 20px) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .2s;animation:stripes 1s linear infinite;background-size:28px 28px}
+@keyframes stripes{to{background-position:28px 0}}
+#play:hover{transform:translateY(-3px);box-shadow:0 9px 0 #0d3612,0 16px 30px #000b;filter:brightness(1.12)}
+#play:hover::after{opacity:1}
+#play:hover::before{height:13px}
+#play:active{transform:translateY(3px);box-shadow:0 2px 0 #0d3612}
+#play small{display:block;font-size:11px;letter-spacing:1px;font-weight:600;opacity:.8}
+#play[disabled]{filter:grayscale(.4) brightness(.8);cursor:wait}
+#bar{width:420px;max-width:80%;height:12px;margin-top:18px;border-radius:8px;background:#0d180bcc;border:1px solid var(--gold);overflow:hidden;opacity:0;transition:opacity .3s}
+#bar.on{opacity:1}
+#fill{height:100%;width:0;background:repeating-linear-gradient(45deg,var(--red) 0 8px,var(--snow) 8px 16px);background-size:22px 22px;animation:stripes .7s linear infinite;transition:width .4s}
+#status{margin-top:8px;font-size:13px;color:#dce6f2;min-height:18px}
+/* ---------- cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:linear-gradient(180deg,#172b14,#11200f);border:1px solid #2a3f1e;border-radius:12px;padding:15px;position:relative;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.card h3{font-size:15px;margin-bottom:6px;color:var(--gold2)}
+.card p{color:#b8c2b0;font-size:13px;line-height:1.45}
+.card .tag{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;background:var(--red);color:#fff}
+.snowcap{position:absolute;left:8px;right:8px;top:-4px;height:7px;background:radial-gradient(circle at 5px 7px,#f6f4f7 5px,transparent 6px) 0 0/11px 8px repeat-x}
+/* ---------- mod rows */
+.row{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:10px;background:#142612;border:1px solid #233a1c;margin-bottom:8px;transition:background .2s,border-color .2s}
+.row:hover{background:#1a3216;border-color:#3d5a2c}
+.row .t{flex:1}.row .t b{display:block;font-size:14px}.row .t span{font-size:12px;color:var(--muted)}
+.sw{width:42px;height:22px;border-radius:12px;background:#444;position:relative;transition:background .2s;flex:none;cursor:pointer}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .22s cubic-bezier(.3,1.6,.6,1)}
+.sw.on{background:var(--green)}.sw.on::after{left:23px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:12px;padding:5px 10px;border-radius:12px;background:#1c3317;border:1px solid #2f4a24;color:#d6e2cf}
+.btn{padding:9px 16px;border-radius:9px;background:#213e1a;border:1px solid #c99e0288;font-weight:600;font-size:13px;transition:background .2s,transform .15s}
+.btn:hover{background:var(--red);border-color:var(--gold2);transform:translateY(-1px)}
+.btn.ghost{background:transparent}
+input[type=range]{width:260px;accent-color:var(--red)}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+.news{border-left:4px solid var(--red);padding-left:14px;margin-bottom:22px}
+.news .d{font-size:12px;color:var(--muted)}.news h3{margin:3px 0 6px}.news li{margin:3px 0 3px 18px;color:#c9d4c2;font-size:14px}
+/* ---------- toast + splash */
+#toast{position:fixed;right:22px;bottom:22px;max-width:380px;background:#132211;border:1px solid var(--gold);border-radius:12px;padding:13px 16px;box-shadow:0 10px 30px #000a;transform:translateY(140%);transition:transform .35s cubic-bezier(.3,1.4,.6,1);z-index:50;font-size:14px}
+#toast.on{transform:none}
+#splash{position:fixed;inset:0;z-index:100;background:linear-gradient(#060b1f,#1e3366);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+#splash.hide{opacity:0;pointer-events:none}
+#splash img{width:min(60%,560px);image-rendering:pixelated;animation:pop .7s cubic-bezier(.3,1.6,.6,1) both}
+@keyframes pop{from{transform:scale(.6) translateY(-30px);opacity:0}}
+#sbar{width:300px;height:12px;margin-top:34px;border:2px solid var(--gold);border-radius:8px;overflow:hidden;background:#0b1a0c}
+#sfill{height:100%;width:0;background:repeating-linear-gradient(45deg,var(--red) 0 8px,var(--snow) 8px 16px);background-size:22px 22px;animation:stripes .7s linear infinite}
+#stip{margin-top:12px;color:#dce6f2;font-size:14px}
+#splash canvas{position:absolute;inset:0;width:100%;height:100%}
+#splash .ground{position:absolute;left:0;right:0;bottom:0;height:40px;background:#eef3f8}
+</style>
+</head>
+<body>
+<div id="splash"><canvas id="ssnow"></canvas><img src="{{logo.png}}" alt="JalyClient"><div id="sbar"><div id="sfill"></div></div><div id="stip">Wrapping presents...</div><div class="ground"></div></div>
+<div id="app">
+  <nav id="side">
+    <div id="brand"><img class="px" src="{{icon.png}}" alt=""><div><b><i>Jaly</i>Client</b><small>free forever</small></div></div>
+    <button class="nav on" data-p="home"><svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>Home</button>
+    <button class="nav" data-p="mods"><svg viewBox="0 0 24 24"><path d="M12 2 9 7H4l4 4-2 6 6-3 6 3-2-6 4-4h-5z"/></svg>Mods</button>
+    <button class="nav" data-p="news"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zm3 3v2h10V7zm0 4v2h10v-2zm0 4v2h6v-2z"/></svg>News</button>
+    <button class="nav" data-p="settings"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L4.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4zM13 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>Settings</button>
+    <div class="grow"></div>
+    <button class="musicbtn" id="music"><span class="dot"></span>Jingle Bells music</button>
+    <div class="ver" id="ver">JalyClient 1.0.0</div>
+  </nav>
+  <main id="main">
+    <section class="page on" id="p-home">
+      <div id="hero">
+        <div class="layer" id="l-sky" style="background-image:url({{title_sky.png}})"></div>
+        <div class="layer mov" id="l-aurora" style="background-image:url({{title_aurora.png}})"></div>
+        <img id="sleigh" src="{{title_sleigh.png}}" alt="">
+        <div class="layer mov" id="l-far" style="background-image:url({{title_far.png}})"></div>
+        <div class="layer mov" id="l-mid" style="background-image:url({{title_mid.png}})"></div>
+        <div class="layer mov" id="l-near" style="background-image:url({{title_near.png}})"></div>
+        <canvas id="snow"></canvas>
+        <div class="lights" id="lights"></div>
+        <div id="heroText">
+          <img id="logo" class="px" src="{{logo.png}}" alt="JalyClient">
+          <div id="sub">The jolliest free Minecraft client</div>
+          <div class="pill">&#127876; <b id="days">--</b> <span id="daysTxt">days until Christmas</span></div>
+          <div id="playWrap">
+            <button id="play">PLAY<small>MINECRAFT 1.21.1 &middot; FABRIC</small></button>
+            <div id="bar"><div id="fill"></div></div>
+            <div id="status"></div>
+          </div>
+        </div>
+      </div>
+      <div class="inner">
+        <div class="cards">
+          <div class="card"><div class="snowcap"></div><span class="tag">NEW</span><h3>Jaly Lodge</h3><p>Press <b>J</b> in game. Click the tree, mirror, fireplace and presents to open mods, cosmetics, packs and daily gifts.</p></div>
+          <div class="card"><div class="snowcap"></div><h3>Sky Lyrics &amp; Now Playing</h3><p>See your Spotify song and its lyrics on your HUD, or floating in the sky. Turn them on in Mods &gt; Music.</p></div>
+          <div class="card"><div class="snowcap"></div><h3>Two Christmas packs</h3><p><b>Jaly Christmas</b> is on by default: candy cane swords and a festive hotbar. <b>Winter Wonderland</b> turns the world snowy.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="p-mods"><div class="inner">
+      <h1>Mods</h1><p>Pick the extra mods JalyClient installs for you. Changes apply the next time you press Play.</p>
+      <h2>Built into JalyClient</h2>
+      <div class="chips" id="builtin"></div>
+      <div id="extra"></div>
+    </div></section>
+
+    <section class="page" id="p-news"><div class="inner">
+      <h1>News</h1><p>What's new in JalyClient.</p>
+      <div class="news"><div class="d">Version 1.0.0</div><h3>The first jolly release</h3><ul>
+        <li>Animated Christmas main menu with sleigh, aurora and snowfall</li>
+        <li>Custom loading screen with a candy cane progress bar</li>
+        <li>The Jaly Lodge menu (press J) with 25 daily gifts</li>
+        <li>16 HUD mods with an Advanced page each and a drag-and-drop HUD editor</li>
+        <li>Free hats and capes: Santa hat, antlers, elf hat, top hat, star halo and 6 capes</li>
+        <li>Sky Lyrics and a Now Playing card for Spotify</li>
+        <li>Two built-in Christmas resource packs</li>
+        <li>Optimisation, Christmas and general mods installed for you</li>
+      </ul></div>
+    </div></section>
+
+    <section class="page" id="p-settings"><div class="inner">
+      <h1>Settings</h1><p>Everything is saved straight away.</p>
+      <h2>Memory</h2>
+      <div class="row"><div class="t"><b>RAM for Minecraft: <span id="ramv">4</span> GB</b><span>4 GB is plenty for most players. Use 6-8 GB with shaders.</span></div><input type="range" id="ram" min="2" max="16" step="1"></div>
+      <h2>Folders</h2>
+      <div class="row"><div class="t"><b>Game folder</b><span id="gdir">-</span></div><button class="btn" data-open="game">Open</button><button class="btn" data-open="mods">Mods</button><button class="btn" data-open="screenshots">Screenshots</button></div>
+      <h2>Account</h2>
+      <div class="row"><div class="t"><b>Microsoft sign-in (coming soon)</b><span>For now JalyClient plays through the official Minecraft Launcher, so you stay signed in safely there.</span></div><button class="btn ghost" disabled>Sign in</button></div>
+      <h2>Other</h2>
+      <div class="row"><div class="t"><b>Remove from the Minecraft Launcher</b><span>Takes the JalyClient profile out. Your worlds and settings stay.</span></div><button class="btn" id="unprof">Remove</button></div>
+    </div></section>
+  </main>
+</div>
+<div id="toast"></div>
+<audio id="audio" src="{{music.ogg}}" loop></audio>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const api={
+  state:()=>window.jalyState?window.jalyState():Promise.resolve(MOCK),
+  save:s=>window.jalySave?window.jalySave(JSON.stringify(s)):Promise.resolve(),
+  play:l=>window.jalyPlay?window.jalyPlay(l):mockPlay(),
+  open:w=>window.jalyOpen&&window.jalyOpen(w),
+  unprof:()=>window.jalyRemoveProfile?window.jalyRemoveProfile():Promise.resolve()
+};
+const MOCK={version:"1.0.0",mc:"1.21.1",daysLeft:38,mcFound:true,installed:false,gameDir:"C:\\Users\\You\\AppData\\Roaming\\.jalyclient",settings:{ram:4,music:true,mods:{}},catalog:{}};
+let S=null;
+// ---------- snow
+function snow(canvas,count){const c=canvas.getContext('2d');let f=[];function size(){canvas.width=canvas.clientWidth;canvas.height=canvas.clientHeight;}size();addEventListener('resize',size);
+ for(let i=0;i<count;i++)f.push({x:Math.random(),y:Math.random(),s:Math.random()<.15?3:Math.random()<.5?2:1,v:.03+Math.random()*.08,p:Math.random()*6});
+ let last=performance.now();(function loop(t){const dt=Math.min(.1,(t-last)/1000);last=t;c.clearRect(0,0,canvas.width,canvas.height);
+  for(const k of f){k.y+=k.v*dt;k.x+=Math.sin(t/1000+k.p)*.006*dt;if(k.y>1.02){k.y=-.02;k.x=Math.random()}c.fillStyle=k.s>2?'#fff':'rgba(235,242,255,.85)';c.fillRect(k.x*canvas.width|0,k.y*canvas.height|0,k.s,k.s)}
+  requestAnimationFrame(loop)})(last)}
+snow($('#ssnow'),140);snow($('#snow'),160);
+// ---------- lights
+const cols=['#E0384F','#FDE68A','#4CC3FF','#5CFF7A','#F6F4F7'];
+for(let i=0;i<34;i++){const b=document.createElement('div');b.className='bulb';b.style.color=cols[i%5];b.style.animationDelay=(i*0.37%1.8)+'s';$('#lights').appendChild(b)}
+// ---------- parallax layers (pixel art scaled to hero height)
+function layers(){const h=$('#hero').clientHeight, w=h*480/270;[['#l-aurora',90],['#l-far',120],['#l-mid',60],['#l-near',30]].forEach(([id,secs])=>{const el=$(id);el.style.setProperty('--w',w+'px');el.style.animationDuration=secs+'s'})}
+layers();addEventListener('resize',layers);
+// ---------- splash (custom starting screen)
+const tips=["Wrapping presents...","Untangling the fairy lights...","Feeding the reindeer...","Polishing candy canes..."];
+let sp=0;const st=setInterval(()=>{sp=Math.min(100,sp+4+Math.random()*7);$('#sfill').style.width=sp+'%';$('#stip').textContent=tips[(sp/26)|0]||tips[3];if(sp>=100){clearInterval(st);setTimeout(()=>$('#splash').classList.add('hide'),250)}},70);
+// ---------- nav
+$$('.nav').forEach(b=>b.onclick=()=>{$$('.nav').forEach(x=>x.classList.toggle('on',x===b));$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+b.dataset.p))});
+// ---------- toast
+let tt;function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),5200)}
+// ---------- music
+const audio=$('#audio');audio.volume=.35;
+function setMusic(on){$('#music').classList.toggle('on',on);if(on)audio.play().catch(()=>{});else audio.pause()}
+$('#music').onclick=()=>{S.settings.music=!S.settings.music;setMusic(S.settings.music);api.save(S.settings)};
+// ---------- play
+$('#play').onclick=()=>{if($('#play').disabled)return;if(!S.mcFound){toast('<b>Minecraft not found.</b><br>Install the Minecraft Launcher, log in and press Play once, then come back.');return}
+ $('#play').disabled=true;$('#bar').classList.add('on');$('#fill').style.width='2%';$('#status').textContent='Starting...';api.play(true)};
+window.onProgress=(p,msg)=>{$('#fill').style.width=Math.round(p*100)+'%';$('#status').textContent=msg};
+window.onDone=(ok,msg,skipped)=>{$('#play').disabled=false;$('#status').textContent=msg;if(!ok){$('#bar').classList.remove('on');toast('<b>Oops!</b><br>'+msg);return}
+ S.installed=true;const sk=skipped?Object.keys(skipped):[];toast('<b>&#127873; '+msg+'</b>'+(sk.length?'<br><span style="color:#8FA088">Skipped (not out for 1.21.1 yet): '+sk.join(', ')+'</span>':''));setTimeout(()=>$('#bar').classList.remove('on'),2500)};
+function mockPlay(){let p=0;const i=setInterval(()=>{p+=.1;onProgress(Math.min(1,p),'Downloading mods...');if(p>=1){clearInterval(i);onDone(true,'JalyClient is ready! Press PLAY in the Minecraft Launcher.',{})}},150)}
+// ---------- mods page
+const BUILTIN=["FPS","CPS","Keystrokes","Coordinates","Christmas Countdown","Armor Status","Potion Effects","Now Playing (Spotify)","Sky Lyrics","Direction","Ping","Clock","Memory","Server Address","Speed","Sprint Status","Snowfall","Twinkle Lights","Frost Vignette","Christmas Chests","Jingle Hits","Snow Burst","Mob Hats","Zoom","Toggle Sprint","Festive Crosshair","Fullbright","Low Fire","Santa Hat & Capes","25 Daily Gifts"];
+function renderMods(){$('#builtin').innerHTML=BUILTIN.map(b=>'<span class="chip">'+b+'</span>').join('');
+ const order=['Performance','Christmas','General'];let h='';
+ for(const cat of order){const list=S.catalog[cat]||[];if(!list.length)continue;h+='<h2>'+cat+'</h2>';
+  for(const m of list){const on=S.settings.mods[m.slug]!==undefined?S.settings.mods[m.slug]:m.default;h+='<div class="row"><div class="t"><b>'+m.name+'</b><span>'+m.desc+'</span></div><div class="sw'+(on?' on':'')+'" data-slug="'+m.slug+'"></div></div>'}}
+ h+='<p class="note">Christmas mods add new blocks and items: they work in singleplayer and on servers that have them too.</p>';
+ $('#extra').innerHTML=h;$$('#extra .sw').forEach(s=>s.onclick=()=>{s.classList.toggle('on');S.settings.mods[s.dataset.slug]=s.classList.contains('on');api.save(S.settings)})}
+// ---------- settings
+$('#ram').oninput=e=>{$('#ramv').textContent=e.target.value;S.settings.ram=+e.target.value;api.save(S.settings)};
+$$('[data-open]').forEach(b=>b.onclick=()=>api.open(b.dataset.open));
+$('#unprof').onclick=()=>api.unprof().then(()=>toast('JalyClient was removed from the Minecraft Launcher. Press Play to add it back.'));
+// ---------- start
+api.state().then(s=>{S=s;$('#ver').textContent='JalyClient '+s.version;$('#days').textContent=s.daysLeft===0?'':s.daysLeft;$('#daysTxt').textContent=s.daysLeft===0?'Merry Christmas!':s.daysLeft===1?'day until Christmas':'days until Christmas';
+ $('#ram').value=s.settings.ram;$('#ramv').textContent=s.settings.ram;$('#gdir').textContent=s.gameDir;renderMods();
+ if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);
+ $('#status').textContent=s.installed?'Ready to play':'First time? Press PLAY to install everything (about 1 minute).'});
+</script>
+</body>
+</html>

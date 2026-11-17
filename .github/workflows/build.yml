@@ -21,3 +21,81 @@ jobs:
           path: |
             mod/build/libs/*.jar
             !mod/build/libs/*-sources.jar
+
+  launcher:
+    needs: mod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.24' }
+      - uses: actions/download-artifact@v4
+        with: { name: JalyClient-mod, path: launcher/embed }
+      - name: Build the Windows launcher
+        working-directory: launcher
+        run: |
+          go mod edit -dropreplace golang.org/x/sys
+          go mod tidy
+          ls -la embed
+          go vet ./...
+          go test ./...
+          go install github.com/tc-hib/go-winres@latest
+          go-winres make --in winres/winres.json --arch amd64
+          mkdir -p ../dist
+          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-H windowsgui -s -w" -o ../dist/JalyClient.exe .
+          GOOS=windows GOARCH=amd64 go build -trimpath -o ../dist/JalyClient-selftest.exe .
+          ls -la ../dist
+      - uses: actions/upload-artifact@v4
+        with: { name: JalyClient-launcher, path: dist/*.exe }
+
+  windows:
+    needs: launcher
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: JalyClient-launcher, path: dist }
+      - name: Launcher self-test (real Fabric + Modrinth downloads)
+        shell: pwsh
+        run: |
+          $dir = Join-Path $env:RUNNER_TEMP "appdata"
+          & .\dist\JalyClient-selftest.exe --selftest $dir
+          if ($LASTEXITCODE -ne 0) { throw "launcher self-test failed" }
+          Get-ChildItem (Join-Path $dir ".jalyclient\mods") | Select-Object Name, Length | Format-Table -AutoSize
+      - name: Check the Spotify reader and lyrics service
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          Add-Type -AssemblyName System.Runtime.WindowsRuntime
+          [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager,Windows.Media.Control,ContentType=WindowsRuntime] | Out-Null
+          Write-Host "media controls type loads: OK"
+          $r = Invoke-RestMethod "https://lrclib.net/api/get?artist_name=Bobby%20Helms&track_name=Jingle%20Bell%20Rock" -Headers @{ "User-Agent" = "JalyClient-CI" }
+          Write-Host ("lrclib synced lyrics lines: " + (($r.syncedLyrics -split "`n").Count))
+      - name: Build the setup wizard
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress | Out-Null
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\JalyClient.iss
+          if ($LASTEXITCODE -ne 0) { throw "setup build failed" }
+          Get-Item dist\JalyClient-Setup.exe
+      - name: Install, check, uninstall
+        shell: pwsh
+        run: |
+          $p = Start-Process dist\JalyClient-Setup.exe -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/TASKS=desktopicon" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "install exit $($p.ExitCode)" }
+          $exe = Join-Path $env:LOCALAPPDATA "Programs\JalyClient\JalyClient.exe"
+          if (!(Test-Path $exe)) { throw "JalyClient.exe not installed" }
+          $lnk = Join-Path ([Environment]::GetFolderPath("Programs")) "JalyClient.lnk"
+          if (!(Test-Path $lnk)) { throw "Start menu shortcut missing" }
+          $desk = Join-Path ([Environment]::GetFolderPath("Desktop")) "JalyClient.lnk"
+          if (!(Test-Path $desk)) { throw "Desktop shortcut missing" }
+          $key = Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall | Where-Object { (Get-ItemProperty $_.PSPath).DisplayName -eq "JalyClient" }
+          if (!$key) { throw "Not listed in Apps & features" }
+          Write-Host "PASS installed: exe, Start menu, desktop shortcut, Apps & features entry"
+          $un = Join-Path $env:LOCALAPPDATA "Programs\JalyClient\unins000.exe"
+          $p = Start-Process $un -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES" -Wait -PassThru
+          Start-Sleep -Seconds 3
+          if (Test-Path $exe) { throw "uninstall left the exe behind" }
+          Write-Host "PASS uninstall"
+      - uses: actions/upload-artifact@v4
+        with: { name: JalyClient-Setup, path: dist/JalyClient-Setup.exe }
