@@ -134,6 +134,10 @@ public final class Features {
     }
 
     private static void trail(MinecraftClient mc) {
+        if ("sparkles".equals(Cosmetics.selected(Cosmetics.Type.NAME_FX)) && !mc.options.getPerspective().isFirstPerson() && (trailTick++ % 5 == 0)) {
+            Vec3d h = mc.player.getPos().add(0, mc.player.getHeight() + 0.6, 0);
+            mc.world.addParticle(ParticleTypes.SNOWFLAKE, h.x + (RNG.nextDouble() - 0.5) * 0.9, h.y + RNG.nextDouble() * 0.3, h.z + (RNG.nextDouble() - 0.5) * 0.9, 0, -0.01, 0);
+        }
         String t = Cosmetics.selected(Cosmetics.Type.TRAIL);
         if (t.equals("none") || mc.player.isInvisible() || mc.player.isSpectator()) return;
         Vec3d v = mc.player.getVelocity();
@@ -150,6 +154,7 @@ public final class Features {
             case "cherry" -> ParticleTypes.CHERRY_LEAVES;
             case "embers" -> trailTick % 2 == 0 ? ParticleTypes.SMALL_FLAME : null;
             case "totem" -> ParticleTypes.TOTEM_OF_UNDYING;
+            case "og" -> new DustParticleEffect(trailTick % 2 == 0 ? new Vector3f(1f, 0.85f, 0.29f) : new Vector3f(0.88f, 0.22f, 0.31f), 1.3f);
             default -> ParticleTypes.SNOWFLAKE;
         };
         if (fx == null) return;

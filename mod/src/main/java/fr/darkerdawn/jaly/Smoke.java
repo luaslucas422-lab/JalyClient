@@ -98,7 +98,8 @@ final class Smoke {
                 cfg.set("biome", true);
                 cfg.set("chat_time", true);
                 cfg.set("radio", true);
-                cfg.wings = "angel";
+                cfg.wings = "dragon";
+                cfg.nameFx = "candy";
                 cfg.pet = "snowman";
                 cfg.trail = "snow";
                 boolean smooth = cfg.zoomSmooth;
@@ -111,6 +112,7 @@ final class Smoke {
                 for (int i = 0; i < 80; i++) fov = Features.applyZoom(70);
                 check("zoom releases", fov > 65);
                 cfg.zoomSmooth = smooth;
+                check("6 packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_pvp") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_crystal") != null);
                 check("4 Christmas packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_frost") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_candy") != null);
                 check("gift exclusive starts locked", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "present"));
                 c.inGameHud.getChatHud().addMessage(Text.literal("Merry Christmas from the JalyClient test!"));
@@ -168,6 +170,7 @@ final class Smoke {
                 GiftsScreen g = new GiftsScreen(null);
                 c.setScreen(g);
                 check("door 7 opens", g.openDoor(7));
+                check("OG bundle is gift 1", Festive.REWARDS[0].equals("bundle:og") && fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.NAME_COLOR, "og"));
                 check("door 7 unlocked its pet", fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "present"));
                 check("door 20 is still locked", !Festive.canOpen(20, LocalDate.now(), cfg.firstDay, cfg.opened));
             }
@@ -203,7 +206,19 @@ final class Smoke {
             case 542 -> c.setScreen(new fr.darkerdawn.jaly.screen.ModrinthScreen(null, fr.darkerdawn.jaly.net.Modrinth.Kind.SHADER));
             case 560 -> shot(c, "shaders tab");
             case 316 -> shot(c, "hud editor");
+            case 562 -> c.setScreen(new fr.darkerdawn.jaly.screen.CustomizerScreen(null));
+            case 580 -> shot(c, "menu customizer");
+            case 582 -> {
+                fr.darkerdawn.jaly.screen.CosmeticsScreen cs = new fr.darkerdawn.jaly.screen.CosmeticsScreen(null);
+                c.setScreen(cs);
+                cs.showTab(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.NAME_FX);
+            }
+            case 598 -> shot(c, "name effects");
             case 600 -> {
+                cfg.logoStyle = "minecraft";
+                cfg.splashText = "Merry Christmas from the test!";
+                cfg.buttonStyle = "aurora";
+                cfg.panorama = "aurora";
                 c.setScreen(null);
                 c.world.disconnect();
                 c.disconnect(new MessageScreen(Text.literal("Saving")));

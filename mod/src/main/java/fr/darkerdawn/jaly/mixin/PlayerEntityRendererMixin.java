@@ -1,0 +1,33 @@
+package fr.darkerdawn.jaly.mixin;
+
+import fr.darkerdawn.jaly.Mods;
+import fr.darkerdawn.jaly.cosmetic.NameStyle;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+/** Festive nametag: logo + colour + effect on your name. */
+@Mixin(PlayerEntityRenderer.class)
+public abstract class PlayerEntityRendererMixin {
+    @Unique private static boolean jaly$isMe;
+
+    @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V", at = @At("HEAD"))
+    private void jaly$who(AbstractClientPlayerEntity player, Text text, MatrixStack matrices, VertexConsumerProvider vcp, int light, float tickDelta, CallbackInfo ci) {
+        jaly$isMe = player == MinecraftClient.getInstance().player;
+    }
+
+    @ModifyVariable(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V", at = @At("HEAD"), argsOnly = true)
+    private Text jaly$styled(Text text) {
+        if (jaly$isMe && Mods.on("name_style")) return NameStyle.mine(text.getString());
+        return text;
+    }
+}

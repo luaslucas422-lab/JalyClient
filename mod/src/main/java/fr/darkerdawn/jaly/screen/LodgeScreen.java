@@ -111,6 +111,10 @@ public class LodgeScreen extends Screen {
         Gfx.tex(ctx, FIRE, sx(250), sy(110), Math.round(44 * scale), Math.round(40 * scale), 0, frame * 40, 44, 40, 44, 160, in);
         float flicker = 0.10f + 0.05f * (float) Math.sin(now / 90.0) * (float) Math.sin(now / 37.0);
         ctx.fillGradient(sx(240), sy(96), sx(304), sy(170), Gfx.alpha(0x00FF9A3C, in), Gfx.alpha(0xFFFF9A3C, flicker * in));
+        // warm firelight across the room and a cool moonbeam from the window
+        float fl = 0.10f + 0.04f * (float) Math.sin(now / 120.0);
+        ctx.fillGradient(sx(150), sy(40), sx(320), sy(180), Gfx.alpha(0x00FFB060, in), Gfx.alpha(0xFFFFB060, fl * in));
+        ctx.fillGradient(sx(152), sy(84), sx(198), sy(178), Gfx.alpha(0x309BC3E7, in), Gfx.alpha(0x009BC3E7, in));
         drawCharacter(ctx, in);
         // twinkling garland + tree lights
         int b = Math.max(1, Math.round(scale * 1.5f));
@@ -135,6 +139,11 @@ public class LodgeScreen extends Screen {
             glow[i] = Gfx.approach(glow[i], i == hov ? 1f : 0f, 14f, dt);
             if (glow[i] < 0.02f) continue;
             Spot s = spots[i];
+            if (s.name.equals("Mods")) {
+                int bounce = (int) Math.round(Math.abs(Math.sin(now / 180.0)) * 3);
+                Gfx.text(ctx, "!", sx(212) - 2, sy(96) - bounce - 10, Gfx.alpha(Gfx.GOLD_LIGHT, glow[i] * in), true);
+                continue;
+            }
             float pulse = 0.7f + 0.3f * (float) Math.sin(now / 160.0);
             Gfx.outline(ctx, sx(s.x1) - 1, sy(s.y1) - 1, sx(s.x2) - sx(s.x1) + 2, sy(s.y2) - sy(s.y1) + 2, Gfx.alpha(Gfx.GOLD_LIGHT, glow[i] * pulse * in));
             ctx.fill(sx(s.x1), sy(s.y1), sx(s.x2), sy(s.y2), Gfx.alpha(0x30FDE68A, glow[i] * in));
@@ -149,6 +158,8 @@ public class LodgeScreen extends Screen {
             Gfx.text(ctx, label, lx + 5, ly + 2, Gfx.alpha(Gfx.GOLD_LIGHT, glow[i]), true);
         }
         ctx.getMatrices().pop();
+        // soft vignette
+        ctx.fillGradient(0, 0, width, height / 5, Gfx.alpha(0x88000000, in), 0x00000000);
         // header strip
         String hint = hov >= 0 ? spots[hov].hint : (JalyConfig.get().seenLodgeHint ? "Press J to close" : "Click anything in the lodge!");
         Gfx.centered(ctx, hint, width / 2, height - 36, Gfx.alpha(0xFFDCE6F2, in));
@@ -196,6 +207,8 @@ public class LodgeScreen extends Screen {
 
     /** Click your skin: first it grumbles, then it hands over the mods. Public for the smoke test. */
     public void pokeCharacter() {
+        if (openModsAt > 0) return; // already handing over the mods
+        if (pokes >= 1 && Gfx.now() - speechAt < 350) return; // ignore double-click spam
         pokes++;
         speechAt = Gfx.now();
         if (pokes == 1) {
@@ -214,6 +227,7 @@ public class LodgeScreen extends Screen {
         if (openModsAt > 0 && Gfx.now() >= openModsAt) {
             openModsAt = -1;
             pokes = 0;
+            speech = "";
             client.setScreen(new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD));
         }
     }
@@ -233,6 +247,10 @@ public class LodgeScreen extends Screen {
         Gfx.tex(ctx, skin, -4, -12, 4, 12, 4, 20, 4, 12, 64, 64, in);
         Gfx.tex(ctx, skin, 0, -12, 4, 12, 20, 52, 4, 12, 64, 64, in);
         Gfx.tex(ctx, skin, -4, -24, 8, 12, 20, 20, 8, 12, 64, 64, in);
+        // outer skin layer, slightly bigger so it pops out like 3D Skin Layers
+        Gfx.tex(ctx, skin, -5, -13, 5, 13, 4, 36, 4, 12, 64, 64, in);
+        Gfx.tex(ctx, skin, 0, -13, 5, 13, 4, 52, 4, 12, 64, 64, in);
+        Gfx.tex(ctx, skin, -5, -25, 10, 13, 20, 36, 8, 12, 64, 64, in);
         float hy = -32 + breathe;
         ctx.getMatrices().push();
         ctx.getMatrices().translate(0, hy + 8, 0);
@@ -244,8 +262,13 @@ public class LodgeScreen extends Screen {
             ctx.getMatrices().push();
             ctx.getMatrices().translate(side == 0 ? -6 : 6, -20 + side * 3, 0);
             ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(side == 0 ? -90f : 90f));
-            if (side == 0) Gfx.tex(ctx, skin, -2, -2, 4, 12, 44, 20, 4, 12, 64, 64, in);
-            else Gfx.tex(ctx, skin, -2, -2, 4, 12, 36, 52, 4, 12, 64, 64, in);
+            if (side == 0) {
+                Gfx.tex(ctx, skin, -2, -2, 4, 12, 44, 20, 4, 12, 64, 64, in);
+                Gfx.tex(ctx, skin, -3, -2, 5, 13, 44, 36, 4, 12, 64, 64, in);
+            } else {
+                Gfx.tex(ctx, skin, -2, -2, 4, 12, 36, 52, 4, 12, 64, 64, in);
+                Gfx.tex(ctx, skin, -3, -2, 5, 13, 52, 52, 4, 12, 64, 64, in);
+            }
             ctx.getMatrices().pop();
         }
         ctx.getMatrices().pop();

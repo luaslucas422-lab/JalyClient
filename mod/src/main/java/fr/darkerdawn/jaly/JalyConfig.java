@@ -54,6 +54,19 @@ public class JalyConfig {
     public String wings = "none";
     public String pet = "none";
     public String trail = "none";
+    public String nameColor = "white";
+    public String nameFx = "none";
+    public int nameCustom = 0xFF7FDFFF;
+    // main menu customizer
+    public String panorama = "valley";
+    public String logoStyle = "jaly";
+    public boolean splashOn = true;
+    public String splashStyle = "candy";
+    public String splashText = "";
+    public String buttonStyle = "jaly";
+    public String buttonScope = "main";
+    public String menuTrack = "menu_music";
+    public String playerCard = "candy";
 
     // general
     public String intensity = "full"; // full, cozy, calm

@@ -285,5 +285,47 @@
   "desc": "Fly the camera around freely",
   "category": "General",
   "default": false
+ },
+ {
+  "slug": "entitytexturefeatures",
+  "name": "Entity Texture Features",
+  "desc": "Fancy mob textures for premium packs (Fresh Animations)",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "entity-model-features",
+  "name": "Entity Model Features",
+  "desc": "Custom mob models for premium packs",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "capes",
+  "name": "Capes",
+  "desc": "See OptiFine, LabyMod and MinecraftCapes capes",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "simple-voice-chat",
+  "name": "Simple Voice Chat",
+  "desc": "Proximity voice chat on servers that have it",
+  "category": "General",
+  "default": false
+ },
+ {
+  "slug": "zoomify",
+  "name": "Zoomify",
+  "desc": "Another zoom option (JalyClient has its own on C)",
+  "category": "General",
+  "default": false
+ },
+ {
+  "slug": "inventory-profiles-next",
+  "name": "Inventory Profiles Next",
+  "desc": "Sort your inventory with one click",
+  "category": "General",
+  "default": false
  }
 ]

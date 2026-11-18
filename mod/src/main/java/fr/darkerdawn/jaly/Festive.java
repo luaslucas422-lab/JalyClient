@@ -53,13 +53,14 @@ public final class Festive {
 
     /** What each door gives (type:id). Gift exclusives - still free, just unwrapped one day at a time. */
     public static final String[] REWARDS = {
-        "trail:candy", "pet:penguin", "wings:candy", "hat:beanie", "trail:hearts", "cape:sweater", "pet:present", "wings:ice", "trail:notes",
-        "hat:holly", "cape:mint", "trail:gold", "pet:tree", "wings:fairy", "cape:snowy_night", "trail:stars", "hat:gift", "trail:aurora",
-        "cape:present", "trail:cherry", "pet:reindeer", "trail:embers", "wings:gold", "trail:totem", "cape:golden"
+        "bundle:og", "pet:penguin", "wings:candy", "hat:beanie", "trail:hearts", "cape:sweater", "pet:present", "wings:ice", "namefx:shine",
+        "hat:holly", "cape:mint", "trail:gold", "pet:tree", "wings:fairy", "cape:snowy_night", "namefx:sparkles", "hat:gift", "trail:aurora",
+        "cape:present", "trail:cherry", "pet:reindeer", "namefx:wave", "wings:gold", "trail:totem", "cape:golden"
     };
 
     /** Door number that unlocks this reward, or 0 if it is free from the start. */
     public static int doorFor(String reward) {
+        if (reward.endsWith(":og")) return 1;
         for (int i = 0; i < REWARDS.length; i++) if (REWARDS[i].equals(reward)) return i + 1;
         return 0;
     }

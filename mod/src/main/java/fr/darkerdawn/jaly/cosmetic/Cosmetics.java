@@ -20,7 +20,8 @@ public final class Cosmetics {
     private Cosmetics() {}
 
     public enum Type {
-        HAT("hat", "Hats"), CAPE("cape", "Capes"), WINGS("wings", "Wings"), PET("pet", "Pets"), TRAIL("trail", "Trails");
+        HAT("hat", "Hats"), CAPE("cape", "Capes"), WINGS("wings", "Wings"), PET("pet", "Pets"), TRAIL("trail", "Trails"),
+        NAME_COLOR("namecolor", "Name Colours"), NAME_FX("namefx", "Name Effects");
         public final String key, label;
         Type(String k, String l) { key = k; label = l; }
     }
@@ -32,14 +33,24 @@ public final class Cosmetics {
     private static void put(Type t, String id, String name) { ALL.computeIfAbsent(t, k -> new LinkedHashMap<>()).put(id, name); }
 
     static {
-        for (Type t : Type.values()) put(t, "none", "None");
+        for (Type t : Type.values()) if (t != Type.NAME_COLOR) put(t, "none", "None");
         put(Type.HAT, "santa", "Santa Hat"); put(Type.HAT, "antlers", "Reindeer Antlers"); put(Type.HAT, "elf", "Elf Hat");
         put(Type.HAT, "tophat", "Snowman Top Hat"); put(Type.HAT, "halo", "Star Halo"); put(Type.HAT, "beanie", "Candy Beanie");
         put(Type.HAT, "holly", "Holly Crown"); put(Type.HAT, "gift", "Gift Hat");
         put(Type.CAPE, "candy_cane", "Candy Cane"); put(Type.CAPE, "tree", "Christmas Tree"); put(Type.CAPE, "snowflake", "Snowflake");
         put(Type.CAPE, "gingerbread", "Gingerbread"); put(Type.CAPE, "aurora", "Northern Lights"); put(Type.CAPE, "sweater", "Ugly Sweater");
         put(Type.CAPE, "mint", "Mint Candy"); put(Type.CAPE, "snowy_night", "Snowy Night"); put(Type.CAPE, "present", "Present Wrap");
-        put(Type.CAPE, "golden", "Golden Jaly");
+        put(Type.CAPE, "golden", "Golden Jaly"); put(Type.CAPE, "candy_flow", "Candy Flow (animated)"); put(Type.CAPE, "aurora_flow", "Aurora Flow (animated)");
+        put(Type.CAPE, "snowfall", "Snowfall (animated)"); put(Type.CAPE, "holly", "Holly"); put(Type.CAPE, "fireplace", "Fireplace"); put(Type.CAPE, "og", "OG Cape");
+        put(Type.HAT, "og", "OG Crown"); put(Type.PET, "og", "OG Snowman"); put(Type.TRAIL, "og", "OG Sparkle");
+        put(Type.WINGS, "dragon", "Dragon Wings"); put(Type.WINGS, "butterfly", "Butterfly Wings"); put(Type.WINGS, "crystal", "Snowflake Crystal Wings");
+        put(Type.WINGS, "krampus", "Krampus Wings"); put(Type.WINGS, "og", "OG Wings");
+        put(Type.NAME_COLOR, "white", "Snow White"); put(Type.NAME_COLOR, "red", "Candy Red"); put(Type.NAME_COLOR, "gold", "Gold");
+        put(Type.NAME_COLOR, "ice", "Ice Blue"); put(Type.NAME_COLOR, "holly", "Holly Green"); put(Type.NAME_COLOR, "ginger", "Gingerbread");
+        put(Type.NAME_COLOR, "pink", "Sugar Plum"); put(Type.NAME_COLOR, "custom", "Custom (Pre Installs)"); put(Type.NAME_COLOR, "og", "OG");
+        put(Type.NAME_FX, "candy", "Candy Cane Gradient"); put(Type.NAME_FX, "rainbow", "Rainbow Gradient"); put(Type.NAME_FX, "ice", "Ice Gradient");
+        put(Type.NAME_FX, "gold", "Gold Gradient"); put(Type.NAME_FX, "shine", "Shine Sweep"); put(Type.NAME_FX, "sparkles", "Snow Sparkles");
+        put(Type.NAME_FX, "wave", "Colour Wave");
         put(Type.WINGS, "angel", "Angel Wings"); put(Type.WINGS, "candy", "Candy Wings"); put(Type.WINGS, "ice", "Ice Wings");
         put(Type.WINGS, "fairy", "Fairy Light Wings"); put(Type.WINGS, "gold", "Golden Wings");
         put(Type.PET, "snowman", "Mini Snowman"); put(Type.PET, "penguin", "Santa Penguin"); put(Type.PET, "present", "Living Present");
@@ -51,6 +62,7 @@ public final class Cosmetics {
         MODELS.put("santa", HatModels::santa); MODELS.put("antlers", HatModels::antlers); MODELS.put("elf", HatModels::elf);
         MODELS.put("tophat", HatModels::tophat); MODELS.put("halo", HatModels::halo); MODELS.put("beanie", HatModels::beanie);
         MODELS.put("holly", HatModels::holly); MODELS.put("gift", HatModels::gift);
+        MODELS.put("og", HatModels::og); MODELS.put("pet_og", HatModels::pet_og);
         MODELS.put("pet_snowman", HatModels::pet_snowman); MODELS.put("pet_penguin", HatModels::pet_penguin);
         MODELS.put("pet_present", HatModels::pet_present); MODELS.put("pet_tree", HatModels::pet_tree); MODELS.put("pet_reindeer", HatModels::pet_reindeer);
     }
@@ -58,27 +70,31 @@ public final class Cosmetics {
     public static String name(Type t, String id) { return ALL.get(t).getOrDefault(id, id); }
 
     /** Display name for a reward string like "wings:ice". */
+    public static final java.util.Set<String> ANIMATED_CAPES = java.util.Set.of("candy_flow", "aurora_flow", "snowfall");
+
     public static String rewardName(String reward) {
+        if (reward.equals("bundle:og")) return "The OG bundle (one of everything!)";
         String[] p = reward.split(":");
         for (Type t : Type.values()) if (t.key.equals(p[0])) return name(t, p[1]) + " (" + t.label.substring(0, t.label.length() - 1) + ")";
         return reward;
     }
 
     public static boolean unlocked(Type t, String id) {
-        if (id.equals("none")) return true;
+        if (id.equals("none") || (t == Type.NAME_COLOR && !id.equals("og"))) return true;
         int door = Festive.doorFor(t.key + ":" + id);
         return door == 0 || JalyConfig.get().opened.contains(door);
     }
 
     public static String selected(Type t) {
         JalyConfig c = JalyConfig.get();
-        String s = switch (t) { case HAT -> c.hat; case CAPE -> c.cape; case WINGS -> c.wings; case PET -> c.pet; case TRAIL -> c.trail; };
-        return s == null || !ALL.get(t).containsKey(s) || !unlocked(t, s) ? "none" : s;
+        String s = switch (t) { case HAT -> c.hat; case CAPE -> c.cape; case WINGS -> c.wings; case PET -> c.pet; case TRAIL -> c.trail; case NAME_COLOR -> c.nameColor; case NAME_FX -> c.nameFx; };
+        String fallback = t == Type.NAME_COLOR ? "white" : "none";
+        return s == null || !ALL.get(t).containsKey(s) || !unlocked(t, s) ? fallback : s;
     }
 
     public static void select(Type t, String id) {
         JalyConfig c = JalyConfig.get();
-        switch (t) { case HAT -> c.hat = id; case CAPE -> c.cape = id; case WINGS -> c.wings = id; case PET -> c.pet = id; case TRAIL -> c.trail = id; }
+        switch (t) { case HAT -> c.hat = id; case CAPE -> c.cape = id; case WINGS -> c.wings = id; case PET -> c.pet = id; case TRAIL -> c.trail = id; case NAME_COLOR -> c.nameColor = id; case NAME_FX -> c.nameFx = id; }
         JalyConfig.save();
     }
 
@@ -89,6 +105,7 @@ public final class Cosmetics {
             case WINGS -> Identifier.of("jalyclient", "textures/gui/wings_" + id + ".png");
             case TRAIL -> Identifier.of("jalyclient", "textures/gui/trail_" + id + ".png");
             case CAPE -> capeTexture(id);
+            default -> Identifier.of("jalyclient", "textures/gui/gear.png");
         };
     }
 
@@ -119,6 +136,8 @@ public final class Cosmetics {
     public static Identifier capeFor(Entity e) {
         if (e != MinecraftClient.getInstance().player) return null;
         String c = selected(Type.CAPE);
-        return c.equals("none") ? null : capeTexture(c);
+        if (c.equals("none")) return null;
+        if (ANIMATED_CAPES.contains(c)) return capeTexture(c + "_f" + (System.currentTimeMillis() / 110 % 8));
+        return capeTexture(c);
     }
 }

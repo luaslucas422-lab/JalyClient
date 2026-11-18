@@ -54,6 +54,8 @@ public class JalyClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_winter"), c, Text.literal("Jaly Winter Wonderland"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_frost"), c, Text.literal("Jaly Frost PvP"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_candy"), c, Text.literal("Jaly Candy Land"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_pvp"), c, Text.literal("Jaly PvP"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_crystal"), c, Text.literal("Jaly Crystal"), ResourcePackActivationType.NORMAL);
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

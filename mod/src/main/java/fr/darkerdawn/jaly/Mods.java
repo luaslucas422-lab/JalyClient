@@ -115,6 +115,11 @@ public final class Mods {
             .with(new Cycle("Style", new String[]{"candy", "gold", "ice", "green", "lights"}, new String[]{"Candy cane", "Gold", "Ice", "Holly green", "Fairy lights"}, () -> c.outlineStyle, v -> { c.outlineStyle = v; JalyConfig.save(); }));
         add(new Entry("time_changer", "Time Changer", "Pick your own sky time (only you see it)", Category.VISUAL, false, null))
             .with(new Cycle("Time", new String[]{"morning", "noon", "sunset", "night"}, new String[]{"Christmas morning", "Noon", "Sunset", "Starry night"}, () -> c.timeOfDay, v -> { c.timeOfDay = v; JalyConfig.save(); }));
+        add(new Entry("own_nametag", "Own Nametag", "See your own name above your head in third person", Category.VISUAL, true, null));
+        add(new Entry("name_style", "Festive Names", "Logo, colour and effect on your nametag and in the tab list", Category.VISUAL, true, null))
+            .with(new Slider("Custom colour: red", 0, 255, 1, () -> (c.nameCustom >> 16) & 255, v -> { c.nameCustom = (c.nameCustom & 0xFF00FFFF) | (v.intValue() << 16); JalyConfig.save(); }, ""))
+            .with(new Slider("Custom colour: green", 0, 255, 1, () -> (c.nameCustom >> 8) & 255, v -> { c.nameCustom = (c.nameCustom & 0xFFFF00FF) | (v.intValue() << 8); JalyConfig.save(); }, ""))
+            .with(new Slider("Custom colour: blue", 0, 255, 1, () -> c.nameCustom & 255, v -> { c.nameCustom = (c.nameCustom & 0xFFFFFF00) | v.intValue(); JalyConfig.save(); }, ""));
         add(new Entry("no_hurt_cam", "No Hurt Shake", "The screen doesn't shake when you get hit", Category.PVP, false, null));
         add(new Entry("chat_time", "Chat Timestamps", "Shows the time next to every chat message", Category.VISUAL, false, null));
         add(new Entry("zoom", "Zoom", "Hold C to zoom. Scroll to zoom further", Category.PVP, true, null))

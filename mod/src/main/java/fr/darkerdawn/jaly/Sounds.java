@@ -43,10 +43,11 @@ public final class Sounds {
 
     /** Keeps the Jingle Bells music box playing on JalyClient menus (replaces vanilla menu music). */
     public static void tickMenuMusic(MinecraftClient mc) {
-        if (!JalyConfig.get().menuMusic) { stopMenuMusic(mc); return; }
+        String track = JalyConfig.get().menuTrack;
+        if (!JalyConfig.get().menuMusic || "none".equals(track)) { stopMenuMusic(mc); return; }
         mc.getMusicTracker().stop();
         if (music == null || !mc.getSoundManager().isPlaying(music)) {
-            music = PositionedSoundInstance.music(MENU_MUSIC);
+            music = PositionedSoundInstance.music(SoundEvent.of(Identifier.of("jalyclient", track == null ? "menu_music" : track)));
             mc.getSoundManager().play(music);
         }
     }

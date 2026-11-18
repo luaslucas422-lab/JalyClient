@@ -31,7 +31,7 @@ public class CosmeticsScreen extends JalyScreen {
     @Override
     protected void build() {
         int x = gridX();
-        int bw = Math.max(36, Math.min(54, (gridW() - 16) / 5));
+        int bw = Math.max(30, Math.min(54, (gridW() - 28) / 7));
         for (Cosmetics.Type t : Cosmetics.Type.values()) {
             addDrawableChild(new JalyButton(x, cy(), bw, 14, Text.literal(t.label), b -> { tab = t; clearAndInit(); }).selected(tab == t));
             x += bw + 4;
@@ -89,7 +89,17 @@ public class CosmeticsScreen extends JalyScreen {
             int lift = hov ? 2 : 0;
             Gfx.round(ctx, x, y - lift, TILE_W, TILE_H, sel ? 0xF0244A1C : hov ? 0xF0203A18 : 0xE0162A12);
             Gfx.outline(ctx, x, y - lift, TILE_W, TILE_H, sel ? Gfx.GOLD_LIGHT : hov ? 0xFFC99E02 : 0x55C99E02);
-            if (id.equals("none")) {
+            if (tab == Cosmetics.Type.NAME_COLOR || tab == Cosmetics.Type.NAME_FX) {
+                String nm = client.getSession().getUsername();
+                var styled = tab == Cosmetics.Type.NAME_COLOR ? fr.darkerdawn.jaly.cosmetic.NameStyle.style(nm, id, "none", true)
+                    : fr.darkerdawn.jaly.cosmetic.NameStyle.style(nm, Cosmetics.selected(Cosmetics.Type.NAME_COLOR), id, true);
+                ctx.getMatrices().push();
+                ctx.getMatrices().translate(x + TILE_W / 2f, y - lift + 18, 0);
+                float sc = Math.min(1f, (TILE_W - 6) / (float) Math.max(1, textRenderer.getWidth(styled)));
+                ctx.getMatrices().scale(sc, sc, 1);
+                ctx.drawText(textRenderer, styled, -textRenderer.getWidth(styled) / 2, 0, 0xFFFFFFFF, true);
+                ctx.getMatrices().pop();
+            } else if (id.equals("none")) {
                 Gfx.centered(ctx, "-", x + TILE_W / 2, y - lift + 16, 0xFF8FA088);
             } else if (tab == Cosmetics.Type.CAPE) {
                 Gfx.tex(ctx, Cosmetics.capeTexture(id), x + TILE_W / 2 - 10, y - lift + 4, 20, 32, 4, 4, 40, 64, 256, 128, locked ? 0.35f : 1f);

@@ -23,6 +23,8 @@ public class PacksScreen extends JalyScreen {
         new Pack("jaly_winter", "Winter Wonderland", "Snow on every grass block and frosted leaves on every tree.", 0xFF9BC3E7),
         new Pack("jaly_frost", "Frost PvP", "Icy swords, ice-crystal hearts, frozen hotbar and XP bar.", 0xFF5AA0D8),
         new Pack("jaly_candy", "Candy Land", "Lollipop swords, candy hearts, caramel apples, pastel hotbar.", 0xFFFF6FAE),
+        new Pack("jaly_pvp", "Jaly PvP", "Short 3D swords, clean dark hotbar, crisp gapples and pearls.", 0xFFE0384F),
+        new Pack("jaly_crystal", "Jaly Crystal", "Festive end crystals, starry obsidian, 3D totems and pearls.", 0xFFFF6FAE),
     };
 
     public PacksScreen(Screen parent) {
@@ -63,14 +65,14 @@ public class PacksScreen extends JalyScreen {
 
     private int cardX(int i) { return cx() + 8 + (i % 2) * (cardW() + 10); }
 
-    private int cardY(int i) { return cy() + 2 + (i / 2) * 82; }
+    private int cardY(int i) { return cy() + 2 + (i / 2) * 62; }
 
     @Override
     protected void drawContent(DrawContext ctx, int mouseX, int mouseY, float delta) {
         ResourcePackManager m = client.getResourcePackManager();
         for (int i = 0; i < PACKS.length; i++) {
             Pack p = PACKS[i];
-            int x = cardX(i), y = cardY(i), w = cardW(), h = 76;
+            int x = cardX(i), y = cardY(i), w = cardW(), h = 56;
             boolean on = enabled(m, p.key);
             boolean hov = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
             Gfx.round(ctx, x, y - (hov ? 1 : 0), w, h, hov ? 0xF0203A18 : 0xE0162A12);
@@ -78,8 +80,8 @@ public class PacksScreen extends JalyScreen {
             ctx.fill(x + 1, y + 1, x + 4, y + h - 1, p.accent);
             Gfx.tex(ctx, Identifier.of("jalyclient", "textures/gui/pack_" + p.key + ".png"), x + 8, y + 8, 32, 32, 0, 0, 64, 64, 64, 64, 1f);
             Gfx.text(ctx, Gfx.trim(p.name, w - 80), x + 46, y + 9, Gfx.GOLD_LIGHT, true);
-            int ty = y + 24;
-            for (var line : textRenderer.wrapLines(Text.literal(p.desc), w - 54)) { if (ty > y + h - 12) break; ctx.drawText(textRenderer, line, x + 46, ty, 0xFFB8C2B0, false); ty += 10; }
+            int ty = y + 21;
+            for (var line : textRenderer.wrapLines(Text.literal(p.desc), w - 54)) { if (ty > y + h - 10) break; ctx.drawText(textRenderer, line, x + 46, ty, 0xFFB8C2B0, false); ty += 10; }
             Gfx.toggle(ctx, x + w - 26, y + 8, on ? 1f : 0f, 1f);
         }
     }
@@ -89,7 +91,7 @@ public class PacksScreen extends JalyScreen {
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
         for (int i = 0; i < PACKS.length; i++) {
             int x = cardX(i), y = cardY(i), w = cardW();
-            if (mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 76) {
+            if (mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 56) {
                 boolean on = !enabled(client.getResourcePackManager(), PACKS[i].key);
                 Sounds.play(on ? Sounds.CHIME : Sounds.CLICK, 1.2f, 0.6f);
                 setEnabled(client, PACKS[i].key, on);
