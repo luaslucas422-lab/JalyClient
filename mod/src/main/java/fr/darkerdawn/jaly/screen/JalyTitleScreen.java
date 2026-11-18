@@ -57,8 +57,9 @@ public class JalyTitleScreen extends Screen {
             client.setScreen(s);
         }));
         add(new JalyButton(x, y + 48, bw, bh, Text.literal("Jaly Lodge"), b -> client.setScreen(new LodgeScreen(this))));
-        add(new JalyButton(x, y + 76, 98, bh, Text.literal("Options"), b -> client.setScreen(new OptionsScreen(this, client.options))));
-        add(new JalyButton(x + 102, y + 76, 98, bh, Text.literal("Quit"), b -> client.scheduleStop()));
+        add(new JalyButton(x, y + 76, 64, bh, Text.literal("Options"), b -> client.setScreen(new OptionsScreen(this, client.options))));
+        add(new JalyButton(x + 68, y + 76, 64, bh, Text.literal("Credits"), b -> client.setScreen(new CreditsScreen(this))));
+        add(new JalyButton(x + 136, y + 76, 64, bh, Text.literal("Quit"), b -> client.scheduleStop()));
         if (FabricLoader.getInstance().isModLoaded("modmenu")) {
             addDrawableChild(new JalyButton(width - 58, height - 46, 54, 14, Text.literal("Mods"), b -> ModMenuCompat.openModList(this)));
         }

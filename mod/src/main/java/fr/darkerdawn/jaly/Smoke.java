@@ -239,6 +239,9 @@ final class Smoke {
             case 667 -> ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).openCoins();
             case 680 -> shot(c, "coin packs");
             case 682 -> c.setScreen(new LodgeScreen(null));
+            case 688 -> c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen(null));
+            case 694 -> { shot(c, "credits"); c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen.MoreCreditsScreen(null)); }
+            case 699 -> shot(c, "more credits");
             case 686 -> check("try-on cleared after leaving the shop", fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.isEmpty()
                 && "none".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)) || !"frost_dragon".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)));
             case 700 -> {
