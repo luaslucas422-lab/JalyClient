@@ -350,6 +350,18 @@ public final class Hud {
                 return si != null ? si.address : "Singleplayer";
             }),
         new TextModule("speed", "Speed", "How fast you move in blocks per second", false, 0.006f, 0.91f, "Speed", mc -> String.format("%.1f b/s", speed)),
+        new TextModule("target", "Target HUD", "Health of whatever you last hit", false, 0.45f, 0.72f, "Target", fr.darkerdawn.jaly.Features::targetText),
+        new TextModule("next_gift", "Next Gift", "Time until your next Jaly gift unlocks", false, 0.86f, 0.43f, "Gift",
+            mc -> { var t = LocalTime.now(); int left = 24 * 60 - (t.getHour() * 60 + t.getMinute()); return left / 60 + "h " + left % 60 + "m"; }),
+        new TextModule("hunger", "Hunger & Saturation", "Your food and hidden saturation", false, 0.86f, 0.49f, "Food",
+            mc -> mc.player == null ? "18 | Sat 5.2" : mc.player.getHungerManager().getFoodLevel() + " | Sat " + String.format("%.1f", mc.player.getHungerManager().getSaturationLevel())),
+        new TextModule("durability", "Held Durability", "Durability left on the item in your hand", false, 0.45f, 0.77f, "Durability",
+            mc -> {
+                if (mc.player == null) return "1402/1561";
+                ItemStack s = mc.player.getMainHandStack();
+                if (s.isEmpty() || !s.isDamageable()) return null;
+                return (s.getMaxDamage() - s.getDamage()) + "/" + s.getMaxDamage();
+            }),
         new TextModule("sprint_status", "Sprint Status", "Shows when Toggle Sprint is on", false, 0.006f, 0.96f, "",
             mc -> Mods.on("toggle_sprint") ? "Sprinting (Toggled)" : "Walking")
     );
@@ -403,6 +415,13 @@ public final class Hud {
         if (mc.options.hudHidden || mc.getDebugHud().shouldShowDebugHud()) return;
         int sw = ctx.getScaledWindowWidth(), sh = ctx.getScaledWindowHeight();
         if (Mods.on("frost")) frost(ctx, sw, sh);
+        if (Mods.on("low_health") && mc.player != null && !mc.player.isCreative() && mc.player.getHealth() > 0 && mc.player.getHealth() <= JalyConfig.get().lowHealthAt) {
+            float pulse = 0.35f + 0.25f * (float) Math.sin(Gfx.now() / 160.0);
+            int c = Gfx.alpha(0xFFC8102E, pulse);
+            int e = Math.max(24, sh / 6);
+            ctx.fillGradient(0, 0, sw, e, c, 0x00C8102E);
+            ctx.fillGradient(0, sh - e, sw, sh, 0x00C8102E, c);
+        }
         if (Mods.on("lights") && JalyConfig.get().snowAmount() > 0) Gfx.lights(ctx, 0, sw, 0, 16, 1f, Gfx.now(), 0.9f);
         for (HudModule m : MODULES) {
             if (Mods.on(m.id)) drawModule(ctx, mc, m, sw, sh, false);

@@ -5,4 +5,4 @@ compatibility_date = "2026-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "jalyclient-shop"
-database_id = "REPLACED_BY_CI"
+database_id = "fddf6910-6b3e-4427-aea5-9d43791eccaf"

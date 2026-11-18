@@ -131,6 +131,9 @@ public final class Mods {
             .with(new Cycle("Style", new String[]{"snowflake", "star", "candy", "tree", "dot", "plus"}, new String[]{"Snowflake", "Star", "Candy plus", "Tiny tree", "Dot", "Plus"}, () -> c.crosshair, v -> { c.crosshair = v; JalyConfig.save(); }))
             .with(new Swatch("Colour", TEXT_COLORS, () -> c.crosshairColor, v -> { c.crosshairColor = v; JalyConfig.save(); }));
         add(new Entry("fullbright", "Fullbright", "See clearly in the dark", Category.VISUAL, false, null));
+        add(new Entry("snow_steps", "Snow Steps", "Little snow puffs where you walk and a burst when you jump", Category.FESTIVE, false, null));
+        add(new Entry("low_health", "Low Health Warning", "Red pulsing edges and a bell when your health gets low", Category.PVP, false, null))
+            .with(new Slider("Warn at (health)", 2, 14, 1, () -> c.lowHealthAt, v -> { c.lowHealthAt = v.floatValue(); JalyConfig.save(); }, ""));
         add(new Entry("low_fire", "Low Fire", "Lowers the fire overlay so you can see", Category.VISUAL, true, null));
     }
 }

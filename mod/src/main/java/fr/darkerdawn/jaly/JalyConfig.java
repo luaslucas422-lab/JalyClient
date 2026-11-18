@@ -74,6 +74,7 @@ public class JalyConfig {
     public boolean loadingScreen = true;
     public boolean menuSnow = true;
     public boolean menuMusic = true;
+    public float lowHealthAt = 6f;
     public float musicVolume = 0.7f;
     public boolean hoverSounds = true;
     public float hudScale = 1f;

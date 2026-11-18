@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	AppVersion = "1.4.0"
+	AppVersion = "1.4.1"
 	MCVersion  = "1.21.1"
 	ProfileKey = "jalyclient"
 	FabricAPI  = "P7dR8mSH" // Modrinth project id of Fabric API

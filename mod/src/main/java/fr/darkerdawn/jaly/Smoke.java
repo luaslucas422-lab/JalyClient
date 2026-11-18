@@ -146,7 +146,14 @@ final class Smoke {
                     }
                 });
             }
-            case 80 -> shot(c, "in-game hud");
+            case 76 -> {
+                for (String id : new String[]{"target", "next_gift", "hunger", "durability", "snow_steps", "low_health"}) {
+                    check("new mod " + id + " registered", Mods.byId(id) != null);
+                    cfg.set(id, true);
+                }
+                cfg.lowHealthAt = 40f; // force the low-health edges on for the screenshot
+            }
+            case 80 -> { shot(c, "in-game hud"); cfg.lowHealthAt = 6f; for (String id : new String[]{"target", "next_gift", "hunger", "durability", "snow_steps", "low_health"}) cfg.set(id, false); }
             case 82 -> c.player.setPitch(-28);
             case 84 -> shot(c, "sky lyrics");
             case 86 -> c.player.setPitch(-8);

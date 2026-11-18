@@ -75,6 +75,7 @@ public final class Features {
         if (System.currentTimeMillis() - lastHitTime > 2500) combo = 0;
         if (Mods.on("minimap")) Minimap.tick(mc);
         trail(mc);
+        snowSteps(mc);
         Vec3d p = mc.player.getPos();
         if (lastPos != null) {
             double dx = p.x - lastPos.x, dz = p.z - lastPos.z;
@@ -162,6 +163,41 @@ public final class Features {
         if (fx == null) return;
         double vx = t.equals("notes") ? RNG.nextInt(24) / 24.0 : (RNG.nextDouble() - 0.5) * 0.02;
         mc.world.addParticle(fx, p.x + (RNG.nextDouble() - 0.5) * 0.4, p.y + 0.1 + RNG.nextDouble() * 0.3, p.z + (RNG.nextDouble() - 0.5) * 0.4, vx, 0.01, (RNG.nextDouble() - 0.5) * 0.02);
+    }
+
+    private static boolean wasOnGround = true;
+    private static int stepTick;
+    private static boolean lowWarned;
+
+    /** Snow Steps: little snow puffs where you walk, and a burst when you jump. */
+    private static void snowSteps(MinecraftClient mc) {
+        boolean ground = mc.player.isOnGround();
+        if (Mods.on("snow_steps") && !mc.player.isSpectator()) {
+            Vec3d v = mc.player.getVelocity();
+            double sp = Math.sqrt(v.x * v.x + v.z * v.z);
+            if (ground && sp > 0.03 && stepTick++ % 4 == 0) {
+                mc.world.addParticle(ParticleTypes.SNOWFLAKE, mc.player.getX() + (RNG.nextDouble() - 0.5) * 0.4, mc.player.getY() + 0.05, mc.player.getZ() + (RNG.nextDouble() - 0.5) * 0.4, 0, 0.02, 0);
+            }
+            if (wasOnGround && !ground && v.y > 0.2) {
+                for (int i = 0; i < 8; i++) {
+                    mc.world.addParticle(ParticleTypes.SNOWFLAKE, mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ(), (RNG.nextDouble() - 0.5) * 0.25, 0.08, (RNG.nextDouble() - 0.5) * 0.25);
+                }
+            }
+        }
+        wasOnGround = ground;
+        // Low Health Warning: a bell when you drop under the limit
+        boolean low = mc.player.getHealth() <= JalyConfig.get().lowHealthAt && mc.player.getHealth() > 0 && !mc.player.isCreative();
+        if (Mods.on("low_health") && low && !lowWarned) Sounds.play(Sounds.CHIME, 0.6f, 0.9f);
+        lowWarned = low;
+    }
+
+    /** Target HUD: what you last hit and how much health it has left. */
+    public static String targetText(MinecraftClient mc) {
+        if (mc.world == null) return "Zombie 14.0/20";
+        if (System.currentTimeMillis() - lastAttackTime > 8000) return null;
+        Entity e = mc.world.getEntityById(lastAttackedId);
+        if (!(e instanceof LivingEntity le) || !le.isAlive()) return null;
+        return Gfx.trim(le.getName().getString(), 120) + " " + String.format("%.1f/%.0f", le.getHealth(), le.getMaxHealth());
     }
 
     public static void onAttack(Entity target) {
