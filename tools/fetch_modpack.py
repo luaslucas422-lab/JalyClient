@@ -8,7 +8,10 @@ dest = sys.argv[1]
 os.makedirs(dest, exist_ok=True)
 cat = json.load(open(os.path.join(os.path.dirname(__file__), "..", "launcher", "catalog.json")))
 want = [m["slug"] for m in cat if m["default"]]
-seen, done, skipped = {"P7dR8mSH"}, [], {}
+with_api = "--with-fabric-api" in sys.argv
+seen, done, skipped = (set() if with_api else {"P7dR8mSH"}), [], {}
+if with_api:
+    want.insert(0, "fabric-api")
 
 
 def get(url):

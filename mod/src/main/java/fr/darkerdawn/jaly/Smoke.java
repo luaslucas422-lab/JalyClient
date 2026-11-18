@@ -68,6 +68,12 @@ final class Smoke {
             return;
         }
         if (c.player == null || c.world == null) {
+            // Production launchers can't pass --quickPlaySingleplayer, so open the test world ourselves.
+            if (ticks == 160 && c.getServer() == null && c.currentScreen instanceof fr.darkerdawn.jaly.screen.JalyTitleScreen
+                && Files.exists(c.runDirectory.toPath().resolve("saves/smoke"))) {
+                System.out.println("[JALY-SMOKE] opening the test world");
+                c.createIntegratedServerLoader().start("smoke", () -> {});
+            }
             if (ticks == 1500) { System.out.println("[JALY-SMOKE] no world"); titleTicks = 0; }
             return;
         }
