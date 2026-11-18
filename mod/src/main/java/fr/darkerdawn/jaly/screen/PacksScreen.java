@@ -82,7 +82,6 @@ public class PacksScreen extends JalyScreen {
             for (var line : textRenderer.wrapLines(Text.literal(p.desc), w - 54)) { if (ty > y + h - 12) break; ctx.drawText(textRenderer, line, x + 46, ty, 0xFFB8C2B0, false); ty += 10; }
             Gfx.toggle(ctx, x + w - 26, y + 8, on ? 1f : 0f, 1f);
         }
-        Gfx.centered(ctx, "Packs reload when you switch them (takes a few seconds)", width / 2, cardY(4) + 2, 0xFF8FA088);
     }
 
     @Override
