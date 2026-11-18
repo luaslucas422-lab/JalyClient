@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	AppVersion = "1.4.2"
+	AppVersion = "1.5.0"
 	MCVersion  = "1.21.1"
 	ProfileKey = "jalyclient"
 	FabricAPI  = "P7dR8mSH" // Modrinth project id of Fabric API
@@ -65,9 +65,32 @@ type Settings struct {
 
 type Paths struct {
 	AppData, MCDir, GameDir string
+	Version                 string // Minecraft version of this profile ("" = the JalyClient default)
+	Key                     string // id in the Minecraft Launcher's launcher_profiles.json
+	Name                    string // shown in the Minecraft Launcher
 }
 
+func (p Paths) mc() string {
+	if p.Version == "" {
+		return MCVersion
+	}
+	return p.Version
+}
+
+func (p Paths) key() string {
+	if p.Key == "" {
+		return ProfileKey
+	}
+	return p.Key
+}
+
+// paths is the active profile.
 func paths() Paths {
+	b := basePaths()
+	return profilePaths(b, loadProfiles(b).active())
+}
+
+func basePaths() Paths {
 	app := os.Getenv("APPDATA")
 	if app == "" {
 		home, _ := os.UserHomeDir()
@@ -147,14 +170,14 @@ func download(u, dest string) error {
 
 // ---------------------------------------------------------------- fabric
 
-func fabricProfile() (id string, profile []byte, err error) {
+func fabricProfile(mc string) (id string, profile []byte, err error) {
 	var loaders []struct {
 		Loader struct {
 			Version string `json:"version"`
 			Stable  bool   `json:"stable"`
 		} `json:"loader"`
 	}
-	if err = getJSON("https://meta.fabricmc.net/v2/versions/loader/"+MCVersion, &loaders); err != nil {
+	if err = getJSON("https://meta.fabricmc.net/v2/versions/loader/"+mc, &loaders); err != nil {
 		return
 	}
 	ver := ""
@@ -171,7 +194,7 @@ func fabricProfile() (id string, profile []byte, err error) {
 		return "", nil, errors.New("no Fabric loader found")
 	}
 	var raw json.RawMessage
-	if err = getJSON(fmt.Sprintf("https://meta.fabricmc.net/v2/versions/loader/%s/%s/profile/json", MCVersion, ver), &raw); err != nil {
+	if err = getJSON(fmt.Sprintf("https://meta.fabricmc.net/v2/versions/loader/%s/%s/profile/json", mc, ver), &raw); err != nil {
 		return
 	}
 	var head struct {
@@ -182,7 +205,7 @@ func fabricProfile() (id string, profile []byte, err error) {
 }
 
 func installFabric(p Paths) (string, error) {
-	id, prof, err := fabricProfile()
+	id, prof, err := fabricProfile(p.mc())
 	if err != nil {
 		return "", err
 	}
@@ -220,16 +243,16 @@ type mrVersion struct {
 	} `json:"dependencies"`
 }
 
-func latestVersion(project string) (*mrVersion, error) {
+func latestVersion(project, mc string) (*mrVersion, error) {
 	q := url.Values{}
 	q.Set("loaders", `["fabric"]`)
-	q.Set("game_versions", `["`+MCVersion+`"]`)
+	q.Set("game_versions", `["`+mc+`"]`)
 	var vs []mrVersion
 	if err := getJSON("https://api.modrinth.com/v2/project/"+url.PathEscape(project)+"/version?"+q.Encode(), &vs); err != nil {
 		return nil, err
 	}
 	if len(vs) == 0 {
-		return nil, fmt.Errorf("%s has no version for Minecraft %s", project, MCVersion)
+		return nil, fmt.Errorf("%s has no version for Minecraft %s", project, mc)
 	}
 	return &vs[0], nil
 }
@@ -271,19 +294,23 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 		return r, err
 	}
 	FinishPending(p)
-	progress(0.04, "Getting Fabric for Minecraft "+MCVersion+"...")
+	progress(0.04, "Getting Fabric for Minecraft "+p.mc()+"...")
 	id, err := installFabric(p)
 	if err != nil {
 		return r, fmt.Errorf("could not install Fabric: %w", err)
 	}
 	r.FabricID = id
 
-	progress(0.12, "Unwrapping JalyClient...")
-	jar, err := installJaly(mods)
-	if err != nil {
-		return r, err
+	if JalyVersions[p.mc()] {
+		progress(0.12, "Unwrapping JalyClient...")
+		jar, err := installJaly(mods)
+		if err != nil {
+			return r, err
+		}
+		r.JalyJar = jar
+	} else {
+		removeJaly(mods) // JalyClient itself isn't out for this version yet: Fabric + your mods only
 	}
-	r.JalyJar = jar
 
 	// Wanted projects: Fabric API + chosen extras, then their required dependencies.
 	want := []string{"fabric-api"}
@@ -298,7 +325,7 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 	for i := 0; i < len(want); i++ {
 		slug := want[i]
 		progress(0.15+0.75*float64(i)/float64(len(want)+1), "Downloading "+prettyName(slug)+"...")
-		v, err := latestVersion(slug)
+		v, err := latestVersion(slug, p.mc())
 		if err != nil {
 			r.Skipped[slug] = err.Error()
 			continue
@@ -351,7 +378,7 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 	if err := writeProfile(p, id, s); err != nil {
 		return r, fmt.Errorf("could not add the launcher profile: %w", err)
 	}
-	r.Profile = ProfileKey
+	r.Profile = p.key()
 	progress(1, "Ready!")
 	return r, nil
 }
@@ -390,6 +417,15 @@ func installJaly(mods string) (string, error) {
 	return name, os.WriteFile(filepath.Join(mods, name), data, 0o644)
 }
 
+func removeJaly(mods string) {
+	entries, _ := os.ReadDir(mods)
+	for _, e := range entries {
+		if strings.HasPrefix(strings.ToLower(e.Name()), "jalyclient") && strings.HasSuffix(e.Name(), ".jar") {
+			_ = os.Remove(filepath.Join(mods, e.Name()))
+		}
+	}
+}
+
 func iconDataURI() string {
 	b, err := uiFiles.ReadFile("ui/icon.png")
 	if err != nil {
@@ -412,18 +448,21 @@ func writeProfile(p Paths, versionID string, s Settings) error {
 		profiles = map[string]any{}
 	}
 	now := time.Now().UTC().Format("2006-01-02T15:04:05.000Z")
-	prof, _ := profiles[ProfileKey].(map[string]any)
+	prof, _ := profiles[p.key()].(map[string]any)
 	if prof == nil {
 		prof = map[string]any{"created": now}
 	}
 	prof["name"] = "JalyClient"
+	if p.Name != "" && p.key() != ProfileKey {
+		prof["name"] = "JalyClient - " + p.Name
+	}
 	prof["type"] = "custom"
 	prof["lastVersionId"] = versionID
 	prof["gameDir"] = p.GameDir
 	prof["icon"] = iconDataURI()
 	prof["lastUsed"] = now
 	prof["javaArgs"] = fmt.Sprintf("-Xmx%dG -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200", s.RAM)
-	profiles[ProfileKey] = prof
+	profiles[p.key()] = prof
 	root["profiles"] = profiles
 	if _, ok := root["version"]; !ok {
 		root["version"] = 3
@@ -444,7 +483,7 @@ func RemoveProfile(p Paths) error {
 		return err
 	}
 	if profiles, ok := root["profiles"].(map[string]any); ok {
-		delete(profiles, ProfileKey)
+		delete(profiles, p.key())
 	}
 	out, _ := json.MarshalIndent(root, "", "  ")
 	return os.WriteFile(file, out, 0o644)

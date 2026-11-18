@@ -100,6 +100,31 @@ input[type=range]{width:260px;accent-color:var(--red)}
 #updating{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;flex-direction:column;background:#060b1fee;font-size:18px}
 .news{border-left:4px solid var(--red);padding-left:14px;margin-bottom:22px}
 .news .d{font-size:12px;color:var(--muted)}.news h3{margin:3px 0 6px}.news li{margin:3px 0 3px 18px;color:#c9d4c2;font-size:14px}
+/* ---------- profiles */
+#profPick{margin-top:12px;display:flex;align-items:center;gap:9px;background:#0f1d0dcc;border:1px solid #c99e0288;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:border-color .2s,transform .2s}
+#profPick:hover{border-color:var(--gold2);transform:translateY(-1px)}
+.pdot{width:11px;height:11px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor;background:currentColor}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.pcard{background:linear-gradient(180deg,#172b14,#11200f);border:1px solid #2a3f1e;border-radius:14px;padding:16px 16px 14px;position:relative;transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}
+.pcard:hover{transform:translateY(-3px);border-color:var(--gold)}
+.pcard.act{border-color:var(--gold2);box-shadow:0 0 0 1px var(--gold2),0 8px 24px #0008}
+.pcard .band{position:absolute;left:0;top:0;bottom:0;width:5px}
+.pcard h3{font-size:17px;margin:2px 0 4px;color:#fff;display:flex;align-items:center;gap:8px}
+.pcard .vb{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:9px;background:#0c170b;border:1px solid #c99e0288;color:var(--gold2)}
+.pcard .kind{font-size:12px;color:var(--muted);margin:9px 0 2px;line-height:1.4}
+.pcard .kind b{color:#cfe3c4}
+.pcard .acts{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pcard .acts .btn{padding:6px 11px;font-size:12px}
+.pcard .on{position:absolute;top:12px;right:12px;font-size:10px;font-weight:800;padding:3px 8px;border-radius:9px;background:var(--green);color:#062}
+.pcard.new{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:170px;border-style:dashed;cursor:pointer;color:var(--gold2);font-weight:700}
+.pcard.new span{font-size:40px;line-height:1;margin-bottom:6px}
+#modal{position:fixed;inset:0;z-index:90;background:#020602cc;display:none;align-items:center;justify-content:center}
+#modal.on{display:flex}
+#modal .box{width:420px;background:linear-gradient(180deg,#183015,#0f1d0d);border:1px solid var(--gold);border-radius:16px;padding:22px;position:relative;animation:pop .35s cubic-bezier(.3,1.6,.6,1) both}
+#modal label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+#modal input,#modal select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid #2f4a24;background:#0b160a;color:#fff;font:inherit}
+.cols{display:flex;gap:8px}.cols i{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s}.cols i.on{border-color:#fff;transform:scale(1.15)}
+#vinfo{font-size:12px;margin-top:7px;color:var(--muted)}
 /* ---------- toast + splash */
 #toast{position:fixed;right:22px;bottom:22px;max-width:380px;background:#132211;border:1px solid var(--gold);border-radius:12px;padding:13px 16px;box-shadow:0 10px 30px #000a;transform:translateY(140%);transition:transform .35s cubic-bezier(.3,1.4,.6,1);z-index:50;font-size:14px}
 #toast.on{transform:none}
@@ -120,6 +145,7 @@ input[type=range]{width:260px;accent-color:var(--red)}
   <nav id="side">
     <div id="brand"><img class="px" src="{{icon.png}}" alt=""><div><b><i>Jaly</i>Client</b><small>free forever</small></div></div>
     <button class="nav on" data-p="home"><svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>Home</button>
+    <button class="nav" data-p="profiles"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg>Profiles</button>
     <button class="nav" data-p="mods"><svg viewBox="0 0 24 24"><path d="M12 2 9 7H4l4 4-2 6 6-3 6 3-2-6 4-4h-5z"/></svg>Pre Installs</button>
     <button class="nav" data-p="browse"><svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 0 1 6.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>Mods</button>
     <button class="nav" data-p="news"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zm3 3v2h10V7zm0 4v2h10v-2zm0 4v2h6v-2z"/></svg>News</button>
@@ -144,7 +170,8 @@ input[type=range]{width:260px;accent-color:var(--red)}
           <div id="sub">The jolliest free Minecraft client</div>
           <div class="pill">&#127876; <b id="days">--</b> <span id="daysTxt">days until Christmas</span></div>
           <div id="playWrap">
-            <button id="play">PLAY<small>MINECRAFT 1.21.1 &middot; FABRIC</small></button>
+            <button id="play">PLAY<small id="playSub">MINECRAFT 1.21.1 &middot; FABRIC</small></button>
+            <div id="profPick" title="Switch profile"><span class="pdot" id="ppDot"></span><span>Profile: <b id="ppName">JalyClient</b> &middot; <span id="ppVer">1.21.1</span></span><span style="opacity:.7">&#9662;</span></div>
             <div id="bar"><div id="fill"></div></div>
             <div id="status"></div>
           </div>
@@ -159,15 +186,21 @@ input[type=range]{width:260px;accent-color:var(--red)}
       </div>
     </section>
 
+    <section class="page" id="p-profiles"><div class="inner">
+      <h1>Profiles</h1><p>Each profile is its own Minecraft version with its own mods, packs, worlds and settings. Pick one and press Play.</p>
+      <div class="pgrid" id="pgrid"></div>
+      <p class="note">&#11088; = JalyClient runs on this version (Lodge, cosmetics, built-in mods). Other versions get Fabric + any mods you pick, and JalyClient itself is coming to them.</p>
+    </div></section>
+
     <section class="page" id="p-mods"><div class="inner">
       <h1>Pre Installs</h1><p>The mods JalyClient picks and keeps updated for you. Changes apply the next time you press Play.</p>
-      <h2>Built into JalyClient</h2>
+      <h2 id="bhead">Built into JalyClient</h2>
       <div class="chips" id="builtin"></div>
       <div id="extra"></div>
     </div></section>
 
     <section class="page" id="p-browse"><div class="inner">
-      <h1>Mods</h1><p>Get anything from Modrinth for Minecraft 1.21.1. You can do this in game too: press J and poke the grumpy guy by the fireplace.</p>
+      <h1>Mods</h1><p>Get anything from Modrinth for <b id="brProf">your profile</b>. You can do this in game too: press J and poke the grumpy guy by the fireplace.</p>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
         <button class="btn kt on" data-k="mod">Mods</button><button class="btn kt" data-k="resourcepack">Resource Packs</button><button class="btn kt" data-k="shader">Shaders</button>
         <input id="q" placeholder="Search Modrinth..." style="flex:1;min-width:200px;padding:9px 12px;border-radius:9px;border:1px solid #2f4a24;background:#0f1d0d;color:#fff;font:inherit">
@@ -177,6 +210,17 @@ input[type=range]{width:260px;accent-color:var(--red)}
 
     <section class="page" id="p-news"><div class="inner">
       <h1>News</h1><p>What's new in JalyClient.</p>
+      <div class="news"><div class="d">Version 1.5.0</div><h3>Profiles</h3><ul>
+        <li>New Profiles tab: make as many profiles as you like, each on its own Minecraft version (1.16.5 to 1.21.11)</li>
+        <li>Every profile has its own mods, resource packs, worlds and settings</li>
+        <li>Switch profile right under the PLAY button</li>
+        <li>JalyClient runs on 1.21 and 1.21.1; other versions get Fabric + your own mods for now</li>
+      </ul></div>
+      <div class="news"><div class="d">Version 1.4.0</div><h3>The Jolly Shop</h3><ul>
+        <li>A door at the end of the Lodge leads to a very grumpy shopkeeper</li>
+        <li>Premium cosmetics for Jolly Coins, with try-on before you buy</li>
+        <li>Credits on the main menu (and MORE CREDITS)</li>
+      </ul></div>
       <div class="news"><div class="d">Version 1.0.0</div><h3>The first jolly release</h3><ul>
         <li>Animated Christmas main menu with sleigh, aurora and snowfall</li>
         <li>Custom loading screen with a candy cane progress bar</li>
@@ -219,6 +263,13 @@ input[type=range]{width:260px;accent-color:var(--red)}
   </main>
 </div>
 <div id="toast"></div>
+<div id="modal"><div class="box"><div class="snowcap"></div>
+  <h1 id="mTitle" style="font-size:21px">New profile</h1>
+  <label>Name</label><input id="mName" maxlength="32" placeholder="e.g. PvP 1.8 vibes, Survival, Shaders">
+  <label>Minecraft version</label><select id="mVer"></select><div id="vinfo"></div>
+  <label>Colour</label><div class="cols" id="mCols"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:22px"><button class="btn ghost" id="mCancel">Cancel</button><button class="btn inst" id="mSave">Create</button></div>
+</div></div>
 <div id="updating"><img class="px" src="{{icon.png}}" style="width:96px;margin-bottom:16px"><b id="updtxt">Updating JalyClient...</b><div style="color:#8FA088;margin-top:6px;font-size:14px">It reopens by itself in a moment.</div></div>
 <audio id="audio" src="{{music.ogg}}" loop></audio>
 <script>
@@ -230,7 +281,9 @@ const api={
   open:w=>window.jalyOpen&&window.jalyOpen(w),
   unprof:()=>window.jalyRemoveProfile?window.jalyRemoveProfile():Promise.resolve()
 };
-const MOCK={version:"1.0.0",mc:"1.21.1",daysLeft:38,mcFound:true,installed:false,gameDir:"C:\\Users\\You\\AppData\\Roaming\\.jalyclient",settings:{ram:4,music:true,mods:{}},catalog:{}};
+const MOCK={active:"default",versions:["1.21.11","1.21.4","1.21.1","1.21","1.20.1"],colors:["#E0384F","#C99E02","#3FB950","#4CC3FF","#B35CFF","#FF8A3D"],
+ profiles:[{id:"default",name:"JalyClient",version:"1.21.1",color:"#E0384F",jaly:true,installed:true,mods:38},{id:"pvp-1a2b3c",name:"PvP",version:"1.21.4",color:"#4CC3FF",jaly:false,installed:false,mods:0}],
+ version:"1.0.0",mc:"1.21.1",daysLeft:38,mcFound:true,installed:false,gameDir:"C:\\Users\\You\\AppData\\Roaming\\.jalyclient",settings:{ram:4,music:true,mods:{}},catalog:{}};
 let S=null;
 // ---------- snow
 function snow(canvas,count){const c=canvas.getContext('2d');let f=[];function size(){canvas.width=canvas.clientWidth;canvas.height=canvas.clientHeight;}size();addEventListener('resize',size);
@@ -261,11 +314,11 @@ $('#play').onclick=()=>{if($('#play').disabled)return;if(!S.mcFound){toast('<b>M
  $('#play').disabled=true;$('#bar').classList.add('on');$('#fill').style.width='2%';$('#status').textContent='Starting...';api.play(true)};
 window.onProgress=(p,msg)=>{$('#fill').style.width=Math.round(p*100)+'%';$('#status').textContent=msg};
 window.onDone=(ok,msg,skipped)=>{$('#play').disabled=false;$('#status').textContent=msg;if(!ok){$('#bar').classList.remove('on');toast('<b>Oops!</b><br>'+msg);return}
- S.installed=true;const sk=skipped?Object.keys(skipped):[];toast('<b>&#127873; '+msg+'</b>'+(sk.length?'<br><span style="color:#8FA088">Skipped (not out for 1.21.1 yet): '+sk.join(', ')+'</span>':''));setTimeout(()=>$('#bar').classList.remove('on'),2500)};
+ S.installed=true;const sk=skipped?Object.keys(skipped):[];toast('<b>&#127873; '+msg+'</b>'+(sk.length?'<br><span style="color:#8FA088">Skipped (not out for '+S.mc+' yet): '+sk.join(', ')+'</span>':''));setTimeout(()=>$('#bar').classList.remove('on'),2500)};
 function mockPlay(){let p=0;const i=setInterval(()=>{p+=.1;onProgress(Math.min(1,p),'Downloading mods...');if(p>=1){clearInterval(i);onDone(true,'JalyClient is ready! Press PLAY in the Minecraft Launcher.',{})}},150)}
 // ---------- mods page
 const BUILTIN=["Minimap","Jaly Radio","Wings, Pets & Trails","Festive Outline","Time Changer","Combo Counter","Reach Display","Item Counter","Biome","Day Counter","Light Level","Session Time","No Hurt Shake","Chat Timestamps","FPS","CPS","Keystrokes","Coordinates","Christmas Countdown","Armor Status","Potion Effects","Now Playing (Spotify)","Sky Lyrics","Direction","Ping","Clock","Memory","Server Address","Speed","Sprint Status","Snowfall","Twinkle Lights","Frost Vignette","Christmas Chests","Jingle Hits","Snow Burst","Mob Hats","Zoom","Toggle Sprint","Festive Crosshair","Fullbright","Low Fire","Santa Hat & Capes","25 Daily Gifts"];
-function renderMods(){$('#builtin').innerHTML=BUILTIN.map(b=>'<span class="chip">'+b+'</span>').join('');
+function renderMods(){const ap=activeProf();$('#bhead').textContent=ap.jaly?'Built into JalyClient':'Profile: '+ap.name+' ('+ap.version+')';$('#builtin').innerHTML=ap.jaly?BUILTIN.map(b=>'<span class="chip">'+b+'</span>').join(''):'<p class="note">This profile is on Minecraft '+esc(ap.version)+'. JalyClient\'s built-in mods are coming to it later. The mods below are installed for '+esc(ap.version)+' when there is a version for it.</p>';
  const order=['Performance','Christmas','Visual','Sounds','General'];let h='';
  for(const cat of order){const list=S.catalog[cat]||[];if(!list.length)continue;h+='<h2>'+cat+'</h2>';
   for(const m of list){const on=S.settings.mods[m.slug]!==undefined?S.settings.mods[m.slug]:m.default;h+='<div class="row"><div class="t"><b>'+m.name+'</b><span>'+m.desc+'</span></div><div class="sw'+(on?' on':'')+'" data-slug="'+m.slug+'"></div></div>'}}
@@ -282,7 +335,7 @@ const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"
 function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'K':n}
 async function browse(){
   const q=$('#q').value.trim();
-  const facets=kind==='mod'?[["project_type:mod"],["versions:1.21.1"],["categories:fabric"]]:kind==='resourcepack'?[["project_type:resourcepack"],["versions:1.21.1"]]:[["project_type:shader"],["categories:iris"]];
+  const facets=kind==='mod'?[["project_type:mod"],["versions:"+S.mc],["categories:fabric"]]:kind==='resourcepack'?[["project_type:resourcepack"],["versions:"+S.mc]]:[["project_type:shader"],["categories:iris"]];
   $('#results').innerHTML='<p class="note">Loading...</p>';
   try{
     if(window.jalyUser)user=await window.jalyUser();
@@ -304,11 +357,67 @@ $$('.nav').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.p==='browse'&
 // ---------- self-update
 if(window.jalyCheckUpdate)window.jalyCheckUpdate().then(r=>{if(r&&r.version){$('#updating').style.display='flex';$('#updtxt').textContent='Updating JalyClient to '+r.version+'...';
   window.jalyApplyUpdate(r).catch(e=>{$('#updating').style.display='none';toast('Update failed: '+e)})}});
+// ---------- profiles
+const PAPI={
+  create:(n,v,c)=>window.jalyCreateProfile?window.jalyCreateProfile(n,v,c):Promise.resolve(),
+  edit:(id,n,v,c)=>window.jalyEditProfile?window.jalyEditProfile(id,n,v,c):Promise.resolve(),
+  select:id=>window.jalySelectProfile?window.jalySelectProfile(id):(MOCK.active=id,Promise.resolve()),
+  del:id=>window.jalyDeleteProfile?window.jalyDeleteProfile(id):Promise.resolve(),
+  open:id=>window.jalyOpenProfile&&window.jalyOpenProfile(id)
+};
+const JALY=v=>v==='1.21'||v==='1.21.1';
+function goPage(name){const b=$('.nav[data-p="'+name+'"]');if(b)b.click()}
+$('#profPick').onclick=()=>goPage('profiles');
+function activeProf(){return (S.profiles||[]).find(p=>p.id===S.active)||{name:'JalyClient',version:S.mc,color:'#E0384F',jaly:true}}
+function renderProfiles(){
+  const a=activeProf();
+  $('#ppDot').style.color=a.color;$('#ppName').textContent=a.name;$('#ppVer').textContent=a.version;
+  $('#playSub').innerHTML='MINECRAFT '+esc(a.version)+' &middot; '+(a.jaly?'JALYCLIENT':'FABRIC');
+  $('#brProf').textContent=a.name+' (Minecraft '+a.version+')';
+  let h='';
+  for(const p of S.profiles||[]){const act=p.id===S.active;
+    h+='<div class="pcard'+(act?' act':'')+'"><div class="band" style="background:'+esc(p.color)+'"></div><div class="snowcap"></div>'+(act?'<span class="on">ACTIVE</span>':'')+
+      '<h3><span class="pdot" style="color:'+esc(p.color)+'"></span>'+esc(p.name)+'</h3><span class="vb">'+(p.jaly?'&#11088; ':'')+esc(p.version)+'</span>'+
+      '<div class="kind">'+(p.jaly?'<b>JalyClient</b> + Pre Installs + your mods':'<b>Fabric</b> + your own mods')+'<br>'+(p.installed?p.mods+' mods installed':'Not installed yet: press Play')+'</div>'+
+      '<div class="acts"><button class="btn inst" data-pa="play" data-id="'+p.id+'">&#9654; Play</button>'+(act?'':'<button class="btn" data-pa="use" data-id="'+p.id+'">Use</button>')+
+      '<button class="btn" data-pa="edit" data-id="'+p.id+'">Edit</button><button class="btn ghost" data-pa="open" data-id="'+p.id+'">Folder</button>'+
+      (p.id==='default'?'':'<button class="btn rem" data-pa="del" data-id="'+p.id+'">Delete</button>')+'</div></div>'}
+  h+='<div class="pcard new" id="pnew"><span>+</span>New profile</div>';
+  $('#pgrid').innerHTML=h;
+  $('#pnew').onclick=()=>openModal(null);
+  $$('#pgrid [data-pa]').forEach(b=>b.onclick=async()=>{const id=b.dataset.id,p=S.profiles.find(x=>x.id===id),act=b.dataset.pa;
+    if(act==='use'){await PAPI.select(id);await reload();toast('Switched to <b>'+esc(p.name)+'</b> ('+esc(p.version)+')')}
+    else if(act==='play'){await PAPI.select(id);await reload();goPage('home');setTimeout(()=>$('#play').click(),350)}
+    else if(act==='edit')openModal(p);
+    else if(act==='open')PAPI.open(id);
+    else if(act==='del'){if(b.dataset.sure){await PAPI.del(id);await reload();toast('Deleted <b>'+esc(p.name)+'</b>. Its worlds were moved to the deleted-profiles folder, just in case.')}else{b.dataset.sure=1;b.textContent='Sure?';setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;b.textContent='Delete'}},3000)}}
+  });
+}
+let editing=null,mColor='';
+function openModal(p){editing=p;$('#mTitle').textContent=p?'Edit profile':'New profile';$('#mSave').textContent=p?'Save':'Create';
+  $('#mName').value=p?p.name:'';
+  $('#mVer').innerHTML=(S.versions||[]).map(v=>'<option value="'+v+'">'+(JALY(v)?'\u2B50 ':'')+v+(JALY(v)?'  (JalyClient)':'')+'</option>').join('');
+  $('#mVer').value=p?p.version:(S.versions||[])[0];
+  mColor=p?p.color:(S.colors||[])[(S.profiles||[]).length%6];
+  $('#mCols').innerHTML=(S.colors||[]).map(c=>'<i style="background:'+c+'" data-c="'+c+'" class="'+(c===mColor?'on':'')+'"></i>').join('');
+  $$('#mCols i').forEach(i=>i.onclick=()=>{mColor=i.dataset.c;$$('#mCols i').forEach(x=>x.classList.toggle('on',x===i))});
+  vinfo();$('#modal').classList.add('on');setTimeout(()=>$('#mName').focus(),50)}
+function vinfo(){const v=$('#mVer').value;$('#vinfo').innerHTML=JALY(v)?'&#11088; JalyClient runs here: Lodge, cosmetics, built-in mods and Pre Installs.':'Fabric + any mods you pick from the Mods tab. JalyClient itself comes to '+esc(v)+' later.'}
+$('#mVer').onchange=vinfo;
+$('#mCancel').onclick=()=>$('#modal').classList.remove('on');
+$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('on')};
+$('#mName').onkeydown=e=>{if(e.key==='Enter')$('#mSave').click()};
+$('#mSave').onclick=async()=>{const n=$('#mName').value,v=$('#mVer').value;
+  try{if(editing)await PAPI.edit(editing.id,n,v,mColor);else{await PAPI.create(n,v,mColor);toast('&#127873; <b>'+esc(n)+'</b> is ready. Press Play to set it up!')}
+    $('#modal').classList.remove('on');await reload()}catch(e){toast('<b>Hmm.</b><br>'+esc(String(e&&e.message||e)))}};
+async function reload(){const s=await api.state();applyState(s,false)}
+function applyState(s,first){S=s;
+ $('#ram').value=s.settings.ram;$('#ramv').textContent=s.settings.ram;$('#gdir').textContent=s.gameDir;renderMods();renderProfiles();
+ $('#status').textContent=s.installed?'Ready to play':'First time on this profile? Press PLAY to install everything (about 1 minute).';
+ if(!first&&$('#results').innerHTML)browse()}
 // ---------- start
-api.state().then(s=>{S=s;$('#ver').textContent='JalyClient '+s.version;$('#days').textContent=s.daysLeft===0?'':s.daysLeft;$('#daysTxt').textContent=s.daysLeft===0?'Merry Christmas!':s.daysLeft===1?'day until Christmas':'days until Christmas';
- $('#ram').value=s.settings.ram;$('#ramv').textContent=s.settings.ram;$('#gdir').textContent=s.gameDir;renderMods();
- if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);
- $('#status').textContent=s.installed?'Ready to play':'First time? Press PLAY to install everything (about 1 minute).';
+api.state().then(s=>{applyState(s,true);$('#ver').textContent='JalyClient '+s.version;$('#days').textContent=s.daysLeft===0?'':s.daysLeft;$('#daysTxt').textContent=s.daysLeft===0?'Merry Christmas!':s.daysLeft===1?'day until Christmas':'days until Christmas';
+  if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);
  if(window.autoPlay)setTimeout(()=>$('#play').click(),1800)});
 </script>
 </body>

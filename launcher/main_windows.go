@@ -16,7 +16,7 @@ func main() {
 	if len(os.Args) >= 3 && os.Args[1] == "--selftest" {
 		os.Exit(selfTest(os.Args[2]))
 	}
-	p := paths()
+	p := basePaths()
 	_ = os.MkdirAll(p.GameDir, 0o755)
 	w := webview2.NewWithOptions(webview2.WebViewOptions{
 		Debug:     false,
@@ -46,7 +46,29 @@ func main() {
 		if err := json.Unmarshal([]byte(raw), &s); err != nil {
 			return err
 		}
-		return saveSettings(paths(), s)
+		if err := saveSettings(paths(), s); err != nil {
+			return err
+		}
+		base := basePaths()
+		bs := loadSettings(base)
+		bs.Music = s.Music
+		if paths().GameDir == base.GameDir {
+			return nil
+		}
+		return saveSettings(base, bs)
+	})
+	_ = w.Bind("jalyCreateProfile", func(name, version, color string) (Profile, error) {
+		return CreateProfile(basePaths(), name, version, color)
+	})
+	_ = w.Bind("jalyEditProfile", func(id, name, version, color string) error { return EditProfile(basePaths(), id, name, version, color) })
+	_ = w.Bind("jalySelectProfile", func(id string) error { return SelectProfile(basePaths(), id) })
+	_ = w.Bind("jalyDeleteProfile", func(id string) error { return DeleteProfile(basePaths(), id) })
+	_ = w.Bind("jalyOpenProfile", func(id string) {
+		base := basePaths()
+		st := loadProfiles(base)
+		if pr := st.find(id); pr != nil {
+			OpenFolder(profilePaths(base, *pr).GameDir)
+		}
 	})
 	_ = w.Bind("jalyPlay", func(launch bool) {
 		go func() {
@@ -64,6 +86,9 @@ func main() {
 				return
 			}
 			msg := "JalyClient is ready! Press PLAY in the Minecraft Launcher."
+			if p.key() != ProfileKey {
+				msg = "\"" + p.Name + "\" (" + p.mc() + ") is ready! Press PLAY in the Minecraft Launcher."
+			}
 			if launch {
 				if err := OpenMinecraftLauncher(); err != nil {
 					msg = "Installed! Open the Minecraft Launcher and pick the JalyClient profile."

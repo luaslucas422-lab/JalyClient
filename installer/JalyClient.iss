@@ -1,5 +1,5 @@
 ; JalyClient festive setup wizard (Inno Setup 6)
-#define AppVer "1.4.2"
+#define AppVer "1.5.0"
 
 [Setup]
 AppId={{8F3C2A1E-6B7D-4C1A-9E2F-4A5B6C7D8E9F}

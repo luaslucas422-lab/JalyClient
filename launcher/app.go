@@ -20,6 +20,10 @@ type State struct {
 	MCFound   bool                  `json:"mcFound"`
 	Installed bool                  `json:"installed"`
 	GameDir   string                `json:"gameDir"`
+	Active    string                `json:"active"`
+	Profiles  []ProfileView         `json:"profiles"`
+	Versions  []string              `json:"versions"`
+	Colors    []string              `json:"colors"`
 }
 
 func daysUntilChristmas(now time.Time) int {
@@ -33,14 +37,22 @@ func daysUntilChristmas(now time.Time) int {
 }
 
 func currentState() State {
-	p := paths()
+	base := basePaths()
+	st := loadProfiles(base)
+	p := profilePaths(base, st.active())
 	_, mcErr := os.Stat(p.MCDir)
 	_, jalyErr := os.Stat(p.GameDir + string(os.PathSeparator) + "jaly-installed.json")
+	set := loadSettings(p)
+	set.Music = loadSettings(base).Music // the launcher music switch is the same for every profile
 	return State{
 		Version:   AppVersion,
-		MC:        MCVersion,
+		MC:        p.mc(),
+		Active:    st.Active,
+		Profiles:  profileViews(base),
+		Versions:  GameVersions,
+		Colors:    ProfileColors,
 		DaysLeft:  daysUntilChristmas(time.Now()),
-		Settings:  loadSettings(p),
+		Settings:  set,
 		Catalog:   catalogByCategory(),
 		MCFound:   mcErr == nil,
 		Installed: jalyErr == nil,
@@ -150,6 +162,43 @@ func selfTest(dir string) int {
 	_ = RemoveContent(p, "resourcepack", sr.Hits[0].ID)
 	if len(loadUser(p).Resourcepacks) != 0 {
 		fmt.Println("FAIL pack remove")
+		return 1
+	}
+	// Profiles: a second profile on another Minecraft version, with its own folder and mods
+	pr, err := CreateProfile(basePaths(), "Test 1.20.1", "1.20.1", "")
+	if err != nil {
+		fmt.Println("FAIL create profile: " + err.Error())
+		return 1
+	}
+	pp := profilePaths(basePaths(), pr)
+	ps := loadSettings(pp)
+	for k := range ps.Mods {
+		ps.Mods[k] = false
+	}
+	ps.Mods["sodium"] = true
+	rep2, err := Install(pp, ps, func(float64, string) {})
+	fmt.Println("PROFILE REPORT " + jsonString(rep2))
+	if err != nil || rep2.JalyJar != "" || rep2.Installed["fabric-api"] == "" || rep2.Installed["sodium"] == "" || !strings.HasSuffix(rep2.FabricID, "1.20.1") {
+		fmt.Println("FAIL 1.20.1 profile install")
+		return 1
+	}
+	if err := InstallContent(pp, "mod", "appleskin", "appleskin", "AppleSkin"); err != nil {
+		fmt.Println("FAIL profile mod install: " + err.Error())
+		return 1
+	}
+	if _, err := os.Stat(p.GameDir + "/mods/" + rep2.Installed["sodium"]); err == nil && rep2.Installed["sodium"] != rep.Installed["sodium"] {
+		fmt.Println("FAIL profile mods leaked into the main profile")
+		return 1
+	}
+	b, _ = os.ReadFile(p.MCDir + string(os.PathSeparator) + "launcher_profiles.json")
+	_ = json.Unmarshal(b, &root)
+	profiles, _ = root["profiles"].(map[string]any)
+	fmt.Printf("CHECK profile in Minecraft Launcher: %v\n", profiles[pp.key()] != nil && profiles[ProfileKey] != nil)
+	if profiles[pp.key()] == nil {
+		return 1
+	}
+	if err := DeleteProfile(basePaths(), pr.ID); err != nil {
+		fmt.Println("FAIL delete profile: " + err.Error())
 		return 1
 	}
 	fmt.Printf("CHECK update check: %+v\n", CheckUpdate())

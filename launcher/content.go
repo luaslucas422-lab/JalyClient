@@ -131,7 +131,7 @@ func modIDsOnDisk(dir string) map[string]bool {
 	return ids
 }
 
-func versionFor(kind, project string) (*mrVersion, error) {
+func versionFor(kind, project, mc string) (*mrVersion, error) {
 	k := kinds[kind]
 	q := url.Values{}
 	q.Set("loaders", `["`+k.loader+`"]`)
@@ -139,7 +139,7 @@ func versionFor(kind, project string) (*mrVersion, error) {
 	var vs []mrVersion
 	q2 := url.Values{}
 	q2.Set("loaders", q.Get("loaders"))
-	q2.Set("game_versions", `["`+MCVersion+`"]`)
+	q2.Set("game_versions", `["`+mc+`"]`)
 	if err := getJSON(base+q2.Encode(), &vs); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func versionFor(kind, project string) (*mrVersion, error) {
 		_ = getJSON(base+q.Encode(), &vs)
 	}
 	if len(vs) == 0 {
-		return nil, fmt.Errorf("no version for Minecraft %s", MCVersion)
+		return nil, fmt.Errorf("no version for Minecraft %s", mc)
 	}
 	return &vs[0], nil
 }
@@ -168,7 +168,7 @@ func InstallContent(p Paths, kind, projectID, slug, title string) error {
 			return nil
 		}
 		seen[id] = true
-		v, err := versionFor(kind, id)
+		v, err := versionFor(kind, id, p.mc())
 		if err != nil {
 			return err
 		}

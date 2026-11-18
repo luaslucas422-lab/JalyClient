@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -124,5 +125,70 @@ func TestUserContentAndOptions(t *testing.T) {
 	}
 	if !newerVersion("v1.2.1", "1.2.0") || newerVersion("1.2.0", "1.2.0") || newerVersion("1.1.9", "1.2.0") {
 		t.Fatal("version compare wrong")
+	}
+}
+
+func TestProfiles(t *testing.T) {
+	dir := t.TempDir()
+	base := Paths{MCDir: filepath.Join(dir, ".minecraft"), GameDir: filepath.Join(dir, ".jalyclient")}
+	st := loadProfiles(base)
+	if len(st.Profiles) != 1 || st.Active != DefaultProfile || st.active().Version != MCVersion {
+		t.Fatalf("default profile missing: %+v", st)
+	}
+	if _, err := CreateProfile(base, "", "1.20.1", ""); err == nil {
+		t.Fatal("empty name accepted")
+	}
+	if _, err := CreateProfile(base, "Old PvP", "1.7.10", ""); err == nil {
+		t.Fatal("bad version accepted")
+	}
+	pr, err := CreateProfile(base, "Old PvP!", "1.20.1", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	st = loadProfiles(base)
+	if st.Active != pr.ID || len(st.Profiles) != 2 {
+		t.Fatalf("new profile not active: %+v", st)
+	}
+	pp := profilePaths(base, pr)
+	if pp.mc() != "1.20.1" || pp.key() != "jalyclient-"+pr.ID || !strings.HasPrefix(pp.GameDir, filepath.Join(base.GameDir, "profiles")) {
+		t.Fatalf("bad paths: %+v", pp)
+	}
+	_ = os.MkdirAll(base.MCDir, 0o755)
+	if err := writeProfile(pp, "fabric-loader-x-1.20.1", Settings{RAM: 4}); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeProfile(profilePaths(base, defaultProfile()), "fabric-loader-x-1.21.1", Settings{RAM: 4}); err != nil {
+		t.Fatal(err)
+	}
+	b, _ := os.ReadFile(filepath.Join(base.MCDir, "launcher_profiles.json"))
+	var root map[string]any
+	_ = json.Unmarshal(b, &root)
+	profs := root["profiles"].(map[string]any)
+	mine := profs[pp.key()].(map[string]any)
+	if mine["name"] != "JalyClient - Old PvP!" || mine["gameDir"] != pp.GameDir || profs[ProfileKey] == nil {
+		t.Fatalf("launcher entries wrong: %v", profs)
+	}
+	if err := EditProfile(base, DefaultProfile, "JalyClient", "1.20.1", ""); err == nil {
+		t.Fatal("default profile moved off a JalyClient version")
+	}
+	if err := EditProfile(base, pr.ID, "Renamed", "1.21.4", ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := SelectProfile(base, DefaultProfile); err != nil || loadProfiles(base).Active != DefaultProfile {
+		t.Fatal("select failed")
+	}
+	if err := DeleteProfile(base, DefaultProfile); err == nil {
+		t.Fatal("default profile deleted")
+	}
+	if err := DeleteProfile(base, pr.ID); err != nil {
+		t.Fatal(err)
+	}
+	b, _ = os.ReadFile(filepath.Join(base.MCDir, "launcher_profiles.json"))
+	_ = json.Unmarshal(b, &root)
+	if root["profiles"].(map[string]any)[pp.key()] != nil || len(loadProfiles(base).Profiles) != 1 {
+		t.Fatal("profile not fully deleted")
+	}
+	if _, err := os.Stat(pp.GameDir); err == nil {
+		t.Fatal("profile folder should move to deleted-profiles")
 	}
 }
