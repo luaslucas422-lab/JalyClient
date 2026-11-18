@@ -84,7 +84,8 @@ jobs:
       - name: Install, check, uninstall
         shell: pwsh
         run: |
-          $p = Start-Process dist\JalyClient-Setup.exe -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/TASKS=desktopicon" -Wait -PassThru
+          $p = Start-Process dist\JalyClient-Setup.exe -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/TASKS=desktopicon" -PassThru
+          $p.WaitForExit()
           if ($p.ExitCode -ne 0) { throw "install exit $($p.ExitCode)" }
           $exe = Join-Path $env:LOCALAPPDATA "Programs\JalyClient\JalyClient.exe"
           if (!(Test-Path $exe)) { throw "JalyClient.exe not installed" }
@@ -99,7 +100,8 @@ jobs:
           Stop-Process -Name JalyClient -Force -ErrorAction SilentlyContinue
           Start-Sleep -Seconds 2
           $un = Join-Path $env:LOCALAPPDATA "Programs\JalyClient\unins000.exe"
-          $p = Start-Process $un -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES" -Wait -PassThru
+          $p = Start-Process $un -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES" -PassThru
+          $p.WaitForExit()
           Start-Sleep -Seconds 3
           if (Test-Path $exe) { throw "uninstall left the exe behind" }
           Write-Host "PASS uninstall"
