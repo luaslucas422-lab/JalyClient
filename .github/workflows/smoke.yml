@@ -86,7 +86,8 @@ jobs:
           ls work/mods | wc -l
       - name: Launch the real game
         run: |
-          xvfb-run -a -s "-screen 0 1280x720x24" timeout 1200 portablemc --main-dir mc --work-dir work start fabric:1.21.1:0.20.1 -u JalyTester --jvm-args="-Xmx3G -Djaly.smoke=true" > client.out 2>&1 || echo "EXIT $?"
+          xvfb-run -a -s "-screen 0 1280x720x24" timeout 1200 portablemc --main-dir "$PWD/mc" start --mc-dir "$PWD/work" -u JalyTester --jvm-arg=-Xmx3G --jvm-arg=-Djaly.smoke=true --join-world smoke fabric:1.21.1:0.20.1 > client.out 2>&1 || echo "EXIT $?"
+          tail -5 client.out
           echo "=====CLIENTLOG"
           grep -nE "JALY|Incompatible|requires|Mixin apply failed|InvalidInjection|Caused by|crash" work/logs/latest.log | cut -c1-400 | head -80 || tail -60 client.out
           for f in work/crash-reports/*.txt; do [ -f "$f" ] && { echo "=====CRASH"; head -120 "$f"; }; done
