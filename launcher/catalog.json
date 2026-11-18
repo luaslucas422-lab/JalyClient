@@ -126,13 +126,6 @@
   "default": true
  },
  {
-  "slug": "falling-leaves",
-  "name": "Falling Leaves",
-  "desc": "Leaves drift down from trees",
-  "category": "Christmas",
-  "default": true
- },
- {
   "slug": "snow-real-magic",
   "name": "Snow! Real Magic!",
   "desc": "Snow piles up on fences, stairs and plants",
@@ -262,13 +255,6 @@
   "slug": "no-chat-reports",
   "name": "No Chat Reports",
   "desc": "Keeps your chat private",
-  "category": "General",
-  "default": true
- },
- {
-  "slug": "bettermounthud",
-  "name": "Better Mount HUD",
-  "desc": "Cleaner HUD when riding",
   "category": "General",
   "default": true
  },
