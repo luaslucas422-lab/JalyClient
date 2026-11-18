@@ -39,7 +39,7 @@ public class LodgeScreen extends Screen {
         this.spots = new Spot[]{
             new Spot("Mods", "Turn HUD and festive mods on and off", 90, 28, 144, 80, () -> new ModsScreen(this)),
             new Spot("Edit HUD", "Drag your HUD where you want it", 96, 90, 138, 124, () -> new HudEditorScreen(this)),
-            new Spot("Cosmetics", "Hats and capes, all free", 158, 92, 194, 162, () -> new CosmeticsScreen(this)),
+            new Spot("Cosmetics", "Hats, capes, wings, pets and trails", 158, 92, 194, 162, () -> new CosmeticsScreen(this)),
             new Spot("Settings", "Menus, music, snow and more", 204, 16, 230, 68, () -> SettingsScreen.create(this)),
             new Spot("Packs", "Christmas resource packs", 228, 56, 316, 150, () -> new PacksScreen(this)),
             new Spot("Gifts", "Open today's present", 4, 8, 98, 162, () -> new GiftsScreen(this)),
