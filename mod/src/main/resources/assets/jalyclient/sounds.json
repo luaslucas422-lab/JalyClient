@@ -65,5 +65,18 @@
         "stream": true
       }
     ]
+  },
+  "shop_music": {
+    "sounds": [
+      {
+        "name": "jalyclient:shop_music",
+        "stream": true
+      }
+    ]
+  },
+  "coins": {
+    "sounds": [
+      "jalyclient:unwrap"
+    ]
   }
 }

@@ -172,6 +172,9 @@ def main():
     write_ogg("menu_music", jingle_bells(), gain=0.8)
     write_ogg("carol_deck", melody(DECK * 2, 132), gain=0.8)
     write_ogg("carol_wish", melody(WISH * 3, 120), gain=0.8)
+    shop = [("A4", .5), ("C5", .5), ("E5", .5), ("A5", .5), ("G5", 1), ("E5", .5), ("C5", .5), ("D5", .5), ("F5", .5), ("A5", .5), ("F5", .5), ("E5", 2),
+            ("A4", .5), ("C5", .5), ("E5", .5), ("G5", .5), ("F5", 1), ("D5", .5), ("B4", .5), ("C5", .5), ("E5", .5), ("D5", .5), ("B4", .5), ("A4", 2)]
+    write_ogg("shop_music", melody(shop * 4, 150, jingles=True), gain=0.75)
     write_ogg("carol_silent", melody(SILENT * 2, 84, jingles=False), gain=0.75)
     print("sounds:", sorted(os.listdir(OUT)))
 

@@ -214,7 +214,27 @@ final class Smoke {
                 cs.showTab(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.NAME_FX);
             }
             case 598 -> shot(c, "name effects");
-            case 600 -> {
+            case 599 -> c.setScreen(new fr.darkerdawn.jaly.screen.ShopScreen(null));
+            case 615 -> shot(c, "jolly shop");
+            case 617, 625, 633 -> ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).pokeShopkeeper();
+            case 640 -> {
+                shot(c, "shopkeeper angry");
+                check("shop catalog loaded", fr.darkerdawn.jaly.net.ShopApi.PACKS.size() == 4 && fr.darkerdawn.jaly.net.ShopApi.ITEMS.size() >= 15);
+                check("premium items start locked", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS, "frost_dragon"));
+                ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).openItems("wings:frost_dragon");
+            }
+            case 655 -> {
+                shot(c, "shop try-on");
+                check("try-on preview shows the wings", "frost_dragon".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)));
+                ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).openItems("hat:santa_mech");
+            }
+            case 665 -> shot(c, "shop try-on hat");
+            case 667 -> ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).openCoins();
+            case 680 -> shot(c, "coin packs");
+            case 682 -> c.setScreen(new LodgeScreen(null));
+            case 686 -> check("try-on cleared after leaving the shop", fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.isEmpty()
+                && "none".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)) || !"frost_dragon".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)));
+            case 700 -> {
                 cfg.logoStyle = "minecraft";
                 cfg.splashText = "Merry Christmas from the test!";
                 cfg.buttonStyle = "aurora";

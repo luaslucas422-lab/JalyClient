@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class LodgeScreen extends Screen {
     private static final Identifier LODGE = Identifier.of("jalyclient", "textures/gui/lodge.png");
     private static final Identifier FIRE = Identifier.of("jalyclient", "textures/gui/fire.png");
-    private static final int W = 320, H = 180;
+    private static final int W = 360, H = 180;
     private static final int[][] BULBS = {{10, 12}, {30, 12}, {50, 12}, {70, 12}, {90, 12}, {110, 12}, {130, 12}, {150, 12}, {170, 12}, {190, 12}, {210, 12}, {230, 12}, {250, 12}, {270, 12}, {290, 12}, {310, 12}};
     private static final int[][] TREE = {{18, 122}, {36, 47}, {51, 95}, {40, 51}, {59, 130}, {50, 108}, {24, 108}, {12, 128}, {55, 73}, {30, 85}, {49, 52}, {43, 48}, {55, 96}, {41, 31}, {62, 117}, {65, 130}, {45, 60}, {63, 123}, {50, 40}, {34, 77}, {18, 105}, {24, 80}, {35, 50}};
 
@@ -43,6 +43,7 @@ public class LodgeScreen extends Screen {
             new Spot("Cosmetics", "Hats, capes, wings, pets and trails", 158, 92, 194, 162, () -> new CosmeticsScreen(this)),
             new Spot("Settings", "Menus, music, snow and more", 204, 16, 230, 68, () -> SettingsScreen.create(this)),
             new Spot("Packs", "Christmas resource packs", 228, 56, 316, 150, () -> new PacksScreen(this)),
+            new Spot("Shop", "The Jolly Shop (the shopkeeper bites)", 322, 44, 358, 142, () -> new ShopScreen(this)),
             new Spot("Gifts", "Open today's present", 4, 8, 98, 162, () -> new GiftsScreen(this)),
         };
         this.glow = new float[spots.length];
@@ -130,6 +131,11 @@ public class LodgeScreen extends Screen {
             int col = Gfx.BULBS[(i * 3) % Gfx.BULBS.length];
             ctx.fill(sx(TREE[i][0]), sy(TREE[i][1]), sx(TREE[i][0]) + b, sy(TREE[i][1]) + b, Gfx.alpha(col, Math.min(1, 0.4f + tw) * in));
         }
+        // light spilling under the shop door + a bobbing coin sign
+        float spill = 0.35f + 0.15f * (float) Math.sin(now / 300.0);
+        ctx.fill(sx(326), sy(139), sx(354), sy(141), Gfx.alpha(0xFFFFD27A, spill * in));
+        int coinBob = (int) Math.round(Math.sin(now / 260.0) * 2 * scale);
+        Gfx.tex(ctx, Identifier.of("jalyclient", "textures/gui/coin.png"), sx(334), sy(27) + coinBob, Math.round(12 * scale), Math.round(12 * scale), 0, 0, 16, 16, 16, 16, in);
         // star pulse
         float star = 0.25f + 0.2f * (float) Math.sin(now / 500.0);
         ctx.fill(sx(36), sy(8), sx(53), sy(30), Gfx.alpha(0xFFFDE68A, star * 0.35f * in));

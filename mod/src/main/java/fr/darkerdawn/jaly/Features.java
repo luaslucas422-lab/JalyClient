@@ -154,6 +154,8 @@ public final class Features {
             case "cherry" -> ParticleTypes.CHERRY_LEAVES;
             case "embers" -> trailTick % 2 == 0 ? ParticleTypes.SMALL_FLAME : null;
             case "totem" -> ParticleTypes.TOTEM_OF_UNDYING;
+            case "fireworks" -> trailTick % 2 == 0 ? ParticleTypes.FIREWORK : new DustParticleEffect(new Vector3f(1f, 0.3f, 0.6f), 1.2f);
+            case "galaxy" -> trailTick % 3 == 0 ? ParticleTypes.END_ROD : new DustColorTransitionParticleEffect(new Vector3f(0.6f, 0.4f, 1f), new Vector3f(0.3f, 0.75f, 1f), 1.3f);
             case "og" -> new DustParticleEffect(trailTick % 2 == 0 ? new Vector3f(1f, 0.85f, 0.29f) : new Vector3f(0.88f, 0.22f, 0.31f), 1.3f);
             default -> ParticleTypes.SNOWFLAKE;
         };

@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS players (uuid TEXT PRIMARY KEY, name TEXT, coins INTEGER NOT NULL DEFAULT 0, token TEXT, created INTEGER);
+CREATE TABLE IF NOT EXISTS owned (uuid TEXT, item TEXT, created INTEGER, PRIMARY KEY (uuid, item));
+CREATE TABLE IF NOT EXISTS payments (session_id TEXT PRIMARY KEY, uuid TEXT, coins INTEGER, cents INTEGER, created INTEGER);
+CREATE TABLE IF NOT EXISTS nonces (server_id TEXT PRIMARY KEY, created INTEGER);
+CREATE TABLE IF NOT EXISTS equipped (uuid TEXT PRIMARY KEY, data TEXT, updated INTEGER);
+CREATE INDEX IF NOT EXISTS players_token ON players(token);

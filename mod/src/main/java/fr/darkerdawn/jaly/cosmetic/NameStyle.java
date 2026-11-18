@@ -49,6 +49,8 @@ public final class NameStyle {
             case "rainbow" -> hsv(pos * 0.8f + phase);
             case "ice" -> lerp(0xE8F6FF, 0x5AA0D8, (float) (0.5 + 0.5 * Math.sin(pos * 3 + phase * 6.283)));
             case "gold" -> lerp(0xFFF2B3, 0xC99E02, (float) (0.5 + 0.5 * Math.sin(pos * 3 + phase * 6.283)));
+            case "prism" -> hsv((pos * 1.5f + phase * 3f) % 1f);
+            case "inferno" -> lerp(0xFFE14A, 0xD7261A, (float) (0.5 + 0.5 * Math.sin(pos * 9 + t / 90.0)));
             case "og" -> lerp(0xFFD94A, 0xE0384F, (float) (0.5 + 0.5 * Math.sin(pos * 4 - phase * 6.283)));
             case "shine" -> {
                 float d = Math.abs(pos - ((phase * 1.6f) - 0.3f));

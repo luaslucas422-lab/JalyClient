@@ -51,6 +51,13 @@ public final class Cosmetics {
         put(Type.NAME_FX, "candy", "Candy Cane Gradient"); put(Type.NAME_FX, "rainbow", "Rainbow Gradient"); put(Type.NAME_FX, "ice", "Ice Gradient");
         put(Type.NAME_FX, "gold", "Gold Gradient"); put(Type.NAME_FX, "shine", "Shine Sweep"); put(Type.NAME_FX, "sparkles", "Snow Sparkles");
         put(Type.NAME_FX, "wave", "Colour Wave");
+        // premium (Jolly Shop)
+        put(Type.WINGS, "frost_dragon", "Frost Dragon Wings"); put(Type.WINGS, "aurora_phoenix", "Aurora Phoenix Wings"); put(Type.WINGS, "royal_gold", "Royal Gold Wings");
+        put(Type.CAPE, "starlight", "Starlight (animated)"); put(Type.CAPE, "ice_king", "Ice King (animated)"); put(Type.CAPE, "royal_velvet", "Royal Velvet");
+        put(Type.HAT, "crystal_crown", "Crystal Crown"); put(Type.HAT, "santa_mech", "Santa Mech Helmet"); put(Type.HAT, "snow_globe", "Snow Globe Head");
+        put(Type.PET, "sleigh", "Mini Sleigh"); put(Type.PET, "ice_golem", "Ice Golem");
+        put(Type.TRAIL, "fireworks", "Fireworks"); put(Type.TRAIL, "galaxy", "Galaxy");
+        put(Type.NAME_FX, "prism", "Prism"); put(Type.NAME_FX, "inferno", "Inferno");
         put(Type.WINGS, "angel", "Angel Wings"); put(Type.WINGS, "candy", "Candy Wings"); put(Type.WINGS, "ice", "Ice Wings");
         put(Type.WINGS, "fairy", "Fairy Light Wings"); put(Type.WINGS, "gold", "Golden Wings");
         put(Type.PET, "snowman", "Mini Snowman"); put(Type.PET, "penguin", "Santa Penguin"); put(Type.PET, "present", "Living Present");
@@ -62,6 +69,8 @@ public final class Cosmetics {
         MODELS.put("santa", HatModels::santa); MODELS.put("antlers", HatModels::antlers); MODELS.put("elf", HatModels::elf);
         MODELS.put("tophat", HatModels::tophat); MODELS.put("halo", HatModels::halo); MODELS.put("beanie", HatModels::beanie);
         MODELS.put("holly", HatModels::holly); MODELS.put("gift", HatModels::gift);
+        MODELS.put("crystal_crown", HatModels::crystal_crown); MODELS.put("santa_mech", HatModels::santa_mech); MODELS.put("snow_globe", HatModels::snow_globe);
+        MODELS.put("pet_sleigh", HatModels::pet_sleigh); MODELS.put("pet_ice_golem", HatModels::pet_ice_golem);
         MODELS.put("og", HatModels::og); MODELS.put("pet_og", HatModels::pet_og);
         MODELS.put("pet_snowman", HatModels::pet_snowman); MODELS.put("pet_penguin", HatModels::pet_penguin);
         MODELS.put("pet_present", HatModels::pet_present); MODELS.put("pet_tree", HatModels::pet_tree); MODELS.put("pet_reindeer", HatModels::pet_reindeer);
@@ -70,7 +79,7 @@ public final class Cosmetics {
     public static String name(Type t, String id) { return ALL.get(t).getOrDefault(id, id); }
 
     /** Display name for a reward string like "wings:ice". */
-    public static final java.util.Set<String> ANIMATED_CAPES = java.util.Set.of("candy_flow", "aurora_flow", "snowfall");
+    public static final java.util.Set<String> ANIMATED_CAPES = java.util.Set.of("candy_flow", "aurora_flow", "snowfall", "starlight", "ice_king");
 
     public static String rewardName(String reward) {
         if (reward.equals("bundle:og")) return "The OG bundle (one of everything!)";
@@ -81,11 +90,17 @@ public final class Cosmetics {
 
     public static boolean unlocked(Type t, String id) {
         if (id.equals("none") || (t == Type.NAME_COLOR && !id.equals("og"))) return true;
+        if (fr.darkerdawn.jaly.net.ShopApi.isPremium(t.key + ":" + id)) return fr.darkerdawn.jaly.net.ShopApi.owns(t.key + ":" + id);
         int door = Festive.doorFor(t.key + ":" + id);
         return door == 0 || JalyConfig.get().opened.contains(door);
     }
 
+    /** Shop try-on: temporarily shows an item on you without owning it. */
+    public static final Map<Type, String> PREVIEW = new java.util.EnumMap<>(Type.class);
+
     public static String selected(Type t) {
+        String pv = PREVIEW.get(t);
+        if (pv != null) return pv;
         JalyConfig c = JalyConfig.get();
         String s = switch (t) { case HAT -> c.hat; case CAPE -> c.cape; case WINGS -> c.wings; case PET -> c.pet; case TRAIL -> c.trail; case NAME_COLOR -> c.nameColor; case NAME_FX -> c.nameFx; };
         String fallback = t == Type.NAME_COLOR ? "white" : "none";

@@ -52,6 +52,25 @@ public final class Sounds {
         }
     }
 
+    private static SoundInstance shopMusic;
+
+    /** The shopkeeper's tune. Call every tick while it should play; it restarts when it ends. */
+    public static void startShopMusic(MinecraftClient mc) {
+        stopMenuMusic(mc);
+        mc.getMusicTracker().stop();
+        if (shopMusic == null || !mc.getSoundManager().isPlaying(shopMusic)) {
+            shopMusic = PositionedSoundInstance.master(SoundEvent.of(Identifier.of("jalyclient", "shop_music")), 1f, 0.55f);
+            mc.getSoundManager().play(shopMusic);
+        }
+    }
+
+    public static void stopShopMusic(MinecraftClient mc) {
+        if (shopMusic != null) {
+            mc.getSoundManager().stop(shopMusic);
+            shopMusic = null;
+        }
+    }
+
     public static void stopMenuMusic(MinecraftClient mc) {
         if (music != null) {
             mc.getSoundManager().stop(music);

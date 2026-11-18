@@ -70,7 +70,8 @@ public class JalyClient implements ClientModInitializer {
             Features.tick(client);
             Music.tick();
             Radio.tick(client);
-            if (client.world == null && client.getOverlay() == null && client.currentScreen != null && JalyConfig.get().menuMusic) {
+            if (client.world == null && client.getOverlay() == null && client.currentScreen != null && JalyConfig.get().menuMusic
+                && !(client.currentScreen instanceof fr.darkerdawn.jaly.screen.ShopScreen)) {
                 Sounds.tickMenuMusic(client);
             } else {
                 Sounds.stopMenuMusic(client);

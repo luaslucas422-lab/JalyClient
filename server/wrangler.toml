@@ -1,0 +1,8 @@
+name = "jalyclient-shop"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jalyclient-shop"
+database_id = "REPLACED_BY_CI"

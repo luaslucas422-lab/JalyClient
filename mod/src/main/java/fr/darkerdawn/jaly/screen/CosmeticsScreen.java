@@ -116,17 +116,18 @@ public class CosmeticsScreen extends JalyScreen {
                 Gfx.tex(ctx, Cosmetics.icon(tab, id), x + TILE_W / 2 - 16, y - lift + 4, 32, 32, 0, 0, 32, 32, 32, 32, locked ? 0.35f : 1f);
             }
             if (locked) {
+                var shopItem = fr.darkerdawn.jaly.net.ShopApi.item(tab.key + ":" + id);
                 int door = fr.darkerdawn.jaly.Festive.doorFor(tab.key + ":" + id);
                 boolean nameTile = tab == Cosmetics.Type.NAME_COLOR || tab == Cosmetics.Type.NAME_FX;
                 int ty0 = nameTile ? y - lift + 30 : y - lift + 14;
-                Gfx.round(ctx, x + 4, ty0, TILE_W - 8, 12, 0xE0B11A33);
-                Gfx.centered(ctx, "Gift " + door, x + TILE_W / 2, ty0 + 2, Gfx.SNOW);
+                Gfx.round(ctx, x + 4, ty0, TILE_W - 8, 12, shopItem != null ? 0xE0B8860B : 0xE0B11A33);
+                Gfx.centered(ctx, shopItem != null ? shopItem.price() + " coins" : "Gift " + door, x + TILE_W / 2, ty0 + 2, Gfx.SNOW);
             }
             Gfx.centered(ctx, Gfx.trim(list.get(i).getValue(), TILE_W - 4), x + TILE_W / 2, y - lift + TILE_H - 13, locked ? 0xFF8FA088 : sel ? Gfx.GOLD_LIGHT : Gfx.SNOW);
             if (sel) Gfx.sprite(ctx, Gfx.STAR, new int[]{Gfx.GOLD_LIGHT}, "#", x + TILE_W - 8, y - lift + 3, 1, 1f);
         }
         ctx.disableScissor();
-        String tag = "All free! Red tags unlock from Gifts";
+        String tag = "Red tags: Gifts. Gold tags: Jolly Shop";
         Gfx.text(ctx, tag, px + pw - 8 - textRenderer.getWidth(tag), py + 12, Gfx.GOLD_LIGHT, true);
     }
 
@@ -175,6 +176,7 @@ public class CosmeticsScreen extends JalyScreen {
     public void select(String id) {
         if (!Cosmetics.unlocked(tab, id)) {
             Sounds.play(Sounds.CLICK, 0.6f, 0.5f);
+            if (fr.darkerdawn.jaly.net.ShopApi.isPremium(tab.key + ":" + id)) client.setScreen(new ShopScreen(this, tab.key + ":" + id));
             return;
         }
         Cosmetics.select(tab, id);
