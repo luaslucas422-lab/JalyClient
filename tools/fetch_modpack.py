@@ -1,8 +1,9 @@
+import os
 """Downloads every default-on launcher mod (plus required dependencies) for the in-game CI test.
 Usage: python3 tools/fetch_modpack.py <mods dir>   (skips Fabric API: the dev run already has it)"""
 import json, os, sys, urllib.parse, urllib.request
 
-MC = "1.21.1"
+MC = os.environ.get("JALY_MC", "1.21.1")
 UA = {"User-Agent": "DarkerDawnFR/JalyClient-CI"}
 dest = sys.argv[1]
 os.makedirs(dest, exist_ok=True)
@@ -27,7 +28,7 @@ while i < len(want):
     except Exception as e:
         skipped[slug] = str(e); continue
     if not vs:
-        skipped[slug] = "no 1.21.1 version"; continue
+        skipped[slug] = f"no {MC} version"; continue
     v = vs[0]
     if v["project_id"] in seen:
         continue

@@ -98,3 +98,27 @@ jobs:
             echo "=====SHOT $i"; base64 -w 120 shot.jpg; echo "=====ENDSHOT"
           done
           grep -q "JALY-SMOKE\] done, failures=0" work/logs/latest.log
+
+  real-game-1-21:
+    name: real game on 1.21
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '9.2.1' }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri >/dev/null && pip install -q portablemc
+      - name: Build and install for 1.21
+        run: |
+          (cd mod && gradle build -x test)
+          mkdir -p work/mods
+          cp $(ls mod/build/libs/*.jar | grep -v sources) work/mods/
+          JALY_MC=1.21 python3 tools/fetch_modpack.py work/mods --with-fabric-api
+          printf 'onboardAccessibility:false\ntutorialStep:none\nnarrator:0\nsoundCategory_master:0.0\n' > work/options.txt
+      - name: Launch Minecraft 1.21 with JalyClient
+        run: |
+          xvfb-run -a -s "-screen 0 1280x720x24" timeout 900 portablemc --main-dir "$PWD/mc" start --mc-dir "$PWD/work" -u JalyTester --jvm-arg=-Xmx3G --jvm-arg=-Djaly.smoke=true fabric:1.21:0.20.1 > client.out 2>&1 || echo "EXIT $?"
+          grep -nE "JALY|Incompatible|requires|Mixin apply failed|Caused by" work/logs/latest.log | cut -c1-300 | head -40
+          grep -q "JALY-SMOKE\] done, failures=0" work/logs/latest.log
