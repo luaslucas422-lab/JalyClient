@@ -91,6 +91,13 @@ h2{font-size:15px;color:var(--gold2);margin:22px 0 10px;letter-spacing:.4px;text
 .btn.ghost{background:transparent}
 input[type=range]{width:260px;accent-color:var(--red)}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
+.kt.on{background:var(--red);border-color:var(--gold2)}
+.res{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:10px;background:#142612;border:1px solid #233a1c;margin-bottom:7px}
+.res img,.res .ph{width:42px;height:42px;border-radius:8px;flex:none;background:#1c3317;object-fit:cover}
+.res .t{flex:1;min-width:0}.res .t b{font-size:14px}.res .t span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res .dl{font-size:11px;color:#6f8068;margin-left:6px}
+.btn.inst{background:#2e7d32}.btn.rem{background:#7a1424}.btn[disabled]{opacity:.6;cursor:default}
+#updating{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;flex-direction:column;background:#060b1fee;font-size:18px}
 .news{border-left:4px solid var(--red);padding-left:14px;margin-bottom:22px}
 .news .d{font-size:12px;color:var(--muted)}.news h3{margin:3px 0 6px}.news li{margin:3px 0 3px 18px;color:#c9d4c2;font-size:14px}
 /* ---------- toast + splash */
@@ -113,7 +120,8 @@ input[type=range]{width:260px;accent-color:var(--red)}
   <nav id="side">
     <div id="brand"><img class="px" src="{{icon.png}}" alt=""><div><b><i>Jaly</i>Client</b><small>free forever</small></div></div>
     <button class="nav on" data-p="home"><svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>Home</button>
-    <button class="nav" data-p="mods"><svg viewBox="0 0 24 24"><path d="M12 2 9 7H4l4 4-2 6 6-3 6 3-2-6 4-4h-5z"/></svg>Mods</button>
+    <button class="nav" data-p="mods"><svg viewBox="0 0 24 24"><path d="M12 2 9 7H4l4 4-2 6 6-3 6 3-2-6 4-4h-5z"/></svg>Pre Installs</button>
+    <button class="nav" data-p="browse"><svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 0 1 6.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>Mods</button>
     <button class="nav" data-p="news"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zm3 3v2h10V7zm0 4v2h10v-2zm0 4v2h6v-2z"/></svg>News</button>
     <button class="nav" data-p="settings"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L4.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4zM13 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>Settings</button>
     <div class="grow"></div>
@@ -152,10 +160,19 @@ input[type=range]{width:260px;accent-color:var(--red)}
     </section>
 
     <section class="page" id="p-mods"><div class="inner">
-      <h1>Mods</h1><p>Pick the extra mods JalyClient installs for you. Changes apply the next time you press Play.</p>
+      <h1>Pre Installs</h1><p>The mods JalyClient picks and keeps updated for you. Changes apply the next time you press Play.</p>
       <h2>Built into JalyClient</h2>
       <div class="chips" id="builtin"></div>
       <div id="extra"></div>
+    </div></section>
+
+    <section class="page" id="p-browse"><div class="inner">
+      <h1>Mods</h1><p>Get anything from Modrinth for Minecraft 1.21.1. You can do this in game too: press J and poke the grumpy guy by the fireplace.</p>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn kt on" data-k="mod">Mods</button><button class="btn kt" data-k="resourcepack">Resource Packs</button><button class="btn kt" data-k="shader">Shaders</button>
+        <input id="q" placeholder="Search Modrinth..." style="flex:1;min-width:200px;padding:9px 12px;border-radius:9px;border:1px solid #2f4a24;background:#0f1d0d;color:#fff;font:inherit">
+      </div>
+      <div id="results"></div>
     </div></section>
 
     <section class="page" id="p-news"><div class="inner">
@@ -169,6 +186,14 @@ input[type=range]{width:260px;accent-color:var(--red)}
         <li>Sky Lyrics and a Now Playing card for Spotify</li>
         <li>Two built-in Christmas resource packs</li>
         <li>Optimisation, Christmas and general mods installed for you</li>
+      </ul></div>
+      <div class="news"><div class="d">Version 1.2.0</div><h3>Mods, packs and shaders - right in the game</h3><ul>
+        <li>New Mods tab (launcher and in game): get any mod, resource pack or shader from Modrinth</li>
+        <li>Install and remove while playing; a Restart button finishes mod changes</li>
+        <li>Shaders tab with a one-click Install Iris button</li>
+        <li>Your own skin now leans in the Lodge. Poke it... if you dare</li>
+        <li>JalyClient updates itself, and the main menu tells you when a new version is out</li>
+        <li>The old Mods list is now called Pre Installs</li>
       </ul></div>
       <div class="news"><div class="d">Version 1.1.0</div><h3>The big jolly update</h3><ul>
         <li>Zoom fixed (C works again) and a built-in Minimap you can hide or move</li>
@@ -194,6 +219,7 @@ input[type=range]{width:260px;accent-color:var(--red)}
   </main>
 </div>
 <div id="toast"></div>
+<div id="updating"><img class="px" src="{{icon.png}}" style="width:96px;margin-bottom:16px"><b id="updtxt">Updating JalyClient...</b><div style="color:#8FA088;margin-top:6px;font-size:14px">It reopens by itself in a moment.</div></div>
 <audio id="audio" src="{{music.ogg}}" loop></audio>
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -249,11 +275,41 @@ function renderMods(){$('#builtin').innerHTML=BUILTIN.map(b=>'<span class="chip"
 $('#ram').oninput=e=>{$('#ramv').textContent=e.target.value;S.settings.ram=+e.target.value;api.save(S.settings)};
 $$('[data-open]').forEach(b=>b.onclick=()=>api.open(b.dataset.open));
 $('#unprof').onclick=()=>api.unprof().then(()=>toast('JalyClient was removed from the Minecraft Launcher. Press Play to add it back.'));
+// ---------- Modrinth browser (launcher side)
+let kind='mod',user={mods:{},resourcepacks:{},shaderpacks:{}},qt;
+const bucket=k=>k==='mod'?user.mods:k==='resourcepack'?user.resourcepacks:user.shaderpacks;
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'K':n}
+async function browse(){
+  const q=$('#q').value.trim();
+  const facets=kind==='mod'?[["project_type:mod"],["versions:1.21.1"],["categories:fabric"]]:kind==='resourcepack'?[["project_type:resourcepack"],["versions:1.21.1"]]:[["project_type:shader"],["categories:iris"]];
+  $('#results').innerHTML='<p class="note">Loading...</p>';
+  try{
+    if(window.jalyUser)user=await window.jalyUser();
+    const r=await fetch('https://api.modrinth.com/v2/search?limit=30&index='+(q?'relevance':'downloads')+'&query='+encodeURIComponent(q)+'&facets='+encodeURIComponent(JSON.stringify(facets)));
+    const j=await r.json();
+    const pre=S&&S.settings?S.settings.mods:{};
+    $('#results').innerHTML=j.hits.map(h=>{const mine=bucket(kind)[h.project_id];const isPre=kind==='mod'&&pre[h.slug];
+      const b=mine?'<button class="btn rem" data-act="rm" data-id="'+h.project_id+'">Remove</button>':isPre?'<button class="btn" disabled>Pre-installed</button>':'<button class="btn inst" data-act="in" data-id="'+h.project_id+'" data-slug="'+esc(h.slug)+'" data-title="'+esc(h.title)+'">Install</button>';
+      return '<div class="res">'+(h.icon_url?'<img src="'+esc(h.icon_url)+'">':'<div class="ph"></div>')+'<div class="t"><b>'+esc(h.title)+'</b><span class="dl">'+fmt(h.downloads)+' downloads</span><span>'+esc(h.description)+'</span></div>'+b+'</div>'}).join('')||'<p class="note">No results</p>';
+    $$('#results [data-act]').forEach(b=>b.onclick=()=>{b.disabled=true;
+      if(b.dataset.act==='in'){b.textContent='Installing...';(window.jalyInstall?window.jalyInstall(kind,b.dataset.id,b.dataset.slug,b.dataset.title):Promise.resolve(setTimeout(()=>onInstalled(b.dataset.id,''),600)))}
+      else{(window.jalyRemove?window.jalyRemove(kind,b.dataset.id):Promise.resolve()).then(()=>{toast('Removed.');browse()})}});
+  }catch(e){$('#results').innerHTML='<p class="note">Couldn\'t reach Modrinth. Check your internet.</p>'}
+}
+window.onInstalled=(id,err)=>{if(err)toast('<b>Couldn\'t install</b><br>'+esc(err));else toast('<b>&#127873; Installed!</b> It will be there next time you play.');browse()};
+$$('.kt').forEach(b=>b.onclick=()=>{kind=b.dataset.k;$$('.kt').forEach(x=>x.classList.toggle('on',x===b));browse()});
+$('#q').oninput=()=>{clearTimeout(qt);qt=setTimeout(browse,400)};
+$$('.nav').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.p==='browse'&&!$('#results').innerHTML)browse()}));
+// ---------- self-update
+if(window.jalyCheckUpdate)window.jalyCheckUpdate().then(r=>{if(r&&r.version){$('#updating').style.display='flex';$('#updtxt').textContent='Updating JalyClient to '+r.version+'...';
+  window.jalyApplyUpdate(r).catch(e=>{$('#updating').style.display='none';toast('Update failed: '+e)})}});
 // ---------- start
 api.state().then(s=>{S=s;$('#ver').textContent='JalyClient '+s.version;$('#days').textContent=s.daysLeft===0?'':s.daysLeft;$('#daysTxt').textContent=s.daysLeft===0?'Merry Christmas!':s.daysLeft===1?'day until Christmas':'days until Christmas';
  $('#ram').value=s.settings.ram;$('#ramv').textContent=s.settings.ram;$('#gdir').textContent=s.gameDir;renderMods();
  if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);
- $('#status').textContent=s.installed?'Ready to play':'First time? Press PLAY to install everything (about 1 minute).'});
+ $('#status').textContent=s.installed?'Ready to play':'First time? Press PLAY to install everything (about 1 minute).';
+ if(window.autoPlay)setTimeout(()=>$('#play').click(),1800)});
 </script>
 </body>
 </html>

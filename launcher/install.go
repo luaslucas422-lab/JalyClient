@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	AppVersion = "1.1.0"
+	AppVersion = "1.2.0"
 	MCVersion  = "1.21.1"
 	ProfileKey = "jalyclient"
 	FabricAPI  = "P7dR8mSH" // Modrinth project id of Fabric API
@@ -206,10 +206,10 @@ func installFabric(p Paths) (string, error) {
 // ---------------------------------------------------------------- modrinth
 
 type mrVersion struct {
-	ID           string `json:"id"`
-	ProjectID    string `json:"project_id"`
-	VersionNum   string `json:"version_number"`
-	Files        []struct {
+	ID         string `json:"id"`
+	ProjectID  string `json:"project_id"`
+	VersionNum string `json:"version_number"`
+	Files      []struct {
 		URL      string `json:"url"`
 		Filename string `json:"filename"`
 		Primary  bool   `json:"primary"`
@@ -270,6 +270,7 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 	if err := os.MkdirAll(mods, 0o755); err != nil {
 		return r, err
 	}
+	FinishPending(p)
 	progress(0.04, "Getting Fabric for Minecraft "+MCVersion+"...")
 	id, err := installFabric(p)
 	if err != nil {

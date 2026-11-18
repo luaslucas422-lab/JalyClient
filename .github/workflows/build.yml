@@ -95,6 +95,9 @@ jobs:
           $key = Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall | Where-Object { (Get-ItemProperty $_.PSPath).DisplayName -eq "JalyClient" }
           if (!$key) { throw "Not listed in Apps & features" }
           Write-Host "PASS installed: exe, Start menu, desktop shortcut, Apps & features entry"
+          Start-Sleep -Seconds 3
+          Stop-Process -Name JalyClient -Force -ErrorAction SilentlyContinue
+          Start-Sleep -Seconds 2
           $un = Join-Path $env:LOCALAPPDATA "Programs\JalyClient\unins000.exe"
           $p = Start-Process $un -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES" -Wait -PassThru
           Start-Sleep -Seconds 3

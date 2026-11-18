@@ -37,7 +37,8 @@ public class LodgeScreen extends Screen {
         super(Text.literal("Jaly Lodge"));
         this.parent = parent;
         this.spots = new Spot[]{
-            new Spot("Mods", "Turn HUD and festive mods on and off", 90, 28, 144, 80, () -> new ModsScreen(this)),
+            new Spot("Pre Installs", "Turn the built-in JalyClient mods on and off", 90, 28, 144, 80, () -> new ModsScreen(this)),
+            new Spot("Mods", "Get mods, resource packs and shaders", 196, 84, 228, 152, () -> new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD)),
             new Spot("Edit HUD", "Drag your HUD where you want it", 96, 90, 138, 124, () -> new HudEditorScreen(this)),
             new Spot("Cosmetics", "Hats, capes, wings, pets and trails", 158, 92, 194, 162, () -> new CosmeticsScreen(this)),
             new Spot("Settings", "Menus, music, snow and more", 204, 16, 230, 68, () -> SettingsScreen.create(this)),
@@ -110,6 +111,7 @@ public class LodgeScreen extends Screen {
         Gfx.tex(ctx, FIRE, sx(250), sy(110), Math.round(44 * scale), Math.round(40 * scale), 0, frame * 40, 44, 40, 44, 160, in);
         float flicker = 0.10f + 0.05f * (float) Math.sin(now / 90.0) * (float) Math.sin(now / 37.0);
         ctx.fillGradient(sx(240), sy(96), sx(304), sy(170), Gfx.alpha(0x00FF9A3C, in), Gfx.alpha(0xFFFF9A3C, flicker * in));
+        drawCharacter(ctx, in);
         // twinkling garland + tree lights
         int b = Math.max(1, Math.round(scale * 1.5f));
         for (int i = 0; i < BULBS.length; i++) {
@@ -157,6 +159,10 @@ public class LodgeScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
         int h = hovered(mouseX, mouseY);
+        if (h >= 0 && button == 0 && spots[h].name.equals("Mods")) {
+            pokeCharacter();
+            return true;
+        }
         if (h >= 0 && button == 0) {
             Sounds.play(Sounds.CLICK, 1f, 0.7f);
             if (!JalyConfig.get().seenLodgeHint) {
@@ -181,6 +187,77 @@ public class LodgeScreen extends Screen {
     @Override
     public void close() {
         client.setScreen(parent);
+    }
+
+    private static final String[] GRUMPY = {"Leave me alone.", "Leave me alone.", "Leave me alone.", "I'm on my break!", "Not again...", "Shh, I'm napping."};
+    private int pokes;
+    private String speech = "";
+    private long speechAt, openModsAt = -1;
+
+    /** Click your skin: first it grumbles, then it hands over the mods. Public for the smoke test. */
+    public void pokeCharacter() {
+        pokes++;
+        speechAt = Gfx.now();
+        if (pokes == 1) {
+            speech = GRUMPY[(int) (Math.random() * GRUMPY.length)];
+            Sounds.play(Sounds.CLICK, 0.6f, 0.7f);
+        } else {
+            speech = "Fine, here's the mods and resource packs.";
+            Sounds.play(Sounds.JINGLE, 0.8f, 0.7f);
+            openModsAt = Gfx.now() + 1300;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (openModsAt > 0 && Gfx.now() >= openModsAt) {
+            openModsAt = -1;
+            pokes = 0;
+            client.setScreen(new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD));
+        }
+    }
+
+    private void drawCharacter(DrawContext ctx, float in) {
+        net.minecraft.util.Identifier skin;
+        if (client.player != null) skin = client.player.getSkinTextures().texture();
+        else skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
+        float px = scale;
+        long now = Gfx.now();
+        float breathe = (float) Math.sin(now / 600.0) * 0.3f;
+        ctx.getMatrices().push();
+        ctx.getMatrices().translate(sx(212), sy(152), 0);
+        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(-7f));
+        ctx.getMatrices().scale(px, px, 1);
+        // legs (feet at 0), body, head, arms crossed over the chest
+        Gfx.tex(ctx, skin, -4, -12, 4, 12, 4, 20, 4, 12, 64, 64, in);
+        Gfx.tex(ctx, skin, 0, -12, 4, 12, 20, 52, 4, 12, 64, 64, in);
+        Gfx.tex(ctx, skin, -4, -24, 8, 12, 20, 20, 8, 12, 64, 64, in);
+        float hy = -32 + breathe;
+        ctx.getMatrices().push();
+        ctx.getMatrices().translate(0, hy + 8, 0);
+        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(pokes > 0 && now - speechAt < 2500 ? 12f : 4f));
+        Gfx.tex(ctx, skin, -4, -8, 8, 8, 8, 8, 8, 8, 64, 64, in);
+        Gfx.tex(ctx, skin, -4, -8, 8, 8, 40, 8, 8, 8, 64, 64, in);
+        ctx.getMatrices().pop();
+        for (int side = 0; side < 2; side++) {
+            ctx.getMatrices().push();
+            ctx.getMatrices().translate(side == 0 ? -6 : 6, -20 + side * 3, 0);
+            ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(side == 0 ? -90f : 90f));
+            if (side == 0) Gfx.tex(ctx, skin, -2, -2, 4, 12, 44, 20, 4, 12, 64, 64, in);
+            else Gfx.tex(ctx, skin, -2, -2, 4, 12, 36, 52, 4, 12, 64, 64, in);
+            ctx.getMatrices().pop();
+        }
+        ctx.getMatrices().pop();
+        if (!speech.isEmpty() && now - speechAt < 3500) {
+            float a = Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3000 ? (3500 - (now - speechAt)) / 500f : 1f);
+            int tw = textRenderer.getWidth(speech) + 10;
+            int bx = Math.max(4, Math.min(width - tw - 4, sx(212) - tw / 2)), by = sy(150) - Math.round(46 * scale) - 18;
+            Gfx.round(ctx, bx, by, tw, 14, Gfx.alpha(0xFFFFFFFF, a));
+            Gfx.outline(ctx, bx, by, tw, 14, Gfx.alpha(0xFF1A2414, a));
+            ctx.fill(sx(212) - 2, by + 14, sx(212) + 2, by + 17, Gfx.alpha(0xFFFFFFFF, a));
+            Gfx.text(ctx, speech, bx + 5, by + 3, Gfx.alpha(0xFF1A2414, a), false);
+        }
     }
 
     /** Smoke test helper: open a section by name. */

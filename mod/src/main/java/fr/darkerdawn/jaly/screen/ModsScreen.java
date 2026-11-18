@@ -27,7 +27,7 @@ public class ModsScreen extends JalyScreen {
     private int gridTop;
 
     public ModsScreen(Screen parent) {
-        super("Mods", parent);
+        super("Pre Installs", parent);
         Mods.init();
     }
 

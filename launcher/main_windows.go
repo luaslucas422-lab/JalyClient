@@ -86,6 +86,29 @@ func main() {
 		}
 	})
 	_ = w.Bind("jalyRemoveProfile", func() error { return RemoveProfile(paths()) })
+	_ = w.Bind("jalyCheckUpdate", func() Release { return CheckUpdate() })
+	_ = w.Bind("jalyApplyUpdate", func(r Release) error {
+		if err := ApplyUpdate(r); err != nil {
+			return err
+		}
+		go func() { w.Dispatch(func() { w.Terminate() }) }()
+		return nil
+	})
+	_ = w.Bind("jalyUser", func() UserData { return loadUser(paths()) })
+	_ = w.Bind("jalyInstall", func(kind, id, slug, title string) {
+		go func() {
+			err := InstallContent(paths(), kind, id, slug, title)
+			msg := ""
+			if err != nil {
+				msg = err.Error()
+			}
+			call(fmt.Sprintf("window.onInstalled(%s, %s)", jsonString(id), jsonString(msg)))
+		}()
+	})
+	_ = w.Bind("jalyRemove", func(kind, id string) error { return RemoveContent(paths(), kind, id) })
+	if len(os.Args) >= 2 && os.Args[1] == "--play" {
+		w.Init("window.autoPlay = true;")
+	}
 	w.SetHtml(buildHTML())
 	w.Run()
 }

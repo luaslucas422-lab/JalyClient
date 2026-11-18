@@ -114,6 +114,38 @@ func selfTest(dir string) int {
 		fmt.Println("FAIL jade was not removed")
 		return 1
 	}
+	// Mods tab: install a mod and the most popular resource pack from Modrinth, then remove them
+	if err := InstallContent(p, "mod", "xaeros-minimap", "xaeros-minimap", "Xaero's Minimap"); err != nil {
+		fmt.Println("FAIL mod install: " + err.Error())
+		return 1
+	}
+	var sr struct {
+		Hits []struct {
+			ID string `json:"project_id"`
+		} `json:"hits"`
+	}
+	_ = getJSON(`https://api.modrinth.com/v2/search?limit=1&index=downloads&facets=[["project_type:resourcepack"],["versions:1.21.1"]]`, &sr)
+	if len(sr.Hits) == 0 {
+		fmt.Println("FAIL resource pack search")
+		return 1
+	}
+	if err := InstallContent(p, "resourcepack", sr.Hits[0].ID, sr.Hits[0].ID, "pack"); err != nil {
+		fmt.Println("FAIL pack install: " + err.Error())
+		return 1
+	}
+	u := loadUser(p)
+	ob, _ := os.ReadFile(p.GameDir + string(os.PathSeparator) + "options.txt")
+	fmt.Printf("CHECK Mods tab installs: mods=%d packs=%d packEnabled=%v\n", len(u.Mods), len(u.Resourcepacks), strings.Contains(string(ob), "file/"))
+	if len(u.Mods) == 0 || len(u.Resourcepacks) != 1 || !strings.Contains(string(ob), "file/") {
+		fmt.Println("FAIL Mods tab install")
+		return 1
+	}
+	_ = RemoveContent(p, "resourcepack", sr.Hits[0].ID)
+	if len(loadUser(p).Resourcepacks) != 0 {
+		fmt.Println("FAIL pack remove")
+		return 1
+	}
+	fmt.Printf("CHECK update check: %+v\n", CheckUpdate())
 	if err := RemoveProfile(p); err != nil {
 		fmt.Println("FAIL remove profile: " + err.Error())
 		return 1

@@ -45,6 +45,7 @@ public class JalyTitleScreen extends Screen {
     @Override
     protected void init() {
         if (firstShown < 0) firstShown = Gfx.now();
+        fr.darkerdawn.jaly.net.Updates.check();
         menuButtons.clear();
         int bw = 200, bh = 20, x = width / 2 - bw / 2;
         float ls = logoScale();
@@ -194,6 +195,14 @@ public class JalyTitleScreen extends Screen {
         }
         super.render(ctx, mouseX, mouseY, delta);
         Gfx.text(ctx, "JalyClient " + JalyClient.VERSION + " | Minecraft 1.21.1", 4, height - 11, 0xFF2B3A55, false);
+        if (fr.darkerdawn.jaly.net.Updates.available()) {
+            String u = "JalyClient " + fr.darkerdawn.jaly.net.Updates.latest + " is here! Close Minecraft and open JalyClient to update.";
+            int uw = textRenderer.getWidth(u) + 16, ux = (width - uw) / 2, uy = height - 30;
+            float pulse = 0.75f + 0.25f * (float) Math.sin(Gfx.now() / 300.0);
+            Gfx.round(ctx, ux, uy, uw, 14, 0xF0B11A33);
+            Gfx.outline(ctx, ux, uy, uw, 14, Gfx.alpha(Gfx.GOLD_LIGHT, pulse));
+            Gfx.text(ctx, u, ux + 8, uy + 3, Gfx.SNOW, true);
+        }
         String r = "by DarkerDawnFR | free forever";
         Gfx.text(ctx, r, width - textRenderer.getWidth(r) - 4, height - 11, 0xFF2B3A55, false);
     }

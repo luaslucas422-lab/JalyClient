@@ -94,3 +94,35 @@ func contains(s, sub string) bool {
 		return false
 	})()
 }
+
+func TestUserContentAndOptions(t *testing.T) {
+	dir := t.TempDir()
+	p := Paths{GameDir: dir}
+	_ = os.MkdirAll(filepath.Join(dir, "mods"), 0o755)
+	_ = os.WriteFile(filepath.Join(dir, "mods", "old.jar"), []byte("x"), 0o644)
+	d := loadUser(p)
+	d.Mods["abc"] = UserEntry{ID: "abc", Slug: "old", Title: "Old", File: "old.jar"}
+	d.PendingRemovals = []string{"mods/old.jar"}
+	_ = saveUser(p, d)
+	FinishPending(p)
+	if _, err := os.Stat(filepath.Join(dir, "mods", "old.jar")); err == nil {
+		t.Fatal("pending removal not finished")
+	}
+	if len(loadUser(p).Mods) != 0 {
+		t.Fatal("entry not removed")
+	}
+	_ = os.WriteFile(filepath.Join(dir, "options.txt"), []byte("fov:0.0\nresourcePacks:[\"vanilla\",\"fabric\"]\n"), 0o644)
+	setOptionPack(p, "file/cool.zip", true)
+	b, _ := os.ReadFile(filepath.Join(dir, "options.txt"))
+	if !contains(string(b), `"file/cool.zip"`) || !contains(string(b), "fov:0.0") {
+		t.Fatalf("options not updated: %s", b)
+	}
+	setOptionPack(p, "file/cool.zip", false)
+	b, _ = os.ReadFile(filepath.Join(dir, "options.txt"))
+	if contains(string(b), "cool.zip") {
+		t.Fatal("pack not removed")
+	}
+	if !newerVersion("v1.2.1", "1.2.0") || newerVersion("1.2.0", "1.2.0") || newerVersion("1.1.9", "1.2.0") {
+		t.Fatal("version compare wrong")
+	}
+}

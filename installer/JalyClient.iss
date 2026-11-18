@@ -1,5 +1,5 @@
 ; JalyClient festive setup wizard (Inno Setup 6)
-#define AppVer "1.1.0"
+#define AppVer "1.2.0"
 
 [Setup]
 AppId={{8F3C2A1E-6B7D-4C1A-9E2F-4A5B6C7D8E9F}
@@ -45,6 +45,7 @@ Name: "{autodesktop}\JalyClient"; Filename: "{app}\JalyClient.exe"; Tasks: deskt
 
 [Run]
 Filename: "{app}\JalyClient.exe"; Description: "Open JalyClient now"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\JalyClient.exe"; Flags: nowait; Check: WizardSilent
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"

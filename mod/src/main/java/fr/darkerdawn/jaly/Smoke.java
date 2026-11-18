@@ -177,8 +177,33 @@ final class Smoke {
             case 282 -> c.setScreen(SettingsScreen.create(null));
             case 298 -> shot(c, "settings");
             case 300 -> c.setScreen(new HudEditorScreen(null));
+            case 318 -> {
+                LodgeScreen l = new LodgeScreen(null);
+                c.setScreen(l);
+                l.pokeCharacter();
+            }
+            case 330 -> shot(c, "lodge character grumpy");
+            case 332 -> ((LodgeScreen) c.currentScreen).pokeCharacter();
+            case 375 -> {
+                check("character opens the Mods tab", c.currentScreen instanceof fr.darkerdawn.jaly.screen.ModrinthScreen);
+                shot(c, "modrinth mods tab");
+                check("update version compare", fr.darkerdawn.jaly.net.Updates.newer("1.2.1", "1.2.0") && !fr.darkerdawn.jaly.net.Updates.newer("1.2.0", "1.2.0"));
+                fr.darkerdawn.jaly.net.UserContent.install(fr.darkerdawn.jaly.net.Modrinth.Kind.MOD, new fr.darkerdawn.jaly.net.Modrinth.Project("EsAfCjCV", "appleskin", "AppleSkin", "", "", 0));
+                fr.darkerdawn.jaly.net.UserContent.install(fr.darkerdawn.jaly.net.Modrinth.Kind.MOD, new fr.darkerdawn.jaly.net.Modrinth.Project("YL57xq9U", "iris", "Iris Shaders", "", "", 0));
+            }
+            case 470 -> {
+                var data = fr.darkerdawn.jaly.net.UserContent.data();
+                check("mod installed from Modrinth in game (" + data.mods.size() + ")", data.mods.containsKey("EsAfCjCV") || data.mods.containsKey("YL57xq9U"));
+                check("restart flagged after install", fr.darkerdawn.jaly.net.UserContent.restartNeeded());
+                fr.darkerdawn.jaly.net.UserContent.uninstall(fr.darkerdawn.jaly.net.Modrinth.Kind.MOD, "YL57xq9U");
+                check("new mod removed again", !data.mods.containsKey("YL57xq9U"));
+                c.setScreen(new fr.darkerdawn.jaly.screen.ModrinthScreen(null, fr.darkerdawn.jaly.net.Modrinth.Kind.RESOURCEPACK));
+            }
+            case 540 -> shot(c, "resource packs tab");
+            case 542 -> c.setScreen(new fr.darkerdawn.jaly.screen.ModrinthScreen(null, fr.darkerdawn.jaly.net.Modrinth.Kind.SHADER));
+            case 560 -> shot(c, "shaders tab");
             case 316 -> shot(c, "hud editor");
-            case 320 -> {
+            case 600 -> {
                 c.setScreen(null);
                 c.world.disconnect();
                 c.disconnect(new MessageScreen(Text.literal("Saving")));
