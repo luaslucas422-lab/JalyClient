@@ -170,6 +170,14 @@ input[type=range]{width:260px;accent-color:var(--red)}
         <li>Two built-in Christmas resource packs</li>
         <li>Optimisation, Christmas and general mods installed for you</li>
       </ul></div>
+      <div class="news"><div class="d">Version 1.1.0</div><h3>The big jolly update</h3><ul>
+        <li>Zoom fixed (C works again) and a built-in Minimap you can hide or move</li>
+        <li>Wings, pets and trails - and every daily gift now unwraps a cosmetic</li>
+        <li>Two new packs: Frost PvP and Candy Land</li>
+        <li>Jaly Radio: Christmas carols while you play</li>
+        <li>New mods: Festive Outline, Time Changer, Combo, Reach, Item Counter, Biome and more</li>
+        <li>40+ optional mods in the launcher</li>
+      </ul></div>
     </div></section>
 
     <section class="page" id="p-settings"><div class="inner">
@@ -230,9 +238,9 @@ window.onDone=(ok,msg,skipped)=>{$('#play').disabled=false;$('#status').textCont
  S.installed=true;const sk=skipped?Object.keys(skipped):[];toast('<b>&#127873; '+msg+'</b>'+(sk.length?'<br><span style="color:#8FA088">Skipped (not out for 1.21.1 yet): '+sk.join(', ')+'</span>':''));setTimeout(()=>$('#bar').classList.remove('on'),2500)};
 function mockPlay(){let p=0;const i=setInterval(()=>{p+=.1;onProgress(Math.min(1,p),'Downloading mods...');if(p>=1){clearInterval(i);onDone(true,'JalyClient is ready! Press PLAY in the Minecraft Launcher.',{})}},150)}
 // ---------- mods page
-const BUILTIN=["FPS","CPS","Keystrokes","Coordinates","Christmas Countdown","Armor Status","Potion Effects","Now Playing (Spotify)","Sky Lyrics","Direction","Ping","Clock","Memory","Server Address","Speed","Sprint Status","Snowfall","Twinkle Lights","Frost Vignette","Christmas Chests","Jingle Hits","Snow Burst","Mob Hats","Zoom","Toggle Sprint","Festive Crosshair","Fullbright","Low Fire","Santa Hat & Capes","25 Daily Gifts"];
+const BUILTIN=["Minimap","Jaly Radio","Wings, Pets & Trails","Festive Outline","Time Changer","Combo Counter","Reach Display","Item Counter","Biome","Day Counter","Light Level","Session Time","No Hurt Shake","Chat Timestamps","FPS","CPS","Keystrokes","Coordinates","Christmas Countdown","Armor Status","Potion Effects","Now Playing (Spotify)","Sky Lyrics","Direction","Ping","Clock","Memory","Server Address","Speed","Sprint Status","Snowfall","Twinkle Lights","Frost Vignette","Christmas Chests","Jingle Hits","Snow Burst","Mob Hats","Zoom","Toggle Sprint","Festive Crosshair","Fullbright","Low Fire","Santa Hat & Capes","25 Daily Gifts"];
 function renderMods(){$('#builtin').innerHTML=BUILTIN.map(b=>'<span class="chip">'+b+'</span>').join('');
- const order=['Performance','Christmas','General'];let h='';
+ const order=['Performance','Christmas','Visual','Sounds','General'];let h='';
  for(const cat of order){const list=S.catalog[cat]||[];if(!list.length)continue;h+='<h2>'+cat+'</h2>';
   for(const m of list){const on=S.settings.mods[m.slug]!==undefined?S.settings.mods[m.slug]:m.default;h+='<div class="row"><div class="t"><b>'+m.name+'</b><span>'+m.desc+'</span></div><div class="sw'+(on?' on':'')+'" data-slug="'+m.slug+'"></div></div>'}}
  h+='<p class="note">Christmas mods add new blocks and items: they work in singleplayer and on servers that have them too.</p>';

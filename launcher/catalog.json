@@ -1,0 +1,303 @@
+[
+ {
+  "slug": "sodium",
+  "name": "Sodium",
+  "desc": "Huge FPS boost from a modern renderer",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "lithium",
+  "name": "Lithium",
+  "desc": "Faster game logic, same gameplay",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "ferrite-core",
+  "name": "FerriteCore",
+  "desc": "Uses much less memory",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "entityculling",
+  "name": "Entity Culling",
+  "desc": "Skips drawing mobs you can't see",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "immediatelyfast",
+  "name": "ImmediatelyFast",
+  "desc": "Faster HUD, text and map drawing",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "modernfix",
+  "name": "ModernFix",
+  "desc": "Faster loading and fewer stutters",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "dynamic-fps",
+  "name": "Dynamic FPS",
+  "desc": "Saves power when Minecraft is in the background",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "moreculling",
+  "name": "More Culling",
+  "desc": "Skips hidden block faces for more FPS",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "badoptimizations",
+  "name": "BadOptimizations",
+  "desc": "Lots of small render speed-ups",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "krypton",
+  "name": "Krypton",
+  "desc": "Faster, lighter networking on servers",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "cull-leaves",
+  "name": "Cull Leaves",
+  "desc": "Faster forests by hiding inner leaves",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "sodium-extra",
+  "name": "Sodium Extra",
+  "desc": "Extra Sodium options (fog, particles, animations)",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "reeses-sodium-options",
+  "name": "Reese's Sodium Options",
+  "desc": "A nicer video settings menu for Sodium",
+  "category": "Performance",
+  "default": true
+ },
+ {
+  "slug": "c2me-fabric",
+  "name": "C2ME",
+  "desc": "Faster chunk loading on big CPUs",
+  "category": "Performance",
+  "default": false
+ },
+ {
+  "slug": "snowy-spirit",
+  "name": "Snowy Spirit",
+  "desc": "Sleds, gingerbread, candy canes and wreaths",
+  "category": "Christmas",
+  "default": true
+ },
+ {
+  "slug": "winterly",
+  "name": "Winterly",
+  "desc": "Festive decorations, presents and a Santa hat",
+  "category": "Christmas",
+  "default": true
+ },
+ {
+  "slug": "wintery-atmosphere",
+  "name": "Wintery Atmosphere",
+  "desc": "Snow drifts off snowy blocks, frosty glass",
+  "category": "Christmas",
+  "default": true
+ },
+ {
+  "slug": "particle-rain",
+  "name": "Particle Rain",
+  "desc": "Real snowflakes and rain particles in the weather",
+  "category": "Christmas",
+  "default": true
+ },
+ {
+  "slug": "falling-leaves",
+  "name": "Falling Leaves",
+  "desc": "Leaves drift down from trees",
+  "category": "Christmas",
+  "default": true
+ },
+ {
+  "slug": "snow-real-magic",
+  "name": "Snow! Real Magic!",
+  "desc": "Snow piles up on fences, stairs and plants",
+  "category": "Christmas",
+  "default": false
+ },
+ {
+  "slug": "fabric-seasons",
+  "name": "Fabric Seasons",
+  "desc": "Real seasons - wait for winter!",
+  "category": "Christmas",
+  "default": false
+ },
+ {
+  "slug": "3dskinlayers",
+  "name": "3D Skin Layers",
+  "desc": "Your skin's outer layer becomes 3D",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "wavey-capes",
+  "name": "Wavey Capes",
+  "desc": "Capes flow in the wind (works with Jaly capes)",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "lambdynamiclights",
+  "name": "LambDynamicLights",
+  "desc": "Torches in your hand light up the area",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "not-enough-animations",
+  "name": "Not Enough Animations",
+  "desc": "Better third-person animations",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "eating-animation",
+  "name": "Eating Animation",
+  "desc": "See food being eaten",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "visuality",
+  "name": "Visuality",
+  "desc": "Extra particles: sparkles, water circles, bones",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "continuity",
+  "name": "Continuity",
+  "desc": "Connected textures for glass and more",
+  "category": "Visual",
+  "default": true
+ },
+ {
+  "slug": "iris",
+  "name": "Iris Shaders",
+  "desc": "Run shader packs (needs a good PC)",
+  "category": "Visual",
+  "default": false
+ },
+ {
+  "slug": "presence-footsteps",
+  "name": "Presence Footsteps",
+  "desc": "Realistic footstep sounds",
+  "category": "Sounds",
+  "default": false
+ },
+ {
+  "slug": "sound-physics-remastered",
+  "name": "Sound Physics",
+  "desc": "Echoes and muffled sounds through walls",
+  "category": "Sounds",
+  "default": false
+ },
+ {
+  "slug": "modmenu",
+  "name": "Mod Menu",
+  "desc": "See and configure all your mods",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "appleskin",
+  "name": "AppleSkin",
+  "desc": "Shows hunger and saturation on food",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "mouse-tweaks",
+  "name": "Mouse Tweaks",
+  "desc": "Faster inventory sorting with the mouse",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "chat-heads",
+  "name": "Chat Heads",
+  "desc": "Player heads next to chat messages",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "shulkerboxtooltip",
+  "name": "Shulker Box Tooltip",
+  "desc": "See inside shulker boxes",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "controlling",
+  "name": "Controlling",
+  "desc": "Search your keybinds",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "no-chat-reports",
+  "name": "No Chat Reports",
+  "desc": "Keeps your chat private",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "bettermounthud",
+  "name": "Better Mount HUD",
+  "desc": "Cleaner HUD when riding",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "betterf3",
+  "name": "BetterF3",
+  "desc": "A tidy, colourful F3 screen",
+  "category": "General",
+  "default": true
+ },
+ {
+  "slug": "emi",
+  "name": "EMI",
+  "desc": "Recipe viewer",
+  "category": "General",
+  "default": false
+ },
+ {
+  "slug": "jade",
+  "name": "Jade",
+  "desc": "Shows what block or mob you are looking at",
+  "category": "General",
+  "default": false
+ },
+ {
+  "slug": "freecam",
+  "name": "Freecam",
+  "desc": "Fly the camera around freely",
+  "category": "General",
+  "default": false
+ }
+]

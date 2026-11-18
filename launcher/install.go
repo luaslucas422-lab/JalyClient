@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	AppVersion = "1.0.0"
+	AppVersion = "1.1.0"
 	MCVersion  = "1.21.1"
 	ProfileKey = "jalyclient"
 	FabricAPI  = "P7dR8mSH" // Modrinth project id of Fabric API
@@ -44,25 +44,17 @@ type ExtraMod struct {
 	Default  bool   `json:"default"`
 }
 
-var Catalog = []ExtraMod{
-	{"sodium", "Sodium", "Huge FPS boost from a modern renderer", "Performance", true},
-	{"lithium", "Lithium", "Faster game logic, same gameplay", "Performance", true},
-	{"ferrite-core", "FerriteCore", "Uses much less memory", "Performance", true},
-	{"entityculling", "Entity Culling", "Skips drawing mobs you can't see", "Performance", true},
-	{"immediatelyfast", "ImmediatelyFast", "Faster HUD, text and map drawing", "Performance", true},
-	{"modernfix", "ModernFix", "Faster loading and fewer stutters", "Performance", true},
-	{"dynamic-fps", "Dynamic FPS", "Saves power when Minecraft is in the background", "Performance", true},
-	{"snowy-spirit", "Snowy Spirit", "Sleds, gingerbread, candy canes and wreaths", "Christmas", true},
-	{"winterly", "Winterly", "Festive decorations, presents and a Santa hat", "Christmas", true},
-	{"wintery-atmosphere", "Wintery Atmosphere", "Snow drifts off snowy blocks, frosty glass", "Christmas", false},
-	{"modmenu", "Mod Menu", "See and configure all your mods", "General", true},
-	{"appleskin", "AppleSkin", "Shows hunger and saturation on food", "General", true},
-	{"mouse-tweaks", "Mouse Tweaks", "Faster inventory sorting with the mouse", "General", true},
-	{"continuity", "Continuity", "Connected textures for glass and more", "General", true},
-	{"iris", "Iris Shaders", "Run shader packs (needs a good PC)", "General", false},
-	{"xaeros-minimap", "Xaero's Minimap", "A minimap in the corner", "General", false},
-	{"jade", "Jade", "Shows what block or mob you are looking at", "General", false},
-}
+//go:embed catalog.json
+var catalogJSON []byte
+
+// Catalog is the list of optional mods (launcher/catalog.json, shared with the in-game CI test).
+var Catalog = func() []ExtraMod {
+	var c []ExtraMod
+	if err := json.Unmarshal(catalogJSON, &c); err != nil {
+		panic(err)
+	}
+	return c
+}()
 
 // Settings is saved in <gameDir>/launcher.json.
 type Settings struct {
