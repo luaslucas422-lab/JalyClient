@@ -25,8 +25,8 @@ for sx, sy in ((10, 40), (10, 82), (262, 40), (262, 82)):
             d.rectangle([x, sy - h, x + w, sy - 1], fill=col); d.rectangle([x + w // 2 - 1, sy - h, x + w // 2, sy - 1], fill=GOLD_L)
         x += w + 3
 # hanging sign
-d.line([(150, 0), (150, 10)], fill=hexc("#2A2A30")); d.line([(210, 0), (210, 10)], fill=hexc("#2A2A30"))
-d.rectangle([130, 10, 230, 30], fill=hexc("#7A0E1E")); d.rectangle([132, 12, 228, 28], outline=hexc("#FFD94A"))
+d.line([(150, 0), (150, 2)], fill=hexc("#2A2A30")); d.line([(210, 0), (210, 2)], fill=hexc("#2A2A30"))
+d.rectangle([130, 2, 230, 21], fill=hexc("#7A0E1E")); d.rectangle([132, 4, 228, 19], outline=hexc("#FFD94A"))
 GL = {"J": ["..##", "...#", "...#", "#..#", ".##."], "O": [".##.", "#..#", "#..#", "#..#", ".##."], "L": ["#...", "#...", "#...", "#...", "####"],
       "Y": ["#..#", "#..#", ".##.", "..#.", "..#."], "S": [".###", "#...", ".##.", "...#", "###."], "H": ["#..#", "#..#", "####", "#..#", "#..#"], "P": ["###.", "#..#", "###.", "#...", "#..."], " ": ["....", "....", "....", "....", "...."]}
 x = 140
@@ -34,7 +34,7 @@ for ch in "JOLLY SHOP":
     for yy, row in enumerate(GL[ch]):
         for xx, c in enumerate(row):
             if c == "#":
-                d.rectangle([x + xx * 2, 15 + yy * 2, x + xx * 2 + 1, 16 + yy * 2], fill=hexc("#FFD94A"))
+                d.rectangle([x + xx * 2, 7 + yy * 2, x + xx * 2 + 1, 8 + yy * 2], fill=hexc("#FFD94A"))
     x += 9
 # counter
 d.rectangle([96, 112, 264, 150], fill=hexc("#6B4426")); d.rectangle([92, 106, 268, 113], fill=hexc("#8C5B32"))
@@ -45,7 +45,7 @@ d.ellipse([104, 90, 122, 106], fill=hexc("#BFE3FF", 210))
 for i in range(6):
     d.rectangle([107 + i * 2, 96 + (i % 3), 108 + i * 2, 97 + (i % 3)], fill=[RED, SNOW][i % 2])
 for i in range(5):  # coin stack
-    d.ellipse([196, 100 - i * 2, 210, 106 - i * 2], fill=hexc("#FFD94A"), outline=hexc("#B8860B"))
+    d.ellipse([132, 100 - i * 2, 146, 106 - i * 2], fill=hexc("#FFD94A"), outline=hexc("#B8860B"))
 save(img, f"{TEX}/gui/shop.png")
 # coin icon 16x16
 c = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); cd = ImageDraw.Draw(c)

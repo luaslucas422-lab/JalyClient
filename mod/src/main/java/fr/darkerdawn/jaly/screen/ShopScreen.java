@@ -22,7 +22,8 @@ import org.joml.Vector3f;
 public class ShopScreen extends Screen {
     private static final Identifier ROOM = Identifier.of("jalyclient", "textures/gui/shop.png");
     private static final Identifier COIN = Identifier.of("jalyclient", "textures/gui/coin.png");
-    private static final int W = 360, H = 180, KX = 180, KFEET = 142;
+    private static final int W = 360, H = 180, KX = 180, KFEET = 146;
+    private static final float KS = 2.9f;
 
     static final String[] HELLO = {"What. Do. You. Want.", "Oh great, a customer.", "We're closed. We're always closed. Except now.", "Wipe your feet. Actually, don't come in.",
         "Welcome to the Jolly Shop. I am NOT jolly.", "You again?!", "Don't touch the snow globe."};
@@ -41,8 +42,9 @@ public class ShopScreen extends Screen {
 
     private final Screen parent;
     private Panel panel = Panel.NONE;
-    private float scale;
-    private int ox, oy;
+    private float scale, shift;
+    private int ox, oy, baseOx;
+    private long lastFrame = -1;
     private long openedAt = -1, speechAt, rageAt = -1, lastPoke;
     private float anger = 1f, spin;
     private String speech = "";
@@ -67,7 +69,7 @@ public class ShopScreen extends Screen {
     private int panelW() { return Math.min(300, width / 2 + 20); }
     private int panelX() { return width - panelW() - 6; }
     private int panelY() { return 30; }
-    private int panelH() { return height - 30 - 30; }
+    private int panelH() { return height - 30 - 44; }
 
     @Override
     protected void init() {
@@ -79,7 +81,8 @@ public class ShopScreen extends Screen {
             else ShopApi.refresh();
         }
         scale = Math.min((width - 8) / (float) W, (height - 34) / (float) H);
-        ox = (int) ((width - W * scale) / 2);
+        baseOx = (int) ((width - W * scale) / 2);
+        ox = baseOx + Math.round(shift);
         oy = Math.max(4, (int) ((height - 30 - H * scale) / 2));
         int by = height - 24;
         String[] labels = {"Browse", "Jolly Coins", "Back to Lodge"};
@@ -89,11 +92,11 @@ public class ShopScreen extends Screen {
         addDrawableChild(new JalyButton(bx + bw + 4, by, bw, 18, Text.literal(labels[1]), b -> open(panel == Panel.COINS ? Panel.NONE : Panel.COINS)));
         addDrawableChild(new JalyButton(bx + 2 * (bw + 4), by, bw, 18, Text.literal(labels[2]), b -> close()));
         if (!ShopApi.signedIn) {
-            addDrawableChild(new JalyButton(6, 6, 96, 18, Text.literal("Sign in"), b -> ShopApi.connect()));
+            addDrawableChild(new JalyButton(6, 28, 96, 18, Text.literal("Sign in"), b -> ShopApi.connect()));
         }
         if (panel == Panel.ITEMS && selected != null) {
             int px = panelX(), pw = panelW(), py = panelY(), ph = panelH();
-            int lw = Math.min(110, pw / 2 - 10);
+            int lw = prevW() - 4;
             boolean owned = ShopApi.owns(selected.id());
             String txt = owned ? (isEquipped(selected) ? "Unequip" : "Equip") : "Buy - " + selected.price() + " coins";
             addDrawableChild(new JalyButton(px + 6, py + ph - 24, lw, 18, Text.literal(txt), b -> buyOrEquip()));
@@ -197,6 +200,11 @@ public class ShopScreen extends Screen {
     @Override
     public void renderBackground(DrawContext ctx, int mouseX, int mouseY, float delta) {
         long now = Gfx.now();
+        float dt = lastFrame < 0 ? 0 : Math.min(0.1f, (now - lastFrame) / 1000f);
+        lastFrame = now;
+        float target = panel == Panel.NONE ? 0f : panelX() / 2f - (baseOx + KX * scale);
+        shift = Gfx.approach(shift, target, 9f, dt);
+        ox = baseOx + Math.round(shift);
         float in = Math.min(1f, (now - openedAt) / 300f);
         ctx.fill(0, 0, width, height, Gfx.alpha(0xF0050A0E, Math.max(in, client.world == null ? 1f : 0f)));
         ctx.getMatrices().push();
@@ -212,12 +220,13 @@ public class ShopScreen extends Screen {
         drawShopkeeper(ctx, in, now, mouseX, mouseY);
         // the counter goes back in front of him
         redraw(ctx, 92, 106, 268, 150, in);
-        redraw(ctx, 92, 84, 156, 106, in);
-        redraw(ctx, 204, 84, 268, 106, in);
+        redraw(ctx, 102, 88, 124, 106, in);
+        redraw(ctx, 130, 88, 148, 106, in);
+        redraw(ctx, 226, 84, 256, 106, in);
         // twinkling coins on the counter
         for (int i = 0; i < 3; i++) {
             float tw = (float) Math.sin(now / 260.0 + i * 2.1);
-            if (tw > 0.6f) ctx.fill(sx(198 + i * 5), sy(92 - i * 2), sx(198 + i * 5) + Math.max(1, Math.round(scale)), sy(92 - i * 2) + Math.max(1, Math.round(scale)), Gfx.alpha(0xFFFFFFFF, in));
+            if (tw > 0.6f) ctx.fill(sx(134 + i * 5), sy(92 - i * 2), sx(134 + i * 5) + Math.max(1, Math.round(scale)), sy(92 - i * 2) + Math.max(1, Math.round(scale)), Gfx.alpha(0xFFFFFFFF, in));
         }
         ctx.getMatrices().pop();
         ctx.fillGradient(0, 0, width, height / 5, Gfx.alpha(0x88000000, in), 0x00000000);
@@ -236,7 +245,7 @@ public class ShopScreen extends Screen {
 
     private boolean overKeeper(double mx, double my) {
         if (panel != Panel.NONE && mx >= panelX()) return false;
-        return mx >= sx(KX - 14) && mx < sx(KX + 14) && my >= sy(KFEET - 82) && my < sy(106);
+        return mx >= sx(KX - 22) && mx < sx(KX + 22) && my >= sy(KFEET - 36 * KS) && my < sy(108);
     }
 
     private void drawShopkeeper(DrawContext ctx, float in, long now, int mx, int my) {
@@ -244,7 +253,7 @@ public class ShopScreen extends Screen {
         if (client.player != null) skin = client.player.getSkinTextures().texture();
         else skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
         skin = InvertedSkin.get(client, skin);
-        float px = scale * 2.4f;
+        float px = scale * KS;
         float breathe = (float) Math.sin(now / 520.0) * 0.4f;
         float shake = anger >= 3 ? (float) Math.sin(now / 40.0) * (anger - 2.5f) * 0.25f : 0f;
         boolean hover = overKeeper(mx, my);
@@ -367,18 +376,23 @@ public class ShopScreen extends Screen {
         if (speech.isEmpty() || now - speechAt > 4200) return;
         float a = Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3700 ? (4200 - (now - speechAt)) / 500f : 1f);
         boolean rage = rageAt > 0 && now - rageAt < 1500;
-        int tw = Math.min(width - 20, textRenderer.getWidth(speech) + 12);
-        int cxk = sx(KX);
-        int bx = Math.max(4, Math.min(width - tw - 4, cxk - tw / 2));
-        int by = Math.max(28, sy(KFEET) - Math.round(48 * scale * 2.4f) - 22);
+        int limit = panel == Panel.NONE ? width : panelX();
+        int tw = Math.min(Math.max(60, limit - 20), textRenderer.getWidth(speech) + 12);
+        int headR = sx(KX + 5 * KS), headL = sx(KX - 5 * KS), headY = sy(KFEET - 30 * KS);
+        int bx, by = Math.max(28, headY - 8);
+        boolean right = headR + 8 + tw <= limit - 4;
+        if (right) bx = headR + 8;
+        else if (headL - 8 - tw >= 4) bx = headL - 8 - tw;
+        else { bx = Math.max(4, Math.min(limit - tw - 4, sx(KX) - tw / 2)); by = Math.max(28, sy(KFEET - 40 * KS) - 18); }
         Gfx.round(ctx, bx, by, tw, 16, Gfx.alpha(rage ? 0xFFFFE0E0 : 0xFFFFFFFF, a * in));
         Gfx.outline(ctx, bx, by, tw, 16, Gfx.alpha(rage ? 0xFFC8102E : 0xFF1A2414, a * in));
-        ctx.fill(cxk - 2, by + 16, cxk + 2, by + 19, Gfx.alpha(0xFFFFFFFF, a * in));
+        int tailX = bx == headR + 8 ? bx - 3 : bx + tw;
+        if (bx == headR + 8 || bx == headL - 8 - tw) ctx.fill(tailX, by + 6, tailX + 3, by + 10, Gfx.alpha(0xFFFFFFFF, a * in));
         Gfx.text(ctx, Gfx.trim(speech, tw - 10), bx + 6, by + 4, Gfx.alpha(rage ? 0xFFC8102E : 0xFF1A2414, a * in), false);
     }
 
     private void drawBalance(DrawContext ctx, float in) {
-        int x = ShopApi.signedIn ? 6 : 108, y = 6;
+        int x = 6, y = 6;
         String txt = ShopApi.signedIn ? String.format("%,d", ShopApi.coins) + " Jolly Coins" : "Not signed in";
         int w = textRenderer.getWidth(txt) + 30;
         Gfx.round(ctx, x, y, w, 18, Gfx.alpha(0xF0192C0C, in));
@@ -402,14 +416,15 @@ public class ShopScreen extends Screen {
     // items: left half = try-on preview + buy button, right half = scrolling list
     private static final int ROW = 30;
 
-    private int listX() { return panelX() + panelW() / 2 - 2; }
-    private int listW() { return panelW() / 2 - 4; }
+    private int prevW() { return panelW() * 2 / 5; }
+    private int listX() { return panelX() + 6 + prevW() + 4; }
+    private int listW() { return panelW() - prevW() - 16; }
 
     private void drawItems(DrawContext ctx, int mouseX, int mouseY, float delta) {
         panelBox(ctx, "Premium cosmetics", null);
         int px = panelX(), py = panelY(), pw = panelW(), ph = panelH();
         // preview
-        int lw = pw / 2 - 10;
+        int lw = prevW();
         Gfx.round(ctx, px + 6, py + 24, lw, ph - 52, 0xC0091408);
         spin += delta * 2.2f;
         if (selected != null) {
@@ -449,7 +464,12 @@ public class ShopScreen extends Screen {
             Gfx.round(ctx, lx, y, lwid, ROW - 2, sel ? 0xF0244A1C : hov ? 0xF0203A18 : 0xE0162A12);
             Gfx.outline(ctx, lx, y, lwid, ROW - 2, sel ? Gfx.GOLD_LIGHT : hov ? Gfx.GOLD : 0x55C99E02);
             drawIcon(ctx, it, lx + 3, y + 2, 24);
-            Gfx.text(ctx, Gfx.trim(it.name(), lwid - 34), lx + 30, y + 4, owned ? Gfx.GREEN_ON : Gfx.SNOW, true);
+            float ns = Math.max(0.75f, Math.min(1f, (lwid - 34) / (float) Math.max(1, textRenderer.getWidth(it.name()))));
+            ctx.getMatrices().push();
+            ctx.getMatrices().translate(lx + 30, y + 4, 0);
+            ctx.getMatrices().scale(ns, ns, 1);
+            Gfx.text(ctx, Gfx.trim(it.name(), Math.round((lwid - 34) / ns)), 0, 0, owned ? Gfx.GREEN_ON : Gfx.SNOW, true);
+            ctx.getMatrices().pop();
             if (owned) Gfx.text(ctx, "Owned", lx + 30, y + 15, Gfx.GREEN_ON, false);
             else {
                 Gfx.tex(ctx, COIN, lx + 30, y + 14, 9, 9, 0, 0, 16, 16, 16, 16, 1f);
@@ -531,8 +551,8 @@ public class ShopScreen extends Screen {
             Gfx.centered(ctx, ShopApi.euros(p.cents()), r[0] + r[2] / 2, r[1] - lift + r[3] - 11, Gfx.SNOW);
         }
         int py = panelY(), ph = panelH(), px = panelX();
-        Gfx.text(ctx, Gfx.trim("Secure checkout by Stripe opens in your browser.", panelW() - 12), px + 6, py + ph - 28, Gfx.MUTED, false);
-        Gfx.text(ctx, Gfx.trim("Coins are for cosmetics only. JalyClient stays free.", panelW() - 12), px + 6, py + ph - 16, Gfx.MUTED, false);
+        Gfx.text(ctx, Gfx.trim("Paid securely with Stripe, in your browser.", panelW() - 12), px + 6, py + ph - 28, Gfx.MUTED, false);
+        Gfx.text(ctx, Gfx.trim("Cosmetics only. JalyClient stays free!", panelW() - 12), px + 6, py + ph - 16, Gfx.MUTED, false);
     }
 
     @Override
