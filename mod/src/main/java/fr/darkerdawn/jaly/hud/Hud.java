@@ -293,6 +293,12 @@ public final class Hud {
         }
     }
 
+    private static String pretty(String path) {
+        StringBuilder b = new StringBuilder();
+        for (String w : path.split("_")) if (!w.isEmpty()) b.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1)).append(' ');
+        return b.toString().trim();
+    }
+
     private static String direction(MinecraftClient mc) {
         if (mc.player == null) return "North (-Z)";
         float yaw = MathHelper.wrapDegrees(mc.player.getYaw());
@@ -311,6 +317,19 @@ public final class Hud {
         new Armor(),
         new Potions(),
         new NowPlaying(),
+        new Minimap(),
+        new TextModule("items", "Item Counter", "Totems, pearls and golden apples you carry", false, 0.006f, 0.70f, "",
+            mc -> mc.player == null ? "Totems 2 | Pearls 16 | Gaps 8" : "Totems " + mc.player.getInventory().count(Items.TOTEM_OF_UNDYING) + " | Pearls " + mc.player.getInventory().count(Items.ENDER_PEARL)
+                + " | Gaps " + (mc.player.getInventory().count(Items.GOLDEN_APPLE) + mc.player.getInventory().count(Items.ENCHANTED_GOLDEN_APPLE))),
+        new TextModule("combo", "Combo Counter", "Hits in a row without getting hit", false, 0.45f, 0.62f, "Combo", mc -> fr.darkerdawn.jaly.Features.combo + "x"),
+        new TextModule("reach", "Reach Display", "How far away your last hit landed", false, 0.45f, 0.67f, "Reach", mc -> String.format("%.2f", fr.darkerdawn.jaly.Features.reach)),
+        new TextModule("biome", "Biome", "The biome you are standing in", false, 0.86f, 0.19f, "Biome",
+            mc -> mc.world == null ? "Snowy Plains" : mc.world.getBiome(mc.player.getBlockPos()).getKey().map(k -> pretty(k.getValue().getPath())).orElse("?")),
+        new TextModule("day", "Day Counter", "Which Minecraft day it is", false, 0.86f, 0.25f, "Day", mc -> mc.world == null ? "24" : String.valueOf(mc.world.getTimeOfDay() / 24000L + 1)),
+        new TextModule("light", "Light Level", "Block light where you stand (mobs spawn at 0)", false, 0.86f, 0.31f, "Light",
+            mc -> mc.world == null ? "15" : String.valueOf(mc.world.getLightLevel(net.minecraft.world.LightType.BLOCK, mc.player.getBlockPos()))),
+        new TextModule("session", "Session Time", "How long you have been playing", false, 0.86f, 0.37f, "Played",
+            mc -> { long m = (System.currentTimeMillis() - fr.darkerdawn.jaly.Features.joinTime) / 60000; return m >= 60 ? (m / 60) + "h " + (m % 60) + "m" : m + "m"; }),
         new TextModule("direction", "Direction", "Which way you are facing", false, 0.006f, 0.80f, "Facing", Hud::direction),
         new TextModule("ping", "Ping", "Your connection to the server", false, 0.006f, 0.855f, "Ping",
             mc -> {
@@ -366,7 +385,7 @@ public final class Hud {
         float total = JalyConfig.get().hudScale * s.scale;
         ctx.getMatrices().push();
         ctx.getMatrices().scale(total, total, 1);
-        if (!(m instanceof Keystrokes) && !(m instanceof Armor) && !(m instanceof Potions) && !(m instanceof NowPlaying)) {
+        if (!(m instanceof Keystrokes) && !(m instanceof Armor) && !(m instanceof Potions) && !(m instanceof NowPlaying) && !(m instanceof Minimap)) {
             HudModule.box(ctx, m.width(mc, preview), m.height(mc, preview), s);
         }
         m.draw(ctx, mc, s, preview);
@@ -388,6 +407,7 @@ public final class Hud {
         for (HudModule m : MODULES) {
             if (Mods.on(m.id)) drawModule(ctx, mc, m, sw, sh, false);
         }
+        fr.darkerdawn.jaly.Radio.drawToast(ctx, sw);
     }
 
     private static void frost(DrawContext ctx, int sw, int sh) {

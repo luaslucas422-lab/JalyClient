@@ -1,6 +1,5 @@
 package fr.darkerdawn.jaly.screen;
 
-import fr.darkerdawn.jaly.JalyConfig;
 import fr.darkerdawn.jaly.Sounds;
 import fr.darkerdawn.jaly.cosmetic.Cosmetics;
 import fr.darkerdawn.jaly.ui.Gfx;
@@ -20,7 +19,7 @@ import java.util.Map;
 /** The wardrobe: a spinning preview of you plus every hat and cape. All free. */
 public class CosmeticsScreen extends JalyScreen {
     private static final int TILE_W = 62, TILE_H = 54, GAP = 5;
-    private boolean capes;
+    private Cosmetics.Type tab = Cosmetics.Type.HAT;
     private float spin = 200f;
     private boolean dragging;
     private long last = -1;
@@ -32,8 +31,11 @@ public class CosmeticsScreen extends JalyScreen {
     @Override
     protected void build() {
         int x = gridX();
-        addDrawableChild(new JalyButton(x, cy(), 50, 14, Text.literal("Hats"), b -> { capes = false; clearAndInit(); }).selected(!capes));
-        addDrawableChild(new JalyButton(x + 54, cy(), 50, 14, Text.literal("Capes"), b -> { capes = true; clearAndInit(); }).selected(capes));
+        int bw = Math.max(36, Math.min(54, (gridW() - 16) / 5));
+        for (Cosmetics.Type t : Cosmetics.Type.values()) {
+            addDrawableChild(new JalyButton(x, cy(), bw, 14, Text.literal(t.label), b -> { tab = t; clearAndInit(); }).selected(tab == t));
+            x += bw + 4;
+        }
     }
 
     private int previewW() { return Math.min(150, cw() / 3); }
@@ -44,7 +46,7 @@ public class CosmeticsScreen extends JalyScreen {
 
     private int cols() { return Math.max(1, (gridW() + GAP) / (TILE_W + GAP)); }
 
-    private List<Map.Entry<String, String>> items() { return new ArrayList<>((capes ? Cosmetics.CAPES : Cosmetics.HATS).entrySet()); }
+    private List<Map.Entry<String, String>> items() { return new ArrayList<>(Cosmetics.ALL.get(tab).entrySet()); }
 
     @Override
     protected void drawContent(DrawContext ctx, int mouseX, int mouseY, float delta) {
@@ -66,9 +68,9 @@ public class CosmeticsScreen extends JalyScreen {
             drawSpinning(ctx, pcx, pby - 6, Math.min(56, bh / 3), p);
             ctx.disableScissor();
         } else {
-            String cape = JalyConfig.get().cape;
+            String cape = Cosmetics.selected(Cosmetics.Type.CAPE);
             if (!cape.equals("none")) Gfx.tex(ctx, Cosmetics.capeTexture(cape), pcx - 20, pby - 70, 40, 64, 4, 4, 40, 64, 256, 128, 1f);
-            String hat = JalyConfig.get().hat;
+            String hat = Cosmetics.selected(Cosmetics.Type.HAT);
             if (!hat.equals("none")) Gfx.tex(ctx, Cosmetics.hatIcon(hat), pcx - 16, pby - 108, 32, 32, 0, 0, 32, 32, 32, 32, 1f);
             Gfx.centered(ctx, "Join a world to see", pcx, by + 6, 0xFF8FA088);
             Gfx.centered(ctx, "yourself spin!", pcx, by + 16, 0xFF8FA088);
@@ -76,27 +78,33 @@ public class CosmeticsScreen extends JalyScreen {
         Gfx.centered(ctx, "Drag to spin", pcx, by + bh - 10, 0xFF6F8068);
         // grid
         List<Map.Entry<String, String>> list = items();
-        String selected = capes ? JalyConfig.get().cape : JalyConfig.get().hat;
+        String selected = Cosmetics.selected(tab);
         int gy = cy() + 20;
         for (int i = 0; i < list.size(); i++) {
             int x = gridX() + (i % cols()) * (TILE_W + GAP), y = gy + (i / cols()) * (TILE_H + GAP);
             String id = list.get(i).getKey();
             boolean sel = id.equals(selected);
+            boolean locked = !Cosmetics.unlocked(tab, id);
             boolean hov = mouseX >= x && mouseX < x + TILE_W && mouseY >= y && mouseY < y + TILE_H;
             int lift = hov ? 2 : 0;
             Gfx.round(ctx, x, y - lift, TILE_W, TILE_H, sel ? 0xF0244A1C : hov ? 0xF0203A18 : 0xE0162A12);
             Gfx.outline(ctx, x, y - lift, TILE_W, TILE_H, sel ? Gfx.GOLD_LIGHT : hov ? 0xFFC99E02 : 0x55C99E02);
             if (id.equals("none")) {
                 Gfx.centered(ctx, "-", x + TILE_W / 2, y - lift + 16, 0xFF8FA088);
-            } else if (capes) {
-                Gfx.tex(ctx, Cosmetics.capeTexture(id), x + TILE_W / 2 - 10, y - lift + 4, 20, 32, 4, 4, 40, 64, 256, 128, 1f);
+            } else if (tab == Cosmetics.Type.CAPE) {
+                Gfx.tex(ctx, Cosmetics.capeTexture(id), x + TILE_W / 2 - 10, y - lift + 4, 20, 32, 4, 4, 40, 64, 256, 128, locked ? 0.35f : 1f);
             } else {
-                Gfx.tex(ctx, Cosmetics.hatIcon(id), x + TILE_W / 2 - 16, y - lift + 4, 32, 32, 0, 0, 32, 32, 32, 32, 1f);
+                Gfx.tex(ctx, Cosmetics.icon(tab, id), x + TILE_W / 2 - 16, y - lift + 4, 32, 32, 0, 0, 32, 32, 32, 32, locked ? 0.35f : 1f);
             }
-            Gfx.centered(ctx, Gfx.trim(list.get(i).getValue(), TILE_W - 4), x + TILE_W / 2, y - lift + TILE_H - 13, sel ? Gfx.GOLD_LIGHT : Gfx.SNOW);
+            if (locked) {
+                int door = fr.darkerdawn.jaly.Festive.doorFor(tab.key + ":" + id);
+                Gfx.round(ctx, x + 4, y - lift + 14, TILE_W - 8, 12, 0xE0B11A33);
+                Gfx.centered(ctx, "Gift " + door, x + TILE_W / 2, y - lift + 16, Gfx.SNOW);
+            }
+            Gfx.centered(ctx, Gfx.trim(list.get(i).getValue(), TILE_W - 4), x + TILE_W / 2, y - lift + TILE_H - 13, locked ? 0xFF8FA088 : sel ? Gfx.GOLD_LIGHT : Gfx.SNOW);
             if (sel) Gfx.sprite(ctx, Gfx.STAR, new int[]{Gfx.GOLD_LIGHT}, "#", x + TILE_W - 8, y - lift + 3, 1, 1f);
         }
-        Gfx.text(ctx, "Everything is free!", gridX() + 112, cy() + 3, Gfx.GOLD_LIGHT, true);
+        Gfx.text(ctx, "All free! Red tags unlock from daily Gifts.", gridX(), py + ph - 14, Gfx.GOLD_LIGHT, true);
     }
 
     /** Like the inventory player preview, but spinning so you can see your cape. */
@@ -141,13 +149,16 @@ public class CosmeticsScreen extends JalyScreen {
     }
 
     public void select(String id) {
-        if (capes) JalyConfig.get().cape = id; else JalyConfig.get().hat = id;
-        JalyConfig.save();
+        if (!Cosmetics.unlocked(tab, id)) {
+            Sounds.play(Sounds.CLICK, 0.6f, 0.5f);
+            return;
+        }
+        Cosmetics.select(tab, id);
         Sounds.play(Sounds.CHIME, 1.3f, 0.5f);
     }
 
-    public void showCapes(boolean c) {
-        capes = c;
+    public void showTab(Cosmetics.Type t) {
+        tab = t;
         clearAndInit();
     }
 

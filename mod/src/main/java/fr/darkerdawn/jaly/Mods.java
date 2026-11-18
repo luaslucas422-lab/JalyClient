@@ -109,6 +109,14 @@ public final class Mods {
             .with(new Slider("Height in the sky", 10, 60, 1, () -> c.skyLyricsHeight, v -> { c.skyLyricsHeight = v.floatValue(); JalyConfig.save(); }, ""))
             .with(new Swatch("Colour", TEXT_COLORS, () -> c.skyLyricsColor, v -> { c.skyLyricsColor = v; JalyConfig.save(); }))
             .with(new Toggle("Show next line", () -> c.skyLyricsNext, v -> { c.skyLyricsNext = v; JalyConfig.save(); }));
+        add(new Entry("radio", "Jaly Radio", "Music-box Christmas carols while you play", Category.MUSIC, false, null))
+            .with(new Action("Song", "Next song", () -> Radio.next(net.minecraft.client.MinecraftClient.getInstance(), true)));
+        add(new Entry("block_outline", "Festive Outline", "Candy cane, gold, ice or fairy-light block outline", Category.VISUAL, true, null))
+            .with(new Cycle("Style", new String[]{"candy", "gold", "ice", "green", "lights"}, new String[]{"Candy cane", "Gold", "Ice", "Holly green", "Fairy lights"}, () -> c.outlineStyle, v -> { c.outlineStyle = v; JalyConfig.save(); }));
+        add(new Entry("time_changer", "Time Changer", "Pick your own sky time (only you see it)", Category.VISUAL, false, null))
+            .with(new Cycle("Time", new String[]{"morning", "noon", "sunset", "night"}, new String[]{"Christmas morning", "Noon", "Sunset", "Starry night"}, () -> c.timeOfDay, v -> { c.timeOfDay = v; JalyConfig.save(); }));
+        add(new Entry("no_hurt_cam", "No Hurt Shake", "The screen doesn't shake when you get hit", Category.PVP, false, null));
+        add(new Entry("chat_time", "Chat Timestamps", "Shows the time next to every chat message", Category.VISUAL, false, null));
         add(new Entry("zoom", "Zoom", "Hold C to zoom. Scroll to zoom further", Category.PVP, true, null))
             .with(new Slider("Zoom amount", 2, 10, 0.5, () -> c.zoomLevel, v -> { c.zoomLevel = v; JalyConfig.save(); }, "x"))
             .with(new Toggle("Smooth zoom", () -> c.zoomSmooth, v -> { c.zoomSmooth = v; JalyConfig.save(); }))

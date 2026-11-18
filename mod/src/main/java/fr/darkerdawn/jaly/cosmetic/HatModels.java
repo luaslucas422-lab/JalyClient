@@ -72,4 +72,107 @@ final class HatModels {
         r.addChild("p6", ModelPartBuilder.create().uv(20, 7).cuboid(-2.0f, -7.0f, -0.5f, 4f, 4f, 1f), ModelTransform.pivot(0f, 0f, 0f));
         return TexturedModelData.of(data, 64, 64);
     }
+
+    static TexturedModelData beanie() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-4.5f, -9.0f, -4.5f, 9f, 2f, 9f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(0, 11).cuboid(-4.0f, -12.0f, -4.0f, 8f, 3f, 8f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(32, 11).cuboid(-3.0f, -13.0f, -3.0f, 6f, 1f, 6f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(0, 22).cuboid(-1.5f, -15.5f, -1.5f, 3f, 3f, 3f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData holly() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-4.5f, -9.5f, -4.5f, 9f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(20, 0).cuboid(-4.5f, -9.5f, 3.5f, 9f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(40, 0).cuboid(-4.5f, -9.5f, -3.5f, 1f, 1f, 7f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(0, 8).cuboid(3.5f, -9.5f, -3.5f, 1f, 1f, 7f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(16, 8).cuboid(-3.0f, -11.0f, -4.6f, 2f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(22, 8).cuboid(1.0f, -11.0f, -4.6f, 2f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(28, 8).cuboid(-1.0f, -10.5f, -4.8f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p7", ModelPartBuilder.create().uv(32, 8).cuboid(0.5f, -10.8f, -4.8f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData gift() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0f, -14.0f, -4.0f, 8f, 6f, 8f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(32, 0).cuboid(-1.0f, -14.5f, -4.5f, 2f, 7f, 9f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(0, 16).cuboid(-4.5f, -14.5f, -1.0f, 9f, 7f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(22, 16).cuboid(-3.0f, -16.0f, -1.0f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(30, 16).cuboid(1.0f, -16.0f, -1.0f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData pet_snowman() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-3f, -6f, -3f, 6f, 6f, 6f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(24, 0).cuboid(-2f, -10f, -2f, 4f, 4f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(40, 0).cuboid(-1.5f, -13f, -1.5f, 3f, 3f, 3f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(52, 0).cuboid(-1.5f, -14f, -1.5f, 3f, 1f, 3f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(0, 12).cuboid(-1f, -16f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(8, 12).cuboid(-0.5f, -12f, -2.5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(12, 12).cuboid(-2.5f, -10.5f, -2.5f, 5f, 1f, 5f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData pet_present() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-3f, -6f, -3f, 6f, 6f, 6f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(24, 0).cuboid(-1f, -6.5f, -3.5f, 2f, 7f, 7f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(42, 0).cuboid(-3.5f, -6.5f, -1f, 7f, 7f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(0, 14).cuboid(-2f, -8f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(8, 14).cuboid(0f, -8f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData pet_penguin() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-2.5f, -7f, -2f, 5f, 7f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(18, 0).cuboid(-1.5f, -6f, -2.3f, 3f, 5f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(26, 0).cuboid(-2f, -10f, -2f, 4f, 3f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(42, 0).cuboid(-0.5f, -9f, -3f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(46, 0).cuboid(-1.5f, -9.5f, -2.2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(50, 0).cuboid(0.5f, -9.5f, -2.2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(0, 11).cuboid(-2f, -11f, -2f, 4f, 1f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p7", ModelPartBuilder.create().uv(16, 11).cuboid(-1f, -12f, -1f, 2f, 1f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p8", ModelPartBuilder.create().uv(24, 11).cuboid(-0.5f, -13f, -0.5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData pet_tree() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-0.5f, -2f, -0.5f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(4, 0).cuboid(-3f, -5f, -3f, 6f, 3f, 6f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(28, 0).cuboid(-2f, -8f, -2f, 4f, 3f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(44, 0).cuboid(-1f, -10f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(52, 0).cuboid(-0.5f, -11.5f, -0.5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(56, 0).cuboid(-3.2f, -4f, -1f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(60, 0).cuboid(2.2f, -6f, 0f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p7", ModelPartBuilder.create().uv(0, 9).cuboid(-1f, -7f, -2.2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
+    static TexturedModelData pet_reindeer() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-2f, -5f, -3f, 4f, 3f, 6f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(20, 0).cuboid(-1.5f, -8f, -4.5f, 3f, 3f, 3f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(32, 0).cuboid(-0.5f, -6.5f, -5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(36, 0).cuboid(-2f, -2f, -3f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(40, 0).cuboid(1f, -2f, -3f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(44, 0).cuboid(-2f, -2f, 2f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(48, 0).cuboid(1f, -2f, 2f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p7", ModelPartBuilder.create().uv(52, 0).cuboid(-1.5f, -10f, -3.5f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p8", ModelPartBuilder.create().uv(56, 0).cuboid(0.5f, -10f, -3.5f, 1f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
 }

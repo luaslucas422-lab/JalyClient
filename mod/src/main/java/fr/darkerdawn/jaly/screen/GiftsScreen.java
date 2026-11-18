@@ -114,7 +114,8 @@ public class GiftsScreen extends JalyScreen {
         long now = Gfx.now();
         float k = Gfx.easeOutBack(Math.min(1f, (now - cardAt) / 380f));
         String[] c = Festive.CARDS[card - 1];
-        int w = Math.min(240, width - 30), h = 120;
+        String reward = Festive.REWARDS[card - 1];
+        int w = Math.min(250, width - 30), h = 150;
         int x = (width - w) / 2, y = (height - h) / 2;
         ctx.fill(0, 0, width, height, Gfx.alpha(0x99000000, Math.min(1, k)));
         ctx.getMatrices().push();
@@ -137,6 +138,17 @@ public class GiftsScreen extends JalyScreen {
         } else {
             Gfx.text(ctx, "Click to reveal the answer!", x + 10, ty, 0xFF8A6A00, false);
         }
+        // the gift inside
+        String[] rp = reward.split(":");
+        fr.darkerdawn.jaly.cosmetic.Cosmetics.Type rt = fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.HAT;
+        for (var t2 : fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.values()) if (t2.key.equals(rp[0])) rt = t2;
+        int ry = y + h - 40;
+        Gfx.round(ctx, x + 8, ry, w - 16, 26, 0xFF183018);
+        Gfx.outline(ctx, x + 8, ry, w - 16, 26, Gfx.GOLD);
+        if (rt == fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.CAPE) Gfx.tex(ctx, fr.darkerdawn.jaly.cosmetic.Cosmetics.capeTexture(rp[1]), x + 13, ry + 2, 14, 22, 4, 4, 40, 64, 256, 128, 1f);
+        else Gfx.tex(ctx, fr.darkerdawn.jaly.cosmetic.Cosmetics.icon(rt, rp[1]), x + 10, ry + 1, 24, 24, 0, 0, 32, 32, 32, 32, 1f);
+        Gfx.text(ctx, "You unwrapped:", x + 38, ry + 4, 0xFF8FA088, false);
+        Gfx.text(ctx, Gfx.trim(fr.darkerdawn.jaly.cosmetic.Cosmetics.rewardName(reward), w - 50), x + 38, ry + 14, Gfx.GOLD_LIGHT, true);
         Gfx.text(ctx, "Click outside to close", x + w - 10 - textRenderer.getWidth("Click outside to close"), y + h - 12, 0xFF9AA3A0, false);
         ctx.getMatrices().pop();
     }
@@ -144,7 +156,7 @@ public class GiftsScreen extends JalyScreen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (card > 0) {
-            int w = Math.min(240, width - 30), h = 120, x = (width - w) / 2, y = (height - h) / 2;
+            int w = Math.min(250, width - 30), h = 150, x = (width - w) / 2, y = (height - h) / 2;
             boolean inside = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
             if (inside && !reveal && Festive.CARDS[card - 1][0].equals("Joke")) {
                 reveal = true;

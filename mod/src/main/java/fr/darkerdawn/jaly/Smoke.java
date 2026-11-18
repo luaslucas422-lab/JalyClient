@@ -86,6 +86,25 @@ final class Smoke {
                 cfg.set("now_playing", true);
                 cfg.set("sky_lyrics", true);
                 cfg.set("clock", true);
+                cfg.set("minimap", true);
+                cfg.set("items", true);
+                cfg.set("combo", true);
+                cfg.set("biome", true);
+                cfg.set("chat_time", true);
+                cfg.set("radio", true);
+                cfg.wings = "angel";
+                cfg.pet = "snowman";
+                cfg.trail = "snow";
+                Features.zoomForced = true;
+                double fov = 70;
+                for (int i = 0; i < 80; i++) fov = Features.applyZoom(70);
+                check("zoom works (fov " + Math.round(fov) + ")", fov < 30);
+                Features.zoomForced = false;
+                for (int i = 0; i < 80; i++) fov = Features.applyZoom(70);
+                check("zoom releases", fov > 65);
+                check("4 Christmas packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_frost") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_candy") != null);
+                check("gift exclusive starts locked", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "present"));
+                c.inGameHud.getChatHud().addMessage(Text.literal("Merry Christmas from the JalyClient test!"));
                 Music.fake("Jingle Bell Rock", "Test Artist", "[00:00.00] Jingle bell, jingle bell\n[00:03.00] Jingle bell rock\n[00:40.00] Jingle bells swing and jingle bells ring\n[00:50.00] Snowing and blowing up bushels of fun", 41000, 130000);
                 check("lyrics parsed", Music.lyrics.size() == 4 && Music.currentLine().startsWith("Jingle bells swing"));
                 check("Jaly Christmas pack on by default", PacksScreen.enabled(c.getResourcePackManager(), "jaly_christmas"));
@@ -122,7 +141,7 @@ final class Smoke {
             case 86 -> c.player.setPitch(-8);
             case 88 -> { c.options.setPerspective(Perspective.THIRD_PERSON_BACK); c.player.setPitch(10); }
             case 110 -> shot(c, "cape from behind");
-            case 112 -> { c.options.setPerspective(Perspective.THIRD_PERSON_FRONT); cfg.hat = "antlers"; }
+            case 112 -> { c.options.setPerspective(Perspective.THIRD_PERSON_FRONT); cfg.hat = "antlers"; cfg.wings = "fairy"; cfg.opened.add(14); }
             case 135 -> shot(c, "front with antlers");
             case 137 -> { c.options.setPerspective(Perspective.FIRST_PERSON); c.setScreen(new LodgeScreen(null)); }
             case 165 -> shot(c, "lodge");
@@ -133,13 +152,14 @@ final class Smoke {
             case 207 -> {
                 CosmeticsScreen s = new CosmeticsScreen(null);
                 c.setScreen(s);
-                s.showCapes(true);
+                s.showTab(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS);
             }
             case 230 -> shot(c, "cosmetics");
             case 232 -> {
                 GiftsScreen g = new GiftsScreen(null);
                 c.setScreen(g);
                 check("door 7 opens", g.openDoor(7));
+                check("door 7 unlocked its pet", fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "present"));
                 check("door 20 is still locked", !Festive.canOpen(20, LocalDate.now(), cfg.firstDay, cfg.opened));
             }
             case 262 -> shot(c, "gift card");

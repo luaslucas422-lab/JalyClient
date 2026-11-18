@@ -51,6 +51,9 @@ public class JalyConfig {
     // cosmetics (all free)
     public String hat = "santa";
     public String cape = "candy_cane";
+    public String wings = "none";
+    public String pet = "none";
+    public String trail = "none";
 
     // general
     public String intensity = "full"; // full, cozy, calm
@@ -61,6 +64,9 @@ public class JalyConfig {
     public float musicVolume = 0.7f;
     public boolean hoverSounds = true;
     public float hudScale = 1f;
+    public String timeOfDay = "night";
+    public String outlineStyle = "candy";
+    public int radioTrack = 0;
 
     // gifts
     public long firstDay = 0;

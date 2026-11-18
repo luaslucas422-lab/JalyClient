@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "AbstractClientPlayerEntityMixin",
+    "ChatHudMixin",
+    "ClientWorldPropertiesMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
@@ -12,7 +14,10 @@
     "MouseMixin",
     "SimpleOptionAccessor",
     "SplashOverlayMixin",
-    "TexturedRenderLayersMixin"
+    "TexturedRenderLayersMixin",
+    "WorldRendererMixin"
   ],
-  "injectors": { "defaultRequire": 1 }
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

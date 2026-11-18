@@ -55,7 +55,7 @@ def write_ogg(name, sig, gain=0.9):
 
 
 NOTE = {"C4": 261.63, "D4": 293.66, "E4": 329.63, "F4": 349.23, "G4": 392.0, "A4": 440.0, "B4": 493.88,
-        "C5": 523.25, "D5": 587.33, "E5": 659.25, "F5": 698.46, "G5": 783.99, "A5": 880.0, "C6": 1046.5,
+        "C5": 523.25, "D5": 587.33, "E5": 659.25, "F5": 698.46, "G5": 783.99, "A5": 880.0, "B5": 987.77, "E4b": 311.13, "C6": 1046.5,
         "C3": 130.81, "F3": 174.61, "G3": 196.0, "D3": 146.83, "G2": 98.0, "A3": 220.0}
 
 
@@ -110,6 +110,43 @@ def jingle_bells():
     return out * fade
 
 
+def melody(notes, bpm, jingles=True, bass=True):
+    beat = 60 / bpm
+    total = sum(d for _, d in notes)
+    length = int((total * beat + 3) * SR)
+    out = np.zeros(length)
+
+    def add(sig, at):
+        i = int(at * SR)
+        n = min(len(sig), length - i)
+        if n > 0:
+            out[i:i + n] += sig[:n]
+    pos = 0.0
+    for n, d in notes:
+        if n != "R":
+            add(music_box(NOTE[n], d * beat), pos)
+        pos += d * beat
+    if bass:
+        for b in range(int(total)):
+            add(soft_bass(NOTE["C3"] if (b // 2) % 2 == 0 else NOTE["G2"] * 2, beat) * 0.7, b * beat)
+    if jingles:
+        for b in range(int(total)):
+            if b % 2 == 1:
+                add(jingle_shake(0.3, n=5, amp=0.12, seed=b), b * beat)
+    fade = np.ones(length)
+    fade[-int(2.5 * SR):] = np.linspace(1, 0, int(2.5 * SR))
+    return out * fade
+
+
+DECK = [("G5", 1.5), ("F5", .5), ("E5", 1), ("D5", 1), ("C5", 1), ("D5", 1), ("E5", 1), ("C5", 1), ("D5", .5), ("E5", .5), ("F5", .5), ("D5", .5), ("E5", 1.5), ("D5", .5), ("C5", 1), ("B4", 1), ("C5", 2)]
+DECK = DECK + DECK + [("D5", 1.5), ("E5", .5), ("F5", 1), ("D5", 1), ("E5", 1.5), ("F5", .5), ("G5", 1), ("D5", 1), ("E5", .5), ("F5", .5), ("G5", 1), ("A5", .5), ("B5", .5), ("C6", 1), ("B5", 1), ("A5", 1), ("G5", 2)] + DECK
+WISH = [("G4", 1), ("C5", 1), ("C5", .5), ("D5", .5), ("C5", .5), ("B4", .5), ("A4", 1), ("A4", 1), ("A4", 1), ("D5", 1), ("D5", .5), ("E5", .5), ("D5", .5), ("C5", .5), ("B4", 1), ("G4", 1), ("G4", 1),
+        ("E5", 1), ("E5", .5), ("F5", .5), ("E5", .5), ("D5", .5), ("C5", 1), ("A4", 1), ("G4", .5), ("G4", .5), ("A4", 1), ("D5", 1), ("B4", 1), ("C5", 3)]
+SILENT = [("G4", 1.5), ("A4", .5), ("G4", 1), ("E4", 3), ("G4", 1.5), ("A4", .5), ("G4", 1), ("E4", 3), ("D5", 2), ("D5", 1), ("B4", 3), ("C5", 2), ("C5", 1), ("G4", 3),
+          ("A4", 2), ("A4", 1), ("C5", 1.5), ("B4", .5), ("A4", 1), ("G4", 1.5), ("A4", .5), ("G4", 1), ("E4", 3), ("A4", 2), ("A4", 1), ("C5", 1.5), ("B4", .5), ("A4", 1),
+          ("G4", 1.5), ("A4", .5), ("G4", 1), ("E4", 3), ("D5", 2), ("D5", 1), ("F5", 1.5), ("D5", .5), ("B4", 1), ("C5", 3), ("E5", 3), ("C5", 1.5), ("G4", .5), ("E4", 1), ("G4", 1.5), ("F4", .5), ("D4", 1), ("C4", 6)]
+
+
 def main():
     write_ogg("jingle", jingle_shake(0.4, n=7, amp=0.5, seed=1))
     write_ogg("sleigh", np.concatenate([jingle_shake(0.22, n=6, seed=s) for s in range(5)]) * 0.8)
@@ -133,6 +170,9 @@ def main():
     sparkle[: len(rustle)] += rustle
     write_ogg("unwrap", sparkle)
     write_ogg("menu_music", jingle_bells(), gain=0.8)
+    write_ogg("carol_deck", melody(DECK * 2, 132), gain=0.8)
+    write_ogg("carol_wish", melody(WISH * 3, 120), gain=0.8)
+    write_ogg("carol_silent", melody(SILENT * 2, 84, jingles=False), gain=0.75)
     print("sounds:", sorted(os.listdir(OUT)))
 
 

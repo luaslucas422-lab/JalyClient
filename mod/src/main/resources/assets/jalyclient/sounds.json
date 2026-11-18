@@ -1,10 +1,69 @@
 {
-  "jingle": { "sounds": ["jalyclient:jingle"] },
-  "sleigh": { "sounds": ["jalyclient:sleigh"] },
-  "chime": { "sounds": ["jalyclient:chime"] },
-  "click": { "sounds": ["jalyclient:click"] },
-  "hover": { "sounds": ["jalyclient:hover"] },
-  "kill": { "sounds": ["jalyclient:kill"] },
-  "unwrap": { "sounds": ["jalyclient:unwrap"] },
-  "menu_music": { "sounds": [{ "name": "jalyclient:menu_music", "stream": true }] }
+  "jingle": {
+    "sounds": [
+      "jalyclient:jingle"
+    ]
+  },
+  "sleigh": {
+    "sounds": [
+      "jalyclient:sleigh"
+    ]
+  },
+  "chime": {
+    "sounds": [
+      "jalyclient:chime"
+    ]
+  },
+  "click": {
+    "sounds": [
+      "jalyclient:click"
+    ]
+  },
+  "hover": {
+    "sounds": [
+      "jalyclient:hover"
+    ]
+  },
+  "kill": {
+    "sounds": [
+      "jalyclient:kill"
+    ]
+  },
+  "unwrap": {
+    "sounds": [
+      "jalyclient:unwrap"
+    ]
+  },
+  "menu_music": {
+    "sounds": [
+      {
+        "name": "jalyclient:menu_music",
+        "stream": true
+      }
+    ]
+  },
+  "carol_deck": {
+    "sounds": [
+      {
+        "name": "jalyclient:carol_deck",
+        "stream": true
+      }
+    ]
+  },
+  "carol_wish": {
+    "sounds": [
+      {
+        "name": "jalyclient:carol_wish",
+        "stream": true
+      }
+    ]
+  },
+  "carol_silent": {
+    "sounds": [
+      {
+        "name": "jalyclient:carol_silent",
+        "stream": true
+      }
+    ]
+  }
 }

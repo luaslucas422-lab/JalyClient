@@ -13,6 +13,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.particle.DustColorTransitionParticleEffect;
+import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import fr.darkerdawn.jaly.cosmetic.Cosmetics;
+import fr.darkerdawn.jaly.hud.Minimap;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -22,6 +28,13 @@ public final class Features {
 
     private static final Random RNG = new Random();
     public static boolean zoomHeld;
+    public static boolean zoomForced;
+    public static int combo;
+    public static double reach;
+    private static long lastHitTime;
+    private static int lastHurtTime;
+    public static long joinTime = System.currentTimeMillis();
+    private static int trailTick;
     private static double zoomCurrent = 1.0;
     private static double zoomScroll = 0;
     private static boolean cinematicBefore;
@@ -56,7 +69,12 @@ public final class Features {
     }
 
     public static void tick(MinecraftClient mc) {
-        if (mc.player == null || mc.world == null) { lastPos = null; return; }
+        if (mc.player == null || mc.world == null) { lastPos = null; joinTime = System.currentTimeMillis(); return; }
+        if (mc.player.hurtTime > 0 && lastHurtTime == 0) combo = 0;
+        lastHurtTime = mc.player.hurtTime;
+        if (System.currentTimeMillis() - lastHitTime > 2500) combo = 0;
+        if (Mods.on("minimap")) Minimap.tick(mc);
+        trail(mc);
         Vec3d p = mc.player.getPos();
         if (lastPos != null) {
             double dx = p.x - lastPos.x, dz = p.z - lastPos.z;
@@ -105,7 +123,51 @@ public final class Features {
         Sounds.play(Sounds.KILL, 1f, 0.8f);
     }
 
+    /** Reads the zoom key straight from the keyboard: C is also vanilla's "save hotbar" key and Minecraft gives a key to only one binding. */
+    public static boolean zoomKeyDown(MinecraftClient mc) {
+        if (zoomForced) return true;
+        if (mc.currentScreen != null || JalyClient.ZOOM_KEY == null) return false;
+        InputUtil.Key key = KeyBindingHelper.getBoundKeyOf(JalyClient.ZOOM_KEY);
+        long win = mc.getWindow().getHandle();
+        if (key.getCategory() == InputUtil.Type.MOUSE) return org.lwjgl.glfw.GLFW.glfwGetMouseButton(win, key.getCode()) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
+        return key.getCode() > 0 && InputUtil.isKeyPressed(win, key.getCode());
+    }
+
+    private static void trail(MinecraftClient mc) {
+        String t = Cosmetics.selected(Cosmetics.Type.TRAIL);
+        if (t.equals("none") || mc.player.isInvisible() || mc.player.isSpectator()) return;
+        Vec3d v = mc.player.getVelocity();
+        if (v.horizontalLengthSquared() < 0.0009 && mc.player.isOnGround()) return;
+        trailTick++;
+        Vec3d p = mc.player.getPos().subtract(v.x * 2, 0, v.z * 2);
+        ParticleEffect fx = switch (t) {
+            case "candy" -> new DustParticleEffect(trailTick % 2 == 0 ? new Vector3f(0.88f, 0.22f, 0.31f) : new Vector3f(1f, 1f, 1f), 1.1f);
+            case "hearts" -> trailTick % 5 == 0 ? ParticleTypes.HEART : null;
+            case "notes" -> trailTick % 3 == 0 ? ParticleTypes.NOTE : null;
+            case "gold" -> new DustParticleEffect(new Vector3f(1f, 0.85f, 0.29f), 0.9f);
+            case "stars" -> trailTick % 2 == 0 ? ParticleTypes.END_ROD : null;
+            case "aurora" -> new DustColorTransitionParticleEffect(new Vector3f(0.24f, 1f, 0.69f), new Vector3f(0.7f, 0.36f, 1f), 1.2f);
+            case "cherry" -> ParticleTypes.CHERRY_LEAVES;
+            case "embers" -> trailTick % 2 == 0 ? ParticleTypes.SMALL_FLAME : null;
+            case "totem" -> ParticleTypes.TOTEM_OF_UNDYING;
+            default -> ParticleTypes.SNOWFLAKE;
+        };
+        if (fx == null) return;
+        double vx = t.equals("notes") ? RNG.nextInt(24) / 24.0 : (RNG.nextDouble() - 0.5) * 0.02;
+        mc.world.addParticle(fx, p.x + (RNG.nextDouble() - 0.5) * 0.4, p.y + 0.1 + RNG.nextDouble() * 0.3, p.z + (RNG.nextDouble() - 0.5) * 0.4, vx, 0.01, (RNG.nextDouble() - 0.5) * 0.02);
+    }
+
     public static void onAttack(Entity target) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        long now = System.currentTimeMillis();
+        combo = now - lastHitTime < 2500 ? combo + 1 : 1;
+        lastHitTime = now;
+        if (mc.player != null) {
+            Vec3d eye = mc.player.getEyePos();
+            var b = target.getBoundingBox();
+            double cx = Math.max(b.minX, Math.min(eye.x, b.maxX)), cy = Math.max(b.minY, Math.min(eye.y, b.maxY)), cz = Math.max(b.minZ, Math.min(eye.z, b.maxZ));
+            reach = eye.distanceTo(new Vec3d(cx, cy, cz));
+        }
         if (Mods.on("hit_sound")) Sounds.play(Sounds.hitSound(), 0.9f + RNG.nextFloat() * 0.25f, 0.7f);
         lastAttackedId = target.getId();
         lastAttackTime = System.currentTimeMillis();
@@ -117,7 +179,7 @@ public final class Features {
         long now = System.nanoTime();
         float dt = Math.min(0.1f, (now - lastFovNanos) / 1e9f);
         lastFovNanos = now;
-        boolean active = zoomHeld && Mods.on("zoom") && mc.currentScreen == null;
+        boolean active = (zoomHeld || zoomForced) && Mods.on("zoom") && (mc.currentScreen == null || zoomForced);
         if (!active) zoomScroll = 0;
         double target = active ? Math.max(1.0, Math.min(50.0, JalyConfig.get().zoomLevel * Math.pow(1.25, zoomScroll))) : 1.0;
         zoomCurrent = JalyConfig.get().zoomSmooth ? zoomCurrent + (target - zoomCurrent) * (1 - Math.exp(-14 * dt)) : target;

@@ -52,6 +52,8 @@ public class JalyClient implements ClientModInitializer {
         FabricLoader.getInstance().getModContainer("jalyclient").ifPresent(c -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_christmas"), c, Text.literal("Jaly Christmas"), ResourcePackActivationType.DEFAULT_ENABLED);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_winter"), c, Text.literal("Jaly Winter Wonderland"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_frost"), c, Text.literal("Jaly Frost PvP"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_candy"), c, Text.literal("Jaly Candy Land"), ResourcePackActivationType.NORMAL);
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -62,9 +64,10 @@ public class JalyClient implements ClientModInitializer {
             while (HUD_KEY.wasPressed()) {
                 if (client.currentScreen == null) client.setScreen(new HudEditorScreen(null));
             }
-            Features.zoomHeld = ZOOM_KEY.isPressed();
+            Features.zoomHeld = Features.zoomKeyDown(client);
             Features.tick(client);
             Music.tick();
+            Radio.tick(client);
             if (client.world == null && client.getOverlay() == null && client.currentScreen != null && JalyConfig.get().menuMusic) {
                 Sounds.tickMenuMusic(client);
             } else {
@@ -78,6 +81,9 @@ public class JalyClient implements ClientModInitializer {
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
             if (renderer.getModel() instanceof BipedEntityModel) {
                 helper.register(new HatFeature((FeatureRendererContext) renderer));
+            }
+            if (renderer instanceof net.minecraft.client.render.entity.PlayerEntityRenderer) {
+                helper.register(new fr.darkerdawn.jaly.cosmetic.PlayerExtrasFeature((FeatureRendererContext) renderer));
             }
         });
 

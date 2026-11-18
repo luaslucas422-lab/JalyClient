@@ -51,6 +51,19 @@ public final class Festive {
         return door >= 1 && door <= 25 && door <= doorsAvailable(today, firstEpochDay) && !opened.contains(door);
     }
 
+    /** What each door gives (type:id). Gift exclusives - still free, just unwrapped one day at a time. */
+    public static final String[] REWARDS = {
+        "trail:candy", "pet:penguin", "wings:candy", "hat:beanie", "trail:hearts", "cape:sweater", "pet:present", "wings:ice", "trail:notes",
+        "hat:holly", "cape:mint", "trail:gold", "pet:tree", "wings:fairy", "cape:snowy_night", "trail:stars", "hat:gift", "trail:aurora",
+        "cape:present", "trail:cherry", "pet:reindeer", "trail:embers", "wings:gold", "trail:totem", "cape:golden"
+    };
+
+    /** Door number that unlocks this reward, or 0 if it is free from the start. */
+    public static int doorFor(String reward) {
+        for (int i = 0; i < REWARDS.length; i++) if (REWARDS[i].equals(reward)) return i + 1;
+        return 0;
+    }
+
     /** The 25 gift cards: a joke, a fact or a tip for each door. All original text. */
     public static final String[][] CARDS = {
         {"Joke", "What do snowmen eat for breakfast?", "Frosted flakes!"},

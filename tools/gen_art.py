@@ -93,6 +93,17 @@ HATS = {
         (-2.0, -7.0, -0.5, 4, 4, 1, "#FFF2B3"),
     ],
 }
+HATS.update({
+    "beanie": [(-4.5, -9.0, -4.5, 9, 2, 9, "#F4F4F4"), (-4.0, -12.0, -4.0, 8, 3, 8, "#C8102E"), (-3.0, -13.0, -3.0, 6, 1, 6, "#C8102E"), (-1.5, -15.5, -1.5, 3, 3, 3, "#FFFFFF")],
+    "holly": [(-4.5, -9.5, -4.5, 9, 1, 1, "#2E7D32"), (-4.5, -9.5, 3.5, 9, 1, 1, "#2E7D32"), (-4.5, -9.5, -3.5, 1, 1, 7, "#2E7D32"), (3.5, -9.5, -3.5, 1, 1, 7, "#2E7D32"),
+              (-3.0, -11.0, -4.6, 2, 2, 1, "#1E5E28"), (1.0, -11.0, -4.6, 2, 2, 1, "#1E5E28"), (-1.0, -10.5, -4.8, 1, 1, 1, "#E01E37"), (0.5, -10.8, -4.8, 1, 1, 1, "#E01E37")],
+    "gift": [(-4.0, -14.0, -4.0, 8, 6, 8, "#2C6FB0"), (-1.0, -14.5, -4.5, 2, 7, 9, "#FDE68A"), (-4.5, -14.5, -1.0, 9, 7, 2, "#FDE68A"), (-3.0, -16.0, -1.0, 2, 2, 2, "#FDE68A"), (1.0, -16.0, -1.0, 2, 2, 2, "#FDE68A")],
+    "pet_snowman": [(-3, -6, -3, 6, 6, 6, "#FAFCFF"), (-2, -10, -2, 4, 4, 4, "#FAFCFF"), (-1.5, -13, -1.5, 3, 3, 3, "#FAFCFF"), (-1.5, -14, -1.5, 3, 1, 3, "#1C1C22"), (-1, -16, -1, 2, 2, 2, "#1C1C22"), (-0.5, -12, -2.5, 1, 1, 1, "#F28C28"), (-2.5, -10.5, -2.5, 5, 1, 5, "#B11A33")],
+    "pet_present": [(-3, -6, -3, 6, 6, 6, "#B11A33"), (-1, -6.5, -3.5, 2, 7, 7, "#FDE68A"), (-3.5, -6.5, -1, 7, 7, 2, "#FDE68A"), (-2, -8, -1, 2, 2, 2, "#FDE68A"), (0, -8, -1, 2, 2, 2, "#FDE68A")],
+    "pet_penguin": [(-2.5, -7, -2, 5, 7, 4, "#1C1C22"), (-1.5, -6, -2.3, 3, 5, 1, "#F4F4F4"), (-2, -10, -2, 4, 3, 4, "#1C1C22"), (-0.5, -9, -3, 1, 1, 1, "#F28C28"), (-1.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (0.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (-2, -11, -2, 4, 1, 4, "#C8102E"), (-1, -12, -1, 2, 1, 2, "#C8102E"), (-0.5, -13, -0.5, 1, 1, 1, "#FFFFFF")],
+    "pet_tree": [(-0.5, -2, -0.5, 1, 2, 1, "#5A3A22"), (-3, -5, -3, 6, 3, 6, "#1E6B34"), (-2, -8, -2, 4, 3, 4, "#1E6B34"), (-1, -10, -1, 2, 2, 2, "#1E6B34"), (-0.5, -11.5, -0.5, 1, 1, 1, "#FFD94A"), (-3.2, -4, -1, 1, 1, 1, "#E01E37"), (2.2, -6, 0, 1, 1, 1, "#FDE68A"), (-1, -7, -2.2, 1, 1, 1, "#4CC3FF")],
+    "pet_reindeer": [(-2, -5, -3, 4, 3, 6, "#8C5B32"), (-1.5, -8, -4.5, 3, 3, 3, "#8C5B32"), (-0.5, -6.5, -5, 1, 1, 1, "#FF2020"), (-2, -2, -3, 1, 2, 1, "#6B4423"), (1, -2, -3, 1, 2, 1, "#6B4423"), (-2, -2, 2, 1, 2, 1, "#6B4423"), (1, -2, 2, 1, 2, 1, "#6B4423"), (-1.5, -10, -3.5, 1, 2, 1, "#5A3A22"), (0.5, -10, -3.5, 1, 2, 1, "#5A3A22")],
+})
 HAT_NAMES = {"santa": "Santa Hat", "antlers": "Reindeer Antlers", "elf": "Elf Hat", "tophat": "Snowman Top Hat", "halo": "Star Halo"}
 
 
@@ -132,7 +143,7 @@ def build_hats():
         sc = min(28 / (maxx - minx), 28 / (maxy - miny))
         ox = 16 - (minx + maxx) / 2 * sc
         oy = 16 - (miny + maxy) / 2 * sc
-        for (x, y, z, w, h, d, col) in sorted(cubes, key=lambda c: -(c[2] + c[5])):
+        for (x, y, z, w, h, d, col) in sorted(cubes, key=lambda c: -c[2]):
             dr.rectangle([ox + x * sc, oy + y * sc, ox + (x + w) * sc - 1, oy + (y + h) * sc - 1], fill=hexc(col), outline=shade(hexc(col), 0.7))
         save(icon, f"{TEX}/gui/hat_{hid}.png")
     java = """package fr.darkerdawn.jaly.cosmetic;
@@ -264,10 +275,50 @@ def cape_design(kind, w, h):
             x, y = rnd.randint(4, w - 5), rnd.randint(4, h - 5)
             d.line([(x - 2, y), (x + 2, y)], fill=GOLD_L)
             d.line([(x, y - 2), (x, y + 2)], fill=GOLD_L)
+    elif kind == "sweater":
+        for y in range(h):
+            for x in range(w):
+                px[x, y] = RED if (y // 4) % 2 == 0 or True else RED
+        d = ImageDraw.Draw(img)
+        for y0 in (6, h - 10):
+            for x in range(0, w, 6):
+                d.polygon([(x, y0 + 4), (x + 3, y0), (x + 6, y0 + 4)], fill=SNOW)
+        for x in range(0, w, 8):
+            for y in range(16, h - 14, 8):
+                d.rectangle([x + 3, y, x + 4, y + 1], fill=hexc("#2E7D32"))
+                d.point((x + 2, y + 1), fill=hexc("#2E7D32")); d.point((x + 5, y + 1), fill=hexc("#2E7D32"))
+        d.rectangle([w // 2 - 6, h // 2 - 6, w // 2 + 6, h // 2 + 6], fill=hexc("#2E7D32"))
+        d.polygon([(w // 2, h // 2 - 5), (w // 2 - 5, h // 2 + 5), (w // 2 + 5, h // 2 + 5)], fill=SNOW)
+    elif kind == "mint":
+        for y in range(h):
+            for x in range(w):
+                px[x, y] = hexc("#2BB673") if ((x + y) // 6) % 2 == 0 else SNOW
+        ImageDraw.Draw(img).rectangle([0, 0, w - 1, h - 1], outline=hexc("#C99E02"), width=2)
+    elif kind == "snowy_night":
+        for y in range(h):
+            for x in range(w):
+                px[x, y] = mix(hexc("#060B1F"), hexc("#2B4A80"), y / h)
+        d = ImageDraw.Draw(img)
+        d.ellipse([w - 16, 6, w - 6, 16], fill=hexc("#FFF8DC"))
+        for _ in range(45):
+            x, y = rnd.randint(0, w - 1), rnd.randint(0, h - 1)
+            px[x, y] = SNOW
+        d.rectangle([0, h - 10, w - 1, h - 1], fill=SNOW)
+        d.rectangle([6, h - 22, 22, h - 10], fill=hexc("#6B4426")); d.polygon([(3, h - 22), (14, h - 30), (25, h - 22)], fill=SNOW)
+        d.rectangle([10, h - 18, 14, h - 14], fill=hexc("#FFC861"))
+    elif kind == "present":
+        for y in range(h):
+            for x in range(w):
+                px[x, y] = hexc("#2C6FB0") if ((x // 5) + (y // 5)) % 2 == 0 else hexc("#3A82C8")
+        d = ImageDraw.Draw(img)
+        d.rectangle([w // 2 - 3, 0, w // 2 + 2, h - 1], fill=hexc("#FDE68A"))
+        d.rectangle([0, h // 2 - 3, w - 1, h // 2 + 2], fill=hexc("#FDE68A"))
+        d.ellipse([w // 2 - 12, h // 2 - 10, w // 2 - 2, h // 2], outline=hexc("#FDE68A"), width=2)
+        d.ellipse([w // 2 + 1, h // 2 - 10, w // 2 + 11, h // 2], outline=hexc("#FDE68A"), width=2)
     return img
 
 
-CAPES = {"candy_cane": "Candy Cane", "tree": "Christmas Tree", "snowflake": "Snowflake", "gingerbread": "Gingerbread", "aurora": "Northern Lights", "golden": "Golden Jaly"}
+CAPES = {"candy_cane": "Candy Cane", "tree": "Christmas Tree", "snowflake": "Snowflake", "gingerbread": "Gingerbread", "aurora": "Northern Lights", "golden": "Golden Jaly", "sweater": "Ugly Sweater", "mint": "Mint Candy", "snowy_night": "Snowy Night", "present": "Present Wrap"}
 
 
 def build_capes():
@@ -863,6 +914,168 @@ def build_packs():
     save(pk2, os.path.join(p2, "pack.png"))
 
 
+# ---------------------------------------------------------------- wings (64x32, one 12x16x1 cuboid per wing at uv 0,0)
+WINGS = {"angel": "Angel Wings", "candy": "Candy Wings", "ice": "Ice Wings", "fairy": "Fairy Light Wings", "gold": "Golden Wings"}
+
+
+def wing_face(kind):
+    img = Image.new("RGBA", (12, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    rnd = random.Random(kind)
+    shape = [(0, 0), (11, 2), (11, 6), (9, 9), (10, 12), (6, 15), (3, 13), (0, 8)]
+    base = {"angel": "#F4F6FF", "candy": "#F6F4F7", "ice": "#BFE3FF", "fairy": "#2E7D32", "gold": "#FFD94A"}[kind]
+    d.polygon(shape, fill=hexc(base))
+    px = img.load()
+    for y in range(16):
+        for x in range(12):
+            if px[x, y][3] == 0:
+                continue
+            c = hexc(base)
+            if kind == "candy" and ((x + y) // 2) % 2 == 0:
+                c = RED
+            if kind in ("angel", "gold") and (x + y * 2) % 5 == 0:
+                c = shade(c, 0.85)
+            if kind == "ice":
+                c = mix(hexc("#E8F6FF"), hexc("#6FB6EE"), x / 12)
+                if rnd.random() < 0.12:
+                    c = SNOW
+            if kind == "fairy" and rnd.random() < 0.18:
+                c = rnd.choice([RED_L, GOLD_L, hexc("#4CC3FF"), SNOW])
+            px[x, y] = c
+    d.line(shape + [shape[0]], fill=shade(hexc(base), 0.7) if kind != "ice" else hexc("#5AA0D8"))
+    return img
+
+
+def build_wings():
+    for wid in WINGS:
+        img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+        f = wing_face(wid)
+        img.paste(f, (1, 1))
+        img.paste(f.transpose(Image.FLIP_LEFT_RIGHT), (14, 1))
+        edge = f.getpixel((5, 8))
+        for x in range(1, 13):
+            img.putpixel((x, 0), edge)
+            img.putpixel((x + 12, 0), edge)
+        for y in range(1, 17):
+            img.putpixel((0, y), edge)
+            img.putpixel((13, y), edge)
+        save(img, f"{TEX}/wings/{wid}.png")
+        icon = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+        big = f.resize((12, 16)).resize((14, 19), Image.NEAREST)
+        icon.paste(big.transpose(Image.FLIP_LEFT_RIGHT), (2, 6), big.transpose(Image.FLIP_LEFT_RIGHT))
+        icon.paste(big, (16, 6), big)
+        save(icon, f"{TEX}/gui/wings_{wid}.png")
+
+
+TRAILS = {"snow": ("#F4F8FF", "#9BC3E7"), "candy": ("#E0384F", "#F6F4F7"), "hearts": ("#FF5C8A", "#FFC2D4"), "notes": ("#5CFF7A", "#4CC3FF"),
+          "gold": ("#FFD94A", "#FFF2B3"), "stars": ("#FFFFFF", "#FDE68A"), "aurora": ("#3DFFB0", "#B35CFF"), "cherry": ("#FFB7D5", "#FF8FBF"),
+          "embers": ("#FF8A1F", "#FFD34A"), "totem": ("#5CFF7A", "#FFD94A")}
+
+
+def build_trail_icons():
+    for tid, (a, b) in TRAILS.items():
+        r = random.Random(tid)
+        img = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        for i in range(9):
+            x, y = 4 + i * 3 + r.randint(-1, 1), 24 - i * 2 + r.randint(-2, 2)
+            s2 = 1 + i // 3
+            d.rectangle([x, y, x + s2, y + s2], fill=hexc(a if i % 2 else b))
+        save(img, f"{TEX}/gui/trail_{tid}.png")
+
+
+def heart(c1, c2, shine):
+    rows = [".##.##.", "#######", "#######", ".#####.", "..###..", "...#..."]
+    img = Image.new("RGBA", (9, 9), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(9):
+        for x in range(9):
+            pass
+    out = ["..##.##..", ".#AA#AA#.", "#ASAAAAA#", "#AAAAAAA#", ".#AAAAA#.", "..#AAA#..", "...#A#...", "....#....", "........."]
+    pal = {"#": c2, "A": c1, "S": shine}
+    for y, row in enumerate(out):
+        for x, ch in enumerate(row):
+            if ch in pal:
+                px[x, y] = pal[ch]
+    half = img.copy()
+    hp = half.load()
+    for y in range(9):
+        for x in range(5, 9):
+            hp[x, y] = (0, 0, 0, 0)
+    return img, half
+
+
+def build_more_packs():
+    base = os.path.join(RES, "resourcepacks")
+    specs = {
+        "jaly_frost": ("§bJaly §fFrost PvP §7- icy swords, ice hearts, frozen hotbar",
+                       {"wooden": ("#A7D3F2", "#EAF6FF"), "stone": ("#8FB8DA", "#DDEFFF"), "iron": ("#CFE8FF", "#7FB6E8"), "golden": ("#BFE3FF", "#FFE680"),
+                        "diamond": ("#7FDFFF", "#FFFFFF"), "netherite": ("#5B7FB0", "#BFE3FF")},
+                       ("#9BE1FF", "#2B6A9E", "#FFFFFF"), ("#0E2236", "#9BC3E7"), ("#7FDFFF", "#FFFFFF")),
+        "jaly_candy": ("§dJaly §fCandy Land §7- lollipop swords, candy hearts, sweet items",
+                       {"wooden": ("#FF9EC7", "#FFFFFF"), "stone": ("#B7A5FF", "#FFFFFF"), "iron": ("#7FF0C8", "#FFFFFF"), "golden": ("#FFD94A", "#FF9EC7"),
+                        "diamond": ("#FF5CA8", "#FFFFFF"), "netherite": ("#A05CFF", "#FFC2E6")},
+                       ("#FF6FAE", "#B0236A", "#FFFFFF"), ("#3A1630", "#FF9EC7"), ("#FF9EC7", "#7FF0C8")),
+    }
+    for key, (desc, swords, hcol, hotbar, xpcols) in specs.items():
+        p = os.path.join(base, key)
+        tx = os.path.join(p, "assets/minecraft/textures")
+        os.makedirs(p, exist_ok=True)
+        with open(os.path.join(p, "pack.mcmeta"), "w") as f:
+            json.dump({"pack": {"pack_format": 34, "description": desc}}, f, indent=2)
+        for k, (a, b) in swords.items():
+            save(candy_sword(hexc(a), hexc(b), hexc("#C99E02") if key == "jaly_candy" else hexc("#5AA0D8"), hexc("#3D2614") if key == "jaly_frost" else hexc("#FFFFFF")), f"{tx}/item/{k}_sword.png")
+        full, half = heart(hexc(hcol[0]), hexc(hcol[1]), hexc(hcol[2]))
+        for n in ("full", "full_blinking", "hardcore_full", "hardcore_full_blinking"):
+            save(full, f"{tx}/gui/sprites/hud/heart/{n}.png")
+        for n in ("half", "half_blinking", "hardcore_half", "hardcore_half_blinking"):
+            save(half, f"{tx}/gui/sprites/hud/heart/{n}.png")
+        hb = Image.new("RGBA", (182, 22), (0, 0, 0, 0))
+        hd = ImageDraw.Draw(hb)
+        hd.rectangle([0, 0, 181, 21], fill=hexc(hotbar[0], 215))
+        hd.rectangle([0, 0, 181, 21], outline=hexc(hotbar[1]))
+        for i in range(9):
+            hd.rectangle([2 + i * 20, 2, 19 + i * 20, 19], outline=shade(hexc(hotbar[1]), 0.6))
+        save(hb, f"{tx}/gui/sprites/hud/hotbar.png")
+        sel = Image.new("RGBA", (24, 23), (0, 0, 0, 0))
+        ImageDraw.Draw(sel).rectangle([0, 0, 23, 22], outline=hexc(hotbar[1]), width=2)
+        ImageDraw.Draw(sel).rectangle([2, 2, 21, 20], outline=hexc("#FFFFFF"))
+        save(sel, f"{tx}/gui/sprites/hud/hotbar_selection.png")
+        xp = Image.new("RGBA", (182, 5))
+        for x in range(182):
+            for y in range(5):
+                xp.putpixel((x, y), hexc(xpcols[0] if ((x + y) // 3) % 2 == 0 else xpcols[1]) if 0 < y < 4 else hexc(hotbar[0]))
+        save(xp, f"{tx}/gui/sprites/hud/experience_bar_progress.png")
+        items = {}
+        if key == "jaly_frost":
+            items["golden_apple"] = ("ellipse", "#BFE3FF", "#FFFFFF")
+            items["ender_pearl"] = ("ellipse", "#6FB6EE", "#E8F6FF")
+            items["totem_of_undying"] = ("crystal", "#9BE1FF", "#FFFFFF")
+        else:
+            items["apple"] = ("ellipse", "#E0384F", "#FFFFFF")
+            items["golden_apple"] = ("ellipse", "#D98A2B", "#FFE0A0")
+            items["snowball"] = ("ellipse", "#FFF2F7", "#FFC2D4")
+            items["totem_of_undying"] = ("crystal", "#FF9EC7", "#FFFFFF")
+        for name, (kind, c1, c2) in items.items():
+            im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            if kind == "ellipse":
+                d.ellipse([2, 3, 13, 14], fill=hexc(c1), outline=shade(hexc(c1), 0.7))
+                d.ellipse([4, 5, 7, 8], fill=hexc(c2))
+                if name in ("apple", "golden_apple") and key == "jaly_candy":
+                    d.line([(8, 0), (8, 4)], fill=hexc("#C8A26A"), width=2)
+            else:
+                d.polygon([(8, 0), (14, 6), (8, 15), (2, 6)], fill=hexc(c1), outline=shade(hexc(c1), 0.7))
+                d.line([(8, 2), (8, 12)], fill=hexc(c2))
+            save(im, f"{tx}/item/{name}.png")
+        icon = build_icon(64).convert("RGBA")
+        ImageDraw.Draw(icon).rectangle([0, 0, 63, 63], outline=hexc(hotbar[1]), width=3)
+        save(icon, os.path.join(p, "pack.png"))
+        save(icon, f"{TEX}/gui/pack_{key}.png")
+    for k in ("jaly_christmas", "jaly_winter"):
+        Image.open(os.path.join(base, k, "pack.png")).save(f"{TEX}/gui/pack_{k}.png")
+
+
 # ---------------------------------------------------------------- installer bitmaps
 def build_installer(logo):
     out = os.path.join(ROOT, "installer")
@@ -900,6 +1113,9 @@ def main():
     icon = build_icon(128)
     save(icon, f"{ASSETS}/icon.png")
     build_packs()
+    build_wings()
+    build_trail_icons()
+    build_more_packs()
     build_installer(logo)
     ui = os.path.join(ROOT, "launcher/ui")
     os.makedirs(ui, exist_ok=True)
