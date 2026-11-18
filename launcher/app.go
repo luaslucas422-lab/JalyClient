@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -124,7 +125,13 @@ func selfTest(dir string) int {
 			ID string `json:"project_id"`
 		} `json:"hits"`
 	}
-	_ = getJSON(`https://api.modrinth.com/v2/search?limit=1&index=downloads&facets=[["project_type:resourcepack"],["versions:1.21.1"]]`, &sr)
+	sq := url.Values{}
+	sq.Set("limit", "1")
+	sq.Set("index", "downloads")
+	sq.Set("facets", `[["project_type:resourcepack"],["versions:1.21.1"]]`)
+	if err := getJSON("https://api.modrinth.com/v2/search?"+sq.Encode(), &sr); err != nil {
+		fmt.Println("search error: " + err.Error())
+	}
 	if len(sr.Hits) == 0 {
 		fmt.Println("FAIL resource pack search")
 		return 1
