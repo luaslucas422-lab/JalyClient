@@ -98,7 +98,7 @@ public class ShopScreen extends Screen {
             int px = panelX(), pw = panelW(), py = panelY(), ph = panelH();
             int lw = prevW() - 4;
             boolean owned = ShopApi.owns(selected.id());
-            String txt = owned ? (isEquipped(selected) ? "Unequip" : "Equip") : "Buy - " + selected.price() + " coins";
+            String txt = owned ? (isEquipped(selected) ? "Unequip" : "Equip") : "Buy (" + selected.price() + ")";
             addDrawableChild(new JalyButton(px + 6, py + ph - 24, lw, 18, Text.literal(txt), b -> buyOrEquip()));
         }
     }
@@ -383,7 +383,7 @@ public class ShopScreen extends Screen {
         boolean right = headR + 8 + tw <= limit - 4;
         if (right) bx = headR + 8;
         else if (headL - 8 - tw >= 4) bx = headL - 8 - tw;
-        else { bx = Math.max(4, Math.min(limit - tw - 4, sx(KX) - tw / 2)); by = Math.max(28, sy(KFEET - 40 * KS) - 18); }
+        else { bx = Math.max(4, Math.min(limit - tw - 4, sx(KX) - tw / 2)); by = Math.max(ShopApi.signedIn ? 30 : 50, sy(KFEET - 40 * KS) - 18); }
         Gfx.round(ctx, bx, by, tw, 16, Gfx.alpha(rage ? 0xFFFFE0E0 : 0xFFFFFFFF, a * in));
         Gfx.outline(ctx, bx, by, tw, 16, Gfx.alpha(rage ? 0xFFC8102E : 0xFF1A2414, a * in));
         int tailX = bx == headR + 8 ? bx - 3 : bx + tw;
@@ -443,7 +443,13 @@ public class ShopScreen extends Screen {
             } else {
                 drawIcon(ctx, selected, px + 6 + lw / 2 - 32, py + 40, 64);
             }
-            Gfx.centered(ctx, Gfx.trim(selected.name(), lw - 4), px + 6 + lw / 2, py + 28, Gfx.GOLD_LIGHT);
+            float ts = Math.max(0.7f, Math.min(1f, (lw - 6) / (float) Math.max(1, textRenderer.getWidth(selected.name()))));
+            ctx.getMatrices().push();
+            ctx.getMatrices().translate(px + 6 + lw / 2f, py + 28, 0);
+            ctx.getMatrices().scale(ts, ts, 1);
+            String nm = Gfx.trim(selected.name(), Math.round((lw - 6) / ts));
+            Gfx.text(ctx, nm, -textRenderer.getWidth(nm) / 2, 0, Gfx.GOLD_LIGHT, true);
+            ctx.getMatrices().pop();
             if (p != null && t == Cosmetics.Type.TRAIL) Gfx.centered(ctx, "(trails show in the world)", px + 6 + lw / 2, py + 40, Gfx.MUTED);
         } else {
             Gfx.centered(ctx, "Pick something to", px + 6 + lw / 2, py + ph / 2 - 10, Gfx.MUTED);
