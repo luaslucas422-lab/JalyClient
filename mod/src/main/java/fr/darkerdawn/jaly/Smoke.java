@@ -95,6 +95,8 @@ final class Smoke {
                 cfg.wings = "angel";
                 cfg.pet = "snowman";
                 cfg.trail = "snow";
+                boolean smooth = cfg.zoomSmooth;
+                cfg.zoomSmooth = false;
                 Features.zoomForced = true;
                 double fov = 70;
                 for (int i = 0; i < 80; i++) fov = Features.applyZoom(70);
@@ -102,6 +104,7 @@ final class Smoke {
                 Features.zoomForced = false;
                 for (int i = 0; i < 80; i++) fov = Features.applyZoom(70);
                 check("zoom releases", fov > 65);
+                cfg.zoomSmooth = smooth;
                 check("4 Christmas packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_frost") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_candy") != null);
                 check("gift exclusive starts locked", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "present"));
                 c.inGameHud.getChatHud().addMessage(Text.literal("Merry Christmas from the JalyClient test!"));
