@@ -1,4 +1,3 @@
-import os
 """Downloads every default-on launcher mod (plus required dependencies) for the in-game CI test.
 Usage: python3 tools/fetch_modpack.py <mods dir>   (skips Fabric API: the dev run already has it)"""
 import json, os, sys, urllib.parse, urllib.request
@@ -8,7 +7,7 @@ UA = {"User-Agent": "DarkerDawnFR/JalyClient-CI"}
 dest = sys.argv[1]
 os.makedirs(dest, exist_ok=True)
 cat = json.load(open(os.path.join(os.path.dirname(__file__), "..", "launcher", "catalog.json")))
-want = [m["slug"] for m in cat if m["default"]]
+want = [] if "--api-only" in sys.argv else [m["slug"] for m in cat if m["default"]]
 with_api = "--with-fabric-api" in sys.argv
 seen, done, skipped = (set() if with_api else {"P7dR8mSH"}), [], {}
 if with_api:

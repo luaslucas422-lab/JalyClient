@@ -115,7 +115,7 @@ jobs:
           (cd mod && gradle build -x test)
           mkdir -p work/mods
           cp $(ls mod/build/libs/*.jar | grep -v sources) work/mods/
-          JALY_MC=1.21 python3 tools/fetch_modpack.py work/mods --with-fabric-api
+          JALY_MC=1.21 python3 tools/fetch_modpack.py work/mods --with-fabric-api --api-only && ls work/mods
           printf 'onboardAccessibility:false\ntutorialStep:none\nnarrator:0\nsoundCategory_master:0.0\n' > work/options.txt
       - name: Launch Minecraft 1.21 with JalyClient
         run: |
