@@ -58,7 +58,7 @@ public class LodgeScreen extends Screen {
         ox = (int) ((width - W * scale) / 2);
         oy = Math.max(4, (int) ((height - 30 - H * scale) / 2));
         int n = spots.length;
-        int bw = Math.min(70, (width - 16) / n - 4);
+        int bw = Math.min(80, (width - 16) / n - 4);
         int total = n * (bw + 4) - 4;
         int bx = (width - total) / 2, by = height - 24;
         for (int i = 0; i < n; i++) {
@@ -222,7 +222,7 @@ public class LodgeScreen extends Screen {
         net.minecraft.util.Identifier skin;
         if (client.player != null) skin = client.player.getSkinTextures().texture();
         else skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
-        float px = scale;
+        float px = scale * 1.5f;
         long now = Gfx.now();
         float breathe = (float) Math.sin(now / 600.0) * 0.3f;
         ctx.getMatrices().push();
@@ -252,7 +252,7 @@ public class LodgeScreen extends Screen {
         if (!speech.isEmpty() && now - speechAt < 3500) {
             float a = Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3000 ? (3500 - (now - speechAt)) / 500f : 1f);
             int tw = textRenderer.getWidth(speech) + 10;
-            int bx = Math.max(4, Math.min(width - tw - 4, sx(212) - tw / 2)), by = sy(150) - Math.round(46 * scale) - 18;
+            int bx = Math.max(4, Math.min(width - tw - 4, sx(212) - tw / 2)), by = sy(150) - Math.round(46 * scale * 1.5f) - 14;
             Gfx.round(ctx, bx, by, tw, 14, Gfx.alpha(0xFFFFFFFF, a));
             Gfx.outline(ctx, bx, by, tw, 14, Gfx.alpha(0xFF1A2414, a));
             ctx.fill(sx(212) - 2, by + 14, sx(212) + 2, by + 17, Gfx.alpha(0xFFFFFFFF, a));
