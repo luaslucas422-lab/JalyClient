@@ -60,7 +60,7 @@ public class CreditsScreen extends JalyScreen {
 
     /** "MORE CREDITS": King Bob the 3, a googolplex times. It never ends. */
     public static class MoreCreditsScreen extends JalyScreen {
-        private double scroll;
+        private double scroll = 170; // start with the screen already full of King Bobs
         private long last = -1;
         private double speed = 1;
 
@@ -93,7 +93,7 @@ public class CreditsScreen extends JalyScreen {
                 Gfx.text(ctx, "#" + String.format("%,d", i + 1), mid + w / 2 + 8, y + 2, Gfx.alpha(Gfx.MUTED, open), false);
             }
             ctx.disableScissor();
-            long shown = Math.max(0, (long) (scroll / row));
+            long shown = Math.max(0, (long) ((scroll + (bottom - top)) / row));
             String progress = String.format("%,d of a googolplex (10^10^100). Almost done!%s", shown, speed > 1 ? " (" + (int) speed + "x)" : "");
             Gfx.centered(ctx, Gfx.trim(progress, pw - 16), mid, py + ph - 16, Gfx.alpha(Gfx.GOLD_LIGHT, open));
         }
