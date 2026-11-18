@@ -20,6 +20,8 @@ import java.util.Map;
 public class CosmeticsScreen extends JalyScreen {
     private static final int TILE_W = 62, TILE_H = 54, GAP = 5;
     private Cosmetics.Type tab = Cosmetics.Type.HAT;
+    private int gridTop;
+    private double scroll;
     private float spin = 200f;
     private boolean dragging;
     private long last = -1;
@@ -30,12 +32,15 @@ public class CosmeticsScreen extends JalyScreen {
 
     @Override
     protected void build() {
-        int x = gridX();
-        int bw = Math.max(30, Math.min(54, (gridW() - 28) / 7));
+        int x = gridX(), y = cy();
         for (Cosmetics.Type t : Cosmetics.Type.values()) {
-            addDrawableChild(new JalyButton(x, cy(), bw, 14, Text.literal(t.label), b -> { tab = t; clearAndInit(); }).selected(tab == t));
+            String label = t == Cosmetics.Type.NAME_COLOR ? "Name Colours" : t == Cosmetics.Type.NAME_FX ? "Name Effects" : t.label;
+            int bw = textRenderer.getWidth(label) + 12;
+            if (x + bw > gridX() + gridW()) { x = gridX(); y += 17; }
+            addDrawableChild(new JalyButton(x, y, bw, 14, Text.literal(label), b -> { tab = t; clearAndInit(); }).selected(tab == t));
             x += bw + 4;
         }
+        gridTop = y + 20;
     }
 
     private int previewW() { return Math.min(150, cw() / 3); }
@@ -79,7 +84,11 @@ public class CosmeticsScreen extends JalyScreen {
         // grid
         List<Map.Entry<String, String>> list = items();
         String selected = Cosmetics.selected(tab);
-        int gy = cy() + 20;
+        int gy = gridTop - (int) scroll;
+        int maxS = Math.max(0, ((list.size() + cols() - 1) / cols()) * (TILE_H + GAP) - (py + ph - 8 - gridTop));
+        scroll = Math.max(0, Math.min(scroll, maxS));
+        gy = gridTop - (int) scroll;
+        ctx.enableScissor(gridX() - 2, gridTop - 3, gridX() + gridW() + 2, py + ph - 6);
         for (int i = 0; i < list.size(); i++) {
             int x = gridX() + (i % cols()) * (TILE_W + GAP), y = gy + (i / cols()) * (TILE_H + GAP);
             String id = list.get(i).getKey();
@@ -108,13 +117,17 @@ public class CosmeticsScreen extends JalyScreen {
             }
             if (locked) {
                 int door = fr.darkerdawn.jaly.Festive.doorFor(tab.key + ":" + id);
-                Gfx.round(ctx, x + 4, y - lift + 14, TILE_W - 8, 12, 0xE0B11A33);
-                Gfx.centered(ctx, "Gift " + door, x + TILE_W / 2, y - lift + 16, Gfx.SNOW);
+                boolean nameTile = tab == Cosmetics.Type.NAME_COLOR || tab == Cosmetics.Type.NAME_FX;
+                int ty0 = nameTile ? y - lift + 30 : y - lift + 14;
+                Gfx.round(ctx, x + 4, ty0, TILE_W - 8, 12, 0xE0B11A33);
+                Gfx.centered(ctx, "Gift " + door, x + TILE_W / 2, ty0 + 2, Gfx.SNOW);
             }
             Gfx.centered(ctx, Gfx.trim(list.get(i).getValue(), TILE_W - 4), x + TILE_W / 2, y - lift + TILE_H - 13, locked ? 0xFF8FA088 : sel ? Gfx.GOLD_LIGHT : Gfx.SNOW);
             if (sel) Gfx.sprite(ctx, Gfx.STAR, new int[]{Gfx.GOLD_LIGHT}, "#", x + TILE_W - 8, y - lift + 3, 1, 1f);
         }
-        Gfx.text(ctx, "All free! Red tags unlock from daily Gifts.", gridX(), py + ph - 14, Gfx.GOLD_LIGHT, true);
+        ctx.disableScissor();
+        String tag = "All free! Red tags unlock from Gifts";
+        Gfx.text(ctx, tag, px + pw - 8 - textRenderer.getWidth(tag), py + 12, Gfx.GOLD_LIGHT, true);
     }
 
     /** Like the inventory player preview, but spinning so you can see your cape. */
@@ -147,9 +160,10 @@ public class CosmeticsScreen extends JalyScreen {
             return true;
         }
         List<Map.Entry<String, String>> list = items();
-        int gy = cy() + 20;
+        int gy = gridTop - (int) scroll;
         for (int i = 0; i < list.size(); i++) {
             int x = gridX() + (i % cols()) * (TILE_W + GAP), y = gy + (i / cols()) * (TILE_H + GAP);
+            if (mouseY < gridTop || mouseY > py + ph - 6) continue;
             if (mouseX >= x && mouseX < x + TILE_W && mouseY >= y && mouseY < y + TILE_H) {
                 select(list.get(i).getKey());
                 return true;
@@ -170,6 +184,12 @@ public class CosmeticsScreen extends JalyScreen {
     public void showTab(Cosmetics.Type t) {
         tab = t;
         clearAndInit();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        scroll -= verticalAmount * 24;
+        return true;
     }
 
     @Override
