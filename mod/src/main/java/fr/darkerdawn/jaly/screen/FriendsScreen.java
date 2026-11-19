@@ -59,7 +59,7 @@ public class FriendsScreen extends JalyScreen {
             c.friendsUsed = true;
             JalyConfig.save();
         }
-        if (!fr.darkerdawn.jaly.Smoke.ON) {
+        if (!Boolean.getBoolean("jaly.smoke")) {
             if (ShopApi.signedIn) Friends.sync(client);
             else if (!ShopApi.busy) ShopApi.connect().thenRun(() -> Friends.sync(client));
         }
