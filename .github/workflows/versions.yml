@@ -23,6 +23,9 @@ jobs:
           gradle build -x test -Pmc=${{ matrix.mc }} > build.log 2>&1 && ok=1 || ok=0
           grep -E "error:|warning: \[" build.log | grep -v "^\s" | sed 's#.*/pp/[^/]*/java/##' | sort -u | head -400
           grep -E "What went wrong" -A6 build.log | head -20
+          echo "=====FULL"
+          grep -A4 -E "\.java:[0-9]+: error:" build.log | sed 's#.*/pp/[^/]*/java/##' | head -3000
+          echo "=====ENDFULL"
           echo "ERRORS $(grep -c 'error:' build.log)"
           [ "$ok" = 1 ]
       - name: Launch Minecraft ${{ matrix.mc }} with JalyClient (title screen test)
