@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 public final class Modrinth {
     private Modrinth() {}
 
-    public static final String MC = net.minecraft.SharedConstants.getGameVersion().getName();
+    public static final String MC = net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer("minecraft").map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("1.21.1");
     private static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).followRedirects(HttpClient.Redirect.NORMAL).build();
 
     public enum Kind {

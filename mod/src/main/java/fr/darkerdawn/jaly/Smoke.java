@@ -150,7 +150,7 @@ final class Smoke {
                         p.equipStack(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS));
                         p.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
                         p.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2400, 1));
-                        ServerWorld w = p.getServerWorld();
+                        ServerWorld w = fr.darkerdawn.jaly.Compat.serverWorld(p);
                         BlockPos base = p.getBlockPos();
                         w.setBlockState(base.add(1, 0, 3), Blocks.CHEST.getDefaultState());
                         w.setBlockState(base.add(2, 0, 3), Blocks.OAK_LEAVES.getDefaultState());
@@ -380,8 +380,12 @@ final class Smoke {
                 cfg.buttonStyle = "aurora";
                 cfg.panorama = "aurora";
                 c.setScreen(null);
+                //#if >=1.21.6
+                c.disconnectWithSavingScreen();
+                //#else
                 c.world.disconnect();
                 c.disconnect(new MessageScreen(Text.literal("Saving")));
+                //#endif
                 c.setScreen(new TitleScreen());
                 titleTicks = 0;
             }

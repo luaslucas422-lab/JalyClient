@@ -512,7 +512,7 @@ public class ShopScreen extends Screen {
         fr.darkerdawn.jaly.Compat.setPrevYaws(e, fr.darkerdawn.jaly.Compat.prevBodyYaw(e), angle);
         Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI);
         float sc = size / e.getScale();
-        InventoryScreen.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, sc, new Vector3f(0, e.getHeight() / 2f, 0), rot, new Quaternionf(), e);
+        fr.darkerdawn.jaly.Compat.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, sc, new Vector3f(0, e.getHeight() / 2f, 0), rot, new Quaternionf(), e);
         e.bodyYaw = bodyYaw;
         fr.darkerdawn.jaly.Compat.setPrevYaws(e, prevBody, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(yaw);

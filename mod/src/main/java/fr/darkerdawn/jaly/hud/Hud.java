@@ -83,9 +83,9 @@ public final class Hud {
         public void draw(DrawContext ctx, MinecraftClient mc, JalyConfig.HudStyle s, boolean preview) {
             int x = 4;
             String open = s.brackets ? "[" : "";
-            if (!open.isEmpty()) x = ctx.drawText(mc.textRenderer, open, x, 3, s.text, s.shadow);
-            if (!label.isEmpty()) x = ctx.drawText(mc.textRenderer, label + " ", x, 3, s.accent, s.shadow);
-            x = ctx.drawText(mc.textRenderer, cached, x, 3, s.text, s.shadow);
+            if (!open.isEmpty()) x = Gfx.textX(ctx, mc.textRenderer, open, x, 3, s.text, s.shadow);
+            if (!label.isEmpty()) x = Gfx.textX(ctx, mc.textRenderer, label + " ", x, 3, s.accent, s.shadow);
+            x = Gfx.textX(ctx, mc.textRenderer, cached, x, 3, s.text, s.shadow);
             if (s.brackets) ctx.drawText(mc.textRenderer, "]", x, 3, s.text, s.shadow);
         }
     }
@@ -197,7 +197,9 @@ public final class Hud {
             box(ctx, 112, l.size() * 20 + 2, s);
             int y = 2;
             for (StatusEffectInstance e : l) {
-                //#if >=1.21.2
+                //#if >=1.21.6
+                ctx.drawGuiTexture(net.minecraft.client.gl.RenderPipelines.GUI_TEXTURED, net.minecraft.client.gui.hud.InGameHud.getEffectTexture(e.getEffectType()), 2, y, 18, 18);
+                //#elif >=1.21.2
                 ctx.drawSpriteStretched(net.minecraft.client.render.RenderLayer::getGuiTextured, mc.getStatusEffectSpriteManager().getSprite(e.getEffectType()), 2, y, 18, 18);
                 //#else
                 ctx.drawSprite(2, y, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(e.getEffectType()));

@@ -83,6 +83,12 @@ public final class AvatarPreview {
         m.jacket.copyTransform(m.body);
         //#endif
 
+        //#if >=1.21.6
+        int half = Math.round(size * 1.3f);
+        int y1 = Math.round(feetY - size * 2.3f), y2 = Math.round(feetY + size * 0.2f);
+        ctx.state.addSpecialElement(new State(m, st, anim, yawDeg, x - half, y1, x + half, y2, size, feetY - (y1 + y2) / 2f, null,
+                net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState.createBounds(x - half, y1, x + half, y2, null)));
+        //#else
         MatrixStack ms = ctx.getMatrices();
         ms.push();
         ms.translate(x, feetY, 120);
@@ -103,7 +109,49 @@ public final class AvatarPreview {
         //#endif
         ms.pop();
         DiffuseLighting.enableGuiDepthLighting();
+        //#endif
     }
+
+    //#if >=1.21.6
+    /** What the GUI needs to draw the spinning avatar later this frame (1.21.6+ draws 3D GUI bits off-screen). */
+    public record State(PlayerEntityModel model, SkinTextures skin, float anim, float yaw, int x1, int y1, int x2, int y2, float scale,
+                        float feetOffset, net.minecraft.client.gui.ScreenRect scissorArea, net.minecraft.client.gui.ScreenRect bounds)
+            implements net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState {}
+
+    public static final class Renderer extends net.minecraft.client.gui.render.SpecialGuiElementRenderer<State> {
+        public Renderer(VertexConsumerProvider.Immediate vc) {
+            super(vc);
+        }
+
+        @Override
+        public Class<State> getElementClass() {
+            return State.class;
+        }
+
+        @Override
+        protected float getYOffset(int height, int guiScale) {
+            return height / 2f;
+        }
+
+        @Override
+        protected void render(State s, MatrixStack ms) {
+            MinecraftClient.getInstance().gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ENTITY_IN_UI);
+            ms.translate(0f, s.feetOffset() / s.scale(), 0f);
+            ms.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180f));
+            ms.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(s.yaw()));
+            ms.scale(-1f, -1f, 1f);
+            ms.scale(0.9375f, 0.9375f, 0.9375f);
+            ms.translate(0f, -1.501f, 0f);
+            renderAll(ms, vertexConsumers, s.model(), s.skin(), s.anim());
+            vertexConsumers.draw();
+        }
+
+        @Override
+        protected String getName() {
+            return "jalyclient avatar";
+        }
+    }
+    //#endif
 
     //#if >=1.21.2
     private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel m, SkinTextures st, float anim) {

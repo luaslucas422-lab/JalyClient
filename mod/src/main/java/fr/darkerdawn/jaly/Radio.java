@@ -36,7 +36,7 @@ public final class Radio {
         JalyConfig c = JalyConfig.get();
         if (advance) c.radioTrack = (c.radioTrack + 1) % TRACKS.length;
         String[] t = TRACKS[Math.floorMod(c.radioTrack, TRACKS.length)];
-        playing = PositionedSoundInstance.music(SoundEvent.of(Identifier.of("jalyclient", t[0])));
+        playing = fr.darkerdawn.jaly.Compat.music(SoundEvent.of(Identifier.of("jalyclient", t[0])));
         mc.getSoundManager().play(playing);
         startedAt = System.currentTimeMillis();
         current = t[1];

@@ -47,7 +47,7 @@ public final class Sounds {
         if (!JalyConfig.get().menuMusic || "none".equals(track)) { stopMenuMusic(mc); return; }
         mc.getMusicTracker().stop();
         if (music == null || !mc.getSoundManager().isPlaying(music)) {
-            music = PositionedSoundInstance.music(SoundEvent.of(Identifier.of("jalyclient", track == null ? "menu_music" : track)));
+            music = fr.darkerdawn.jaly.Compat.music(SoundEvent.of(Identifier.of("jalyclient", track == null ? "menu_music" : track)));
             mc.getSoundManager().play(music);
         }
     }

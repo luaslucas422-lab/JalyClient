@@ -142,7 +142,7 @@ public class CosmeticsScreen extends JalyScreen {
         Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI);
         Quaternionf cam = new Quaternionf();
         float scale = size / e.getScale();
-        InventoryScreen.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, scale, new Vector3f(0, e.getHeight() / 2f, 0), rot, cam, e);
+        fr.darkerdawn.jaly.Compat.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, scale, new Vector3f(0, e.getHeight() / 2f, 0), rot, cam, e);
         e.bodyYaw = bodyYaw;
         fr.darkerdawn.jaly.Compat.setPrevYaws(e, prevBody, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(yaw);

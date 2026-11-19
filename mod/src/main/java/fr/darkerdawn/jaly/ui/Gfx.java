@@ -183,8 +183,21 @@ public final class Gfx {
         //#endif
     }
 
+    /** Draws text and returns the x just after it (1.21.6 made drawText return nothing). */
+    public static int textX(DrawContext ctx, net.minecraft.client.font.TextRenderer tr, String s, int x, int y, int color, boolean shadow) {
+        //#if >=1.21.6
+        ctx.drawText(tr, s, x, y, color, shadow);
+        return x + tr.getWidth(s) + (shadow ? 1 : 0);
+        //#else
+        return ctx.drawText(tr, s, x, y, color, shadow);
+        //#endif
+    }
+
     public static void tex(DrawContext ctx, Identifier id, int x, int y, int w, int h, float u, float v, int rw, int rh, int tw, int th, float alpha) {
-        //#if >=1.21.2
+        //#if >=1.21.6
+        int col = ((int) (Math.max(0f, Math.min(1f, alpha)) * 255) << 24) | 0xFFFFFF;
+        ctx.drawTexture(net.minecraft.client.gl.RenderPipelines.GUI_TEXTURED, id, x, y, u, v, w, h, rw, rh, tw, th, col);
+        //#elif >=1.21.2
         int col = ((int) (Math.max(0f, Math.min(1f, alpha)) * 255) << 24) | 0xFFFFFF;
         ctx.drawTexture(net.minecraft.client.render.RenderLayer::getGuiTextured, id, x, y, u, v, w, h, rw, rh, tw, th, col);
         //#else

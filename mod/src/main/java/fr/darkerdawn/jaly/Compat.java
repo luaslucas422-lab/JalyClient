@@ -20,6 +20,34 @@ public final class Compat {
         return ((int) (r * 255) << 16) | ((int) (g * 255) << 8) | (int) (b * 255);
     }
 
+    /** Entity in a GUI, centred on (x, y), `size` pixels per block. */
+    public static void drawEntity(net.minecraft.client.gui.DrawContext ctx, float x, float y, float size, org.joml.Vector3f off, org.joml.Quaternionf rot, org.joml.Quaternionf cam, net.minecraft.entity.LivingEntity e) {
+        //#if >=1.21.6
+        int hw = Math.round(size * 1.2f), hh = Math.round(size * Math.max(1.2f, e.getHeight() * 0.75f));
+        net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, Math.round(x) - hw, Math.round(y) - hh, Math.round(x) + hw, Math.round(y) + hh, size, off, rot, cam, e);
+        //#else
+        net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, x, y, size, off, rot, cam, e);
+        //#endif
+    }
+
+    public static net.minecraft.server.world.ServerWorld serverWorld(net.minecraft.server.network.ServerPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getEntityWorld();
+        //#elif >=1.21.6
+        return p.getWorld();
+        //#else
+        return p.getServerWorld();
+        //#endif
+    }
+
+    public static net.minecraft.client.sound.PositionedSoundInstance music(net.minecraft.sound.SoundEvent ev) {
+        //#if >=1.21.6
+        return net.minecraft.client.sound.PositionedSoundInstance.music(ev, 1f);
+        //#else
+        return net.minecraft.client.sound.PositionedSoundInstance.music(ev);
+        //#endif
+    }
+
     public static DustParticleEffect dust(float r, float g, float b, float size) {
         //#if >=1.21.2
         return new DustParticleEffect(rgb(r, g, b), size);

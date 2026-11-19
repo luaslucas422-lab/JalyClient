@@ -43,6 +43,9 @@ public class JalyClient implements ClientModInitializer {
     public void onInitializeClient() {
         JalyConfig.load(FabricLoader.getInstance().getConfigDir());
         Mods.init();
+        //#if >=1.21.6
+        net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry.register(c -> new fr.darkerdawn.jaly.cosmetic.AvatarPreview.Renderer(c.vertexConsumers()));
+        //#endif
         LOG.info("JalyClient {} loaded with {} mods. Merry Christmas!", VERSION, Mods.ALL.size());
 
         MENU_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY));
