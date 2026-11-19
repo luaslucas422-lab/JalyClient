@@ -165,6 +165,7 @@ java {
 tasks.withType(JavaCompile).configureEach {
     options.release = 21
     options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xmaxerrs', '3000']
 }
 
 // Prints the public/protected API of every Minecraft/Fabric class JalyClient uses (for porting to other versions).

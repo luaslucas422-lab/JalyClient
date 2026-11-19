@@ -1,0 +1,33 @@
+name: More versions
+on:
+  push:
+    branches: [main]
+    paths: ['mod/**', '.github/workflows/versions.yml']
+  workflow_dispatch: {}
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        mc: ['1.21.4', '1.21.5', '1.21.8', '1.21.10', '1.21.11']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '9.2.1' }
+      - name: Build JalyClient for ${{ matrix.mc }}
+        working-directory: mod
+        run: |
+          gradle build -x test -Pmc=${{ matrix.mc }} > build.log 2>&1 && ok=1 || ok=0
+          grep -E "error:|warning: \[" build.log | grep -v "^\s" | sed 's#.*/pp/[^/]*/java/##' | sort -u | head -400
+          grep -E "What went wrong" -A6 build.log | head -20
+          echo "ERRORS $(grep -c 'error:' build.log)"
+          [ "$ok" = 1 ]
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JalyClient-mc${{ matrix.mc }}
+          path: |
+            mod/build/libs/*.jar
+            !mod/build/libs/*-sources.jar
