@@ -28,11 +28,11 @@ public final class WindGrass {
     }
 
     /** Wraps the vanilla animator and ticks it faster or slower. */
-    public static final class Animator implements SpriteContents.Animator {
-        private final SpriteContents.Animator inner;
+    public static final class Animator implements net.minecraft.client.texture.Animator {
+        private final net.minecraft.client.texture.Animator inner;
         private float acc;
 
-        public Animator(SpriteContents.Animator inner) { this.inner = inner; }
+        public Animator(net.minecraft.client.texture.Animator inner) { this.inner = inner; }
 
         @Override
         public void tick(int x, int y) {
