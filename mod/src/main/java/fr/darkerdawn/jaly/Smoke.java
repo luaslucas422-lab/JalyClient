@@ -154,7 +154,11 @@ final class Smoke {
                         BlockPos base = p.getBlockPos();
                         w.setBlockState(base.add(1, 0, 3), Blocks.CHEST.getDefaultState());
                         w.setBlockState(base.add(2, 0, 3), Blocks.OAK_LEAVES.getDefaultState());
+                        //#if >=1.21.2
+                        ZombieEntity z = EntityType.HUSK.create(w, net.minecraft.entity.SpawnReason.COMMAND);
+                        //#else
                         ZombieEntity z = EntityType.HUSK.create(w);
+                        //#endif
                         if (z != null) {
                             z.refreshPositionAndAngles(p.getX() - 1.5, p.getY(), p.getZ() + 3.5, 180, 0);
                             z.setAiDisabled(true);

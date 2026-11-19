@@ -148,18 +148,18 @@ public final class Features {
         trailTick++;
         Vec3d p = mc.player.getPos().subtract(v.x * 2, 0, v.z * 2);
         ParticleEffect fx = switch (t) {
-            case "candy" -> new DustParticleEffect(trailTick % 2 == 0 ? new Vector3f(0.88f, 0.22f, 0.31f) : new Vector3f(1f, 1f, 1f), 1.1f);
+            case "candy" -> (trailTick % 2 == 0 ? Compat.dust(0.88f, 0.22f, 0.31f, 1.1f) : Compat.dust(1f, 1f, 1f, 1.1f));
             case "hearts" -> trailTick % 5 == 0 ? ParticleTypes.HEART : null;
             case "notes" -> trailTick % 3 == 0 ? ParticleTypes.NOTE : null;
-            case "gold" -> new DustParticleEffect(new Vector3f(1f, 0.85f, 0.29f), 0.9f);
+            case "gold" -> Compat.dust(1f, 0.85f, 0.29f, 0.9f);
             case "stars" -> trailTick % 2 == 0 ? ParticleTypes.END_ROD : null;
-            case "aurora" -> new DustColorTransitionParticleEffect(new Vector3f(0.24f, 1f, 0.69f), new Vector3f(0.7f, 0.36f, 1f), 1.2f);
+            case "aurora" -> Compat.dustFade(0.24f, 1f, 0.69f, 0.7f, 0.36f, 1f, 1.2f);
             case "cherry" -> ParticleTypes.CHERRY_LEAVES;
             case "embers" -> trailTick % 2 == 0 ? ParticleTypes.SMALL_FLAME : null;
             case "totem" -> ParticleTypes.TOTEM_OF_UNDYING;
-            case "fireworks" -> trailTick % 2 == 0 ? ParticleTypes.FIREWORK : new DustParticleEffect(new Vector3f(1f, 0.3f, 0.6f), 1.2f);
-            case "galaxy" -> trailTick % 3 == 0 ? ParticleTypes.END_ROD : new DustColorTransitionParticleEffect(new Vector3f(0.6f, 0.4f, 1f), new Vector3f(0.3f, 0.75f, 1f), 1.3f);
-            case "og" -> new DustParticleEffect(trailTick % 2 == 0 ? new Vector3f(1f, 0.85f, 0.29f) : new Vector3f(0.88f, 0.22f, 0.31f), 1.3f);
+            case "fireworks" -> trailTick % 2 == 0 ? ParticleTypes.FIREWORK : Compat.dust(1f, 0.3f, 0.6f, 1.2f);
+            case "galaxy" -> trailTick % 3 == 0 ? ParticleTypes.END_ROD : Compat.dustFade(0.6f, 0.4f, 1f, 0.3f, 0.75f, 1f, 1.3f);
+            case "og" -> (trailTick % 2 == 0 ? Compat.dust(1f, 0.85f, 0.29f, 1.3f) : Compat.dust(0.88f, 0.22f, 0.31f, 1.3f));
             default -> ParticleTypes.SNOWFLAKE;
         };
         if (fx == null) return;
@@ -182,7 +182,7 @@ public final class Features {
         double lx = 0.95 * 0.9375, lz = 0.2 * 0.9375;
         double wx = lx * Math.cos(a) + lz * Math.sin(a), wz = -lx * Math.sin(a) + lz * Math.cos(a);
         double y = mc.player.getY() + 1.1;
-        var fx = pet.equals("frost_dragon") ? ParticleTypes.SNOWFLAKE : pet.equals("sleigh") ? new DustParticleEffect(new Vector3f(1f, 0.85f, 0.3f), 0.7f) : ParticleTypes.WHITE_ASH;
+        var fx = pet.equals("frost_dragon") ? ParticleTypes.SNOWFLAKE : pet.equals("sleigh") ? Compat.dust(1f, 0.85f, 0.3f, 0.7f) : ParticleTypes.WHITE_ASH;
         mc.world.addParticle(fx, mc.player.getX() + wx + (RNG.nextDouble() - 0.5) * 0.3, y, mc.player.getZ() + wz + (RNG.nextDouble() - 0.5) * 0.3, 0, -0.03, 0);
     }
 

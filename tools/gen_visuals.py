@@ -219,6 +219,11 @@ for i, (pid, main, accent) in enumerate(PRESETS):
     save(disc(main, accent, pid), f"{ASSETS}/textures/item/disc_{pid}.png")
     wjson(f"{ASSETS}/models/item/disc_{pid}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"jalyclient:item/disc_{pid}"}})
     overrides.append({"predicate": {"custom_model_data": 9101 + i}, "model": f"jalyclient:item/disc_{pid}"})
+# 1.21.4+ item model definition (same discs)
+wjson(os.path.join(RES, "assets/minecraft/items/music_disc_precipice.json"), {"model": {
+    "type": "minecraft:range_dispatch", "property": "minecraft:custom_model_data", "index": 0,
+    "fallback": {"type": "minecraft:model", "model": "minecraft:item/music_disc_precipice"},
+    "entries": [{"threshold": 9101 + i, "model": {"type": "minecraft:model", "model": f"jalyclient:item/disc_{pid}"}} for i, (pid, _, _) in enumerate(PRESETS)]}})
 wjson(os.path.join(RES, "assets/minecraft/models/item/music_disc_precipice.json"),
       {"parent": "minecraft:item/template_music_disc", "textures": {"layer0": "minecraft:item/music_disc_precipice"}, "overrides": overrides})
 print("visuals ok")

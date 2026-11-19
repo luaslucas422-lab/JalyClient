@@ -99,7 +99,7 @@ public final class PvpExtras {
         if (mc.player == null) return "Pearl 64%";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < COOLDOWN_ITEMS.length; i++) {
-            float p = mc.player.getItemCooldownManager().getCooldownProgress(COOLDOWN_ITEMS[i], 0f);
+            float p = Compat.cooldown(mc.player, COOLDOWN_ITEMS[i]);
             if (p > 0) {
                 if (!sb.isEmpty()) sb.append("  ");
                 sb.append(COOLDOWN_NAMES[i]).append(' ').append(Math.round(p * 100)).append('%');

@@ -33,8 +33,8 @@ public final class InvertedSkin {
             img.loadFromTextureImage(0, false);
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
-                    int c = img.getColor(x, y);
-                    if ((c >>> 24) != 0) img.setColor(x, y, c ^ 0x00FFFFFF);
+                    int c = fr.darkerdawn.jaly.Compat.getPixel(img, x, y);
+                    if ((c >>> 24) != 0) fr.darkerdawn.jaly.Compat.setPixel(img, x, y, c ^ 0x00FFFFFF);
                 }
             }
             mc.getTextureManager().registerTexture(OUT, new NativeImageBackedTexture(img));

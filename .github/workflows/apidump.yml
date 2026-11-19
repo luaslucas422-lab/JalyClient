@@ -22,7 +22,7 @@ jobs:
             YARN=$(curl -s https://meta.fabricmc.net/v2/versions/yarn/$V | jq -r '.[0].version')
             FAPI=$(curl -s "https://api.modrinth.com/v2/project/P7dR8mSH/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%22$V%22%5D" | jq -r '.[0].version_number')
             echo "VERSIONS $V yarn=$YARN fabric_api=$FAPI"
-            gradle apiDump -q -Pminecraft_version=$V -Pyarn_mappings=$YARN -Pfabric_version=$FAPI || { echo "DUMP FAILED $V"; continue; }
+            gradle apiDump -q -Pmc=$V || { echo "DUMP FAILED $V"; continue; }
             cp build/api.txt /tmp/api-$V.txt
           done
           for V in ${{ inputs.versions }}; do

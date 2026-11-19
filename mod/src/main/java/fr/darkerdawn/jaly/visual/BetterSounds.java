@@ -78,7 +78,7 @@ public final class BetterSounds {
         float windT = overworld ? (0.12f + (float) Math.max(0, Math.min(0.35, (y - 70) / 120.0)) + rain * 0.15f + thunder * 0.2f) * (sky ? 1f : skyLight > 6 ? 0.35f : 0f) : 0f;
         wind = keep(mc, wind, "amb_wind", windT);
         // rain drumming on the roof when you're sheltered
-        float roofT = overworld && rain > 0.05f && !sky && skyLight > 3 && w.getBiome(head).value().getPrecipitation(head) == net.minecraft.world.biome.Biome.Precipitation.RAIN ? 0.45f * rain : 0f;
+        float roofT = overworld && rain > 0.05f && !sky && skyLight > 3 && fr.darkerdawn.jaly.Compat.precipitation(w, head) == net.minecraft.world.biome.Biome.Precipitation.RAIN ? 0.45f * rain : 0f;
         roof = keep(mc, roof, "amb_rain_roof", roofT);
         // crickets on warm nights
         float temp = biome.value().getTemperature();

@@ -26,7 +26,11 @@ final class WorldDraw {
         draw.accept(b);
         BuiltBuffer built = b.endNullable();
         if (built == null) return;
+        //#if >=1.21.2
+        RenderSystem.setShader(net.minecraft.client.gl.ShaderProgramKeys.POSITION_COLOR);
+        //#else
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        //#endif
         setup(additive, depthTest);
         BufferRenderer.drawWithGlobalProgram(built);
         restore();
@@ -38,7 +42,11 @@ final class WorldDraw {
         draw.accept(b);
         BuiltBuffer built = b.endNullable();
         if (built == null) return;
+        //#if >=1.21.2
+        RenderSystem.setShader(net.minecraft.client.gl.ShaderProgramKeys.POSITION_TEX_COLOR);
+        //#else
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        //#endif
         RenderSystem.setShaderTexture(0, tex);
         setup(false, depthTest);
         BufferRenderer.drawWithGlobalProgram(built);

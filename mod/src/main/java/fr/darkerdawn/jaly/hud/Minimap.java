@@ -59,7 +59,7 @@ public final class Minimap extends HudModule {
                     MapColor.Brightness b = top > north ? MapColor.Brightness.HIGH : top < north ? MapColor.Brightness.LOW : MapColor.Brightness.NORMAL;
                     color = mcCol == MapColor.CLEAR ? 0xFF203018 : mcCol.getRenderColor(b);
                 }
-                image.setColor(x, rowCursor, color);
+                fr.darkerdawn.jaly.Compat.setPixel(image, x, rowCursor, color);
             }
         }
         if (rowCursor >= SIZE) {

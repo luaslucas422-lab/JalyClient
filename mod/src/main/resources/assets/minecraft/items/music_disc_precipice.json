@@ -1,0 +1,69 @@
+{
+ "model": {
+  "type": "minecraft:range_dispatch",
+  "property": "minecraft:custom_model_data",
+  "index": 0,
+  "fallback": {
+   "type": "minecraft:model",
+   "model": "minecraft:item/music_disc_precipice"
+  },
+  "entries": [
+   {
+    "threshold": 9101,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_red"
+    }
+   },
+   {
+    "threshold": 9102,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_candy"
+    }
+   },
+   {
+    "threshold": 9103,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_gold"
+    }
+   },
+   {
+    "threshold": 9104,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_frost"
+    }
+   },
+   {
+    "threshold": 9105,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_holly"
+    }
+   },
+   {
+    "threshold": 9106,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_midnight"
+    }
+   },
+   {
+    "threshold": 9107,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_ginger"
+    }
+   },
+   {
+    "threshold": 9108,
+    "model": {
+     "type": "minecraft:model",
+     "model": "jalyclient:item/disc_rainbow"
+    }
+   }
+  ]
+ }
+}

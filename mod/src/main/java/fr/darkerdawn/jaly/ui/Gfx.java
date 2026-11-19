@@ -143,11 +143,16 @@ public final class Gfx {
     public static final String[] TREE = {"...#...", "..###..", ".#####.", "..###..", ".#####.", "#######", "...#..."};
 
     public static void tex(DrawContext ctx, Identifier id, int x, int y, int w, int h, float u, float v, int rw, int rh, int tw, int th, float alpha) {
+        //#if >=1.21.2
+        int col = ((int) (Math.max(0f, Math.min(1f, alpha)) * 255) << 24) | 0xFFFFFF;
+        ctx.drawTexture(net.minecraft.client.render.RenderLayer::getGuiTextured, id, x, y, u, v, w, h, rw, rh, tw, th, col);
+        //#else
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         ctx.setShaderColor(1f, 1f, 1f, alpha);
         ctx.drawTexture(id, x, y, w, h, u, v, rw, rh, tw, th);
         ctx.setShaderColor(1f, 1f, 1f, 1f);
+        //#endif
     }
 
     public static void text(DrawContext ctx, String s, int x, int y, int color, boolean shadow) {

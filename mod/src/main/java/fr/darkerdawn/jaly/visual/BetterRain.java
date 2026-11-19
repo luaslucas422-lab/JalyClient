@@ -31,7 +31,7 @@ public final class BetterRain {
         float g = mc.world.getRainGradient(1f);
         if (g <= 0f) return 0f;
         BlockPos p = mc.player.getBlockPos();
-        if (mc.world.getBiome(p).value().getPrecipitation(p) != Biome.Precipitation.RAIN) return 0f;
+        if (fr.darkerdawn.jaly.Compat.precipitation(mc.world, p) != Biome.Precipitation.RAIN) return 0f;
         return g * (mc.world.isThundering() ? 1.4f : 1f);
     }
 

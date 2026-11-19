@@ -194,7 +194,11 @@ public final class CustomDiscs {
         ItemStack st = new ItemStack(Items.MUSIC_DISC_PRECIPICE);
         st.set(DataComponentTypes.CUSTOM_NAME, Text.literal(d.name).setStyle(Style.EMPTY.withItalic(false).withColor(Formatting.AQUA)));
         st.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.literal("JalyClient custom disc").formatted(Formatting.GRAY), Text.literal(ICON_NAMES[d.icon]).formatted(Formatting.DARK_GRAY))));
+        //#if >=1.21.4
+        st.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of((float) (MODEL_BASE + d.icon)), List.of(), List.of(), List.of()));
+        //#else
         st.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(MODEL_BASE + d.icon));
+        //#endif
         JukeboxPlayableComponent jp = st.get(DataComponentTypes.JUKEBOX_PLAYABLE);
         if (jp != null) st.set(DataComponentTypes.JUKEBOX_PLAYABLE, jp.withShowInTooltip(false));
         NbtCompound n = new NbtCompound();
