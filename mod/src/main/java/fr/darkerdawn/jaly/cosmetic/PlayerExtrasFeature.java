@@ -63,6 +63,9 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
     }
 
     /** Pets that fly (they flap their wings or are pulled by magic reindeer). The rest walk on the floor next to you. */
+    /** Menu preview: keep the pet a bit closer so it fits in the frame. */
+    public static boolean compact;
+
     public static final java.util.Set<String> FLYERS = java.util.Set.of("sleigh", "frost_dragon", "owl");
     /** Pets with no legs hop along instead. */
     public static final java.util.Set<String> HOPPERS = java.util.Set.of("present", "snowman", "og", "tree");
@@ -82,13 +85,13 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
             // hovering by your shoulder, bobbing on each wing beat
             float beat = anim * (p.equals("frost_dragon") ? 0.32f : 0.45f);
             float bob = MathHelper.sin(beat) * 0.05f;
-            matrices.translate(-0.95f, 0.05f + bob, 0.2f);
+            matrices.translate(compact ? -0.7f : -0.95f, 0.05f + bob, 0.2f);
             matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-8f * amt - 4f));
             matrices.scale(0.55f, 0.55f, 0.55f);
             animate(part, key, anim * 0.55f, 1f, beat, p);
         } else {
             // on the floor next to your feet (it stays down when you jump)
-            matrices.translate(-0.85f, 1.5f + airborne, 0.1f);
+            matrices.translate(compact ? -0.62f : -0.85f, 1.5f + airborne, 0.1f);
             float lift = 0f, roll = 0f, squash = 1f;
             if (hopper) {
                 float h = Math.abs(MathHelper.sin(walk * 0.5f));

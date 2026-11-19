@@ -96,7 +96,9 @@ public final class AvatarPreview {
             ms.pop();
         }
         PlayerExtrasFeature.renderWings(ms, vc, light, m.body, anim, true);
+        PlayerExtrasFeature.compact = true;
         PlayerExtrasFeature.renderPet(ms, vc, light, anim, anim * 0.45f, 0.5f, 0f); // the pet walks on the spot
+        PlayerExtrasFeature.compact = false;
         ctx.draw();
         ms.pop();
         DiffuseLighting.enableGuiDepthLighting();

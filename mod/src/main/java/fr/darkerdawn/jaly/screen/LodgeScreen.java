@@ -324,7 +324,7 @@ public class LodgeScreen extends Screen {
 
     /** The little chat box with the two answers. */
     private void drawChoice(DrawContext ctx, long now) {
-        int w = 150, h = 62;
+        int w = 168, h = 62;
         int x = Math.min(width - w - 6, sx(232) + 6), y = Math.max(20, Math.min(height - h - 44, sy(84)));
         float pop = Math.min(1f, (now - speechAt) / 180f);
         choiceBox = new int[]{x, y, w, h};

@@ -213,6 +213,19 @@ final class Smoke {
                 fr.darkerdawn.jaly.net.UserContent.install(fr.darkerdawn.jaly.net.Modrinth.Kind.MOD, new fr.darkerdawn.jaly.net.Modrinth.Project("EsAfCjCV", "appleskin", "AppleSkin", "", "", 0));
                 fr.darkerdawn.jaly.net.UserContent.install(fr.darkerdawn.jaly.net.Modrinth.Kind.MOD, new fr.darkerdawn.jaly.net.Modrinth.Project("YL57xq9U", "iris", "Iris Shaders", "", "", 0));
             }
+            case 380 -> {
+                c.setScreen(null);
+                c.options.hudHidden = true;
+                c.options.setPerspective(net.minecraft.client.option.Perspective.THIRD_PERSON_BACK);
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
+            }
+            case 392 -> shot(c, "pet reindeer on the floor");
+            case 394 -> fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
+            case 404 -> shot(c, "pet frost dragon flying");
+            case 406 -> {
+                c.options.hudHidden = false;
+                c.options.setPerspective(net.minecraft.client.option.Perspective.FIRST_PERSON);
+            }
             case 470 -> {
                 var data = fr.darkerdawn.jaly.net.UserContent.data();
                 check("mod installed from Modrinth in game (" + data.mods.size() + ")", data.mods.containsKey("EsAfCjCV") || data.mods.containsKey("YL57xq9U"));

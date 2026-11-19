@@ -125,7 +125,7 @@ public class CosmeticsScreen extends JalyScreen {
             if (sel) Gfx.sprite(ctx, Gfx.STAR, new int[]{Gfx.GOLD_LIGHT}, "#", x + TILE_W - 8, y - lift + 3, 1, 1f);
         }
         ctx.disableScissor();
-        String tag = "Red tags: Gifts. Gold tags: Jolly Shop";
+        String tag = "Red: Gifts  Gold: Shop";
         Gfx.text(ctx, tag, px + pw - 8 - textRenderer.getWidth(tag), py + 12, Gfx.GOLD_LIGHT, true);
     }
 

@@ -89,7 +89,7 @@ public final class ShopApi {
         if (override != null) return endpoint = override;
         HttpRequest r = HttpRequest.newBuilder(URI.create("https://raw.githubusercontent.com/luaslucas422-lab/JalyClient/main/server/endpoint.txt")).timeout(Duration.ofSeconds(10)).build();
         HttpResponse<String> res = HTTP.send(r, HttpResponse.BodyHandlers.ofString());
-        if (res.statusCode() != 200 || !res.body().trim().startsWith("https://")) throw new IllegalStateException("The Jolly Shop opens soon!");
+        if (res.statusCode() != 200 || !res.body().trim().startsWith("https://")) throw new IllegalStateException("JalyClient's online features open soon!");
         return endpoint = res.body().trim();
     }
 
