@@ -43,7 +43,9 @@ func currentState() State {
 	_, mcErr := os.Stat(p.MCDir)
 	_, jalyErr := os.Stat(p.GameDir + string(os.PathSeparator) + "jaly-installed.json")
 	set := loadSettings(p)
-	set.Music = loadSettings(base).Music // the launcher music switch is the same for every profile
+	bset := loadSettings(base)
+	set.Music = bset.Music // the launcher music switch is the same for every profile
+	set.Beta = bset.Beta   // and so is beta testing
 	return State{
 		Version:   AppVersion,
 		MC:        p.mc(),
@@ -201,7 +203,7 @@ func selfTest(dir string) int {
 		fmt.Println("FAIL delete profile: " + err.Error())
 		return 1
 	}
-	fmt.Printf("CHECK update check: %+v\n", CheckUpdate())
+	fmt.Printf("CHECK update check: %+v\n", CheckUpdate(false))
 	if err := RemoveProfile(p); err != nil {
 		fmt.Println("FAIL remove profile: " + err.Error())
 		return 1

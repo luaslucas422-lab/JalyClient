@@ -61,6 +61,7 @@ type Settings struct {
 	RAM   int             `json:"ram"`
 	Mods  map[string]bool `json:"mods"`
 	Music bool            `json:"music"`
+	Beta  bool            `json:"beta"` // beta testing: get the unfinished "Beta Update" builds
 }
 
 type Paths struct {

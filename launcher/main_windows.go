@@ -52,6 +52,7 @@ func main() {
 		base := basePaths()
 		bs := loadSettings(base)
 		bs.Music = s.Music
+		bs.Beta = s.Beta
 		if paths().GameDir == base.GameDir {
 			return nil
 		}
@@ -111,7 +112,7 @@ func main() {
 		}
 	})
 	_ = w.Bind("jalyRemoveProfile", func() error { return RemoveProfile(paths()) })
-	_ = w.Bind("jalyCheckUpdate", func() Release { return CheckUpdate() })
+	_ = w.Bind("jalyCheckUpdate", func() Release { return CheckUpdate(loadSettings(basePaths()).Beta) })
 	_ = w.Bind("jalyApplyUpdate", func(r Release) error {
 		if err := ApplyUpdate(r); err != nil {
 			return err

@@ -42,7 +42,7 @@ jobs:
           go install github.com/tc-hib/go-winres@latest
           go-winres make --in winres/winres.json --arch amd64
           mkdir -p ../dist
-          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-H windowsgui -s -w" -o ../dist/JalyClient.exe .
+          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-H windowsgui -s -w -X main.BuildCommit=${{ github.sha }}" -o ../dist/JalyClient.exe .
           GOOS=windows GOARCH=amd64 go build -trimpath -o ../dist/JalyClient-selftest.exe .
           ls -la ../dist
       - uses: actions/upload-artifact@v4

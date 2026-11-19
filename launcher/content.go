@@ -315,8 +315,46 @@ func newerVersion(a, b string) bool {
 	return false
 }
 
-// CheckUpdate asks GitHub for the newest release. Empty Version means up to date.
-func CheckUpdate() Release {
+// BuildCommit is the git commit this launcher was built from (set by CI).
+var BuildCommit = ""
+
+// BetaTag is the GitHub release that always holds the newest Beta Update.
+const BetaTag = "beta"
+
+// CheckBeta asks GitHub for the Beta Update. It's newer whenever it was built from a different commit.
+func CheckBeta() Release {
+	var r struct {
+		Target string `json:"target_commitish"`
+		Assets []struct {
+			Name string `json:"name"`
+			URL  string `json:"browser_download_url"`
+		} `json:"assets"`
+	}
+	if err := getJSON("https://api.github.com/repos/luaslucas422-lab/JalyClient/releases/tags/"+BetaTag, &r); err != nil {
+		return Release{}
+	}
+	if r.Target == "" || r.Target == BuildCommit {
+		return Release{}
+	}
+	for _, a := range r.Assets {
+		if a.Name == "JalyClient-Setup.exe" {
+			short := r.Target
+			if len(short) > 7 {
+				short = short[:7]
+			}
+			return Release{Version: "Beta (" + short + ")", URL: a.URL}
+		}
+	}
+	return Release{}
+}
+
+// CheckUpdate asks GitHub for the newest release (or the Beta Update when beta testing). Empty Version means up to date.
+func CheckUpdate(beta bool) Release {
+	if beta {
+		if r := CheckBeta(); r.Version != "" {
+			return r
+		}
+	}
 	var r struct {
 		Tag    string `json:"tag_name"`
 		Assets []struct {
@@ -340,7 +378,7 @@ func CheckUpdate() Release {
 
 // ApplyUpdate downloads the new setup and runs it silently; the setup reopens JalyClient when done.
 func ApplyUpdate(rel Release) error {
-	dest := filepath.Join(os.TempDir(), "JalyClient-Setup-"+rel.Version+".exe")
+	dest := filepath.Join(os.TempDir(), "JalyClient-Setup-"+strings.NewReplacer(" ", "-", "(", "", ")", "").Replace(rel.Version)+".exe")
 	if err := download(rel.URL, dest); err != nil {
 		return err
 	}

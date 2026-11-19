@@ -210,6 +210,10 @@ input[type=range]{width:260px;accent-color:var(--red)}
 
     <section class="page" id="p-news"><div class="inner">
       <h1>News</h1><p>What's new in JalyClient.</p>
+      <div class="news"><div class="d">Beta Update</div><h3>Beta testing is here</h3><ul>
+        <li>Settings &gt; Beta testing: turn it on to get the Beta Update, new stuff before it's finished</li>
+        <li>In the beta: JalyClient starts working on more Minecraft versions (1.21.4, 1.21.5, 1.21.7-1.21.8), with 1.21.9-1.21.11 on the way</li>
+      </ul></div>
       <div class="news"><div class="d">Version 1.7.0</div><h3>Visuals, PvP tools and custom music discs</h3><ul>
         <li>New Visuals tab in Tools: Better Sounds, Tall Smooth Grass, Better Ambience, Better Rain, Better Glass and Interactive Blocks</li>
         <li>Better Sounds: wind, rain on the roof, birds, crickets, owls and cave drips</li>
@@ -283,6 +287,8 @@ input[type=range]{width:260px;accent-color:var(--red)}
       <div class="row"><div class="t"><b>Game folder</b><span id="gdir">-</span></div><button class="btn" data-open="game">Open</button><button class="btn" data-open="mods">Mods</button><button class="btn" data-open="screenshots">Screenshots</button></div>
       <h2>Account</h2>
       <div class="row"><div class="t"><b>Microsoft sign-in (coming soon)</b><span>For now JalyClient plays through the official Minecraft Launcher, so you stay signed in safely there.</span></div><button class="btn ghost" disabled>Sign in</button></div>
+      <h2>Beta testing</h2>
+      <div class="row"><div class="t"><b>Beta testing</b><span>Get the Beta Update: new features before they're finished. They can be buggy! Turning it off keeps your beta until the next full release.</span></div><button class="musicbtn" id="beta"><span class="dot"></span><span id="betat">Off</span></button></div>
       <h2>Other</h2>
       <div class="row"><div class="t"><b>Remove from the Minecraft Launcher</b><span>Takes the JalyClient profile out. Your worlds and settings stay.</span></div><button class="btn" id="unprof">Remove</button></div>
     </div></section>
@@ -381,8 +387,13 @@ $$('.kt').forEach(b=>b.onclick=()=>{kind=b.dataset.k;$$('.kt').forEach(x=>x.clas
 $('#q').oninput=()=>{clearTimeout(qt);qt=setTimeout(browse,400)};
 $$('.nav').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.p==='browse'&&!$('#results').innerHTML)browse()}));
 // ---------- self-update
-if(window.jalyCheckUpdate)window.jalyCheckUpdate().then(r=>{if(r&&r.version){$('#updating').style.display='flex';$('#updtxt').textContent='Updating JalyClient to '+r.version+'...';
-  window.jalyApplyUpdate(r).catch(e=>{$('#updating').style.display='none';toast('Update failed: '+e)})}});
+function checkUpdate(){if(window.jalyCheckUpdate)window.jalyCheckUpdate().then(r=>{if(r&&r.version){$('#updating').style.display='flex';$('#updtxt').textContent='Updating JalyClient to '+r.version+'...';
+  window.jalyApplyUpdate(r).catch(e=>{$('#updating').style.display='none';toast('Update failed: '+e)})}else if(S.settings.beta)toast('You have the newest Beta Update')})}
+checkUpdate();
+// ---------- beta testing
+function setBeta(on){$('#beta').classList.toggle('on',!!on);$('#betat').textContent=on?'On':'Off'}
+$('#beta').onclick=()=>{S.settings.beta=!S.settings.beta;setBeta(S.settings.beta);api.save(S.settings);
+  if(S.settings.beta){toast('Beta testing on: looking for the Beta Update...');checkUpdate()}else toast('Beta testing off. You go back to normal updates at the next full release.')};
 // ---------- profiles
 const PAPI={
   create:(n,v,c)=>window.jalyCreateProfile?window.jalyCreateProfile(n,v,c):Promise.resolve(),
@@ -443,7 +454,7 @@ function applyState(s,first){S=s;
  if(!first&&$('#results').innerHTML)browse()}
 // ---------- start
 api.state().then(s=>{applyState(s,true);$('#ver').textContent='JalyClient '+s.version;$('#days').textContent=s.daysLeft===0?'':s.daysLeft;$('#daysTxt').textContent=s.daysLeft===0?'Merry Christmas!':s.daysLeft===1?'day until Christmas':'days until Christmas';
-  if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);
+  if(s.settings.music)document.addEventListener('pointerdown',()=>setMusic(S.settings.music),{once:true});setMusic(s.settings.music);setBeta(s.settings.beta);
  if(window.autoPlay)setTimeout(()=>$('#play').click(),1800)});
 </script>
 </body>

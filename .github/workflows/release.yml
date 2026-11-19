@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g. v1.0.0)'
+        description: 'Release tag (e.g. v1.0.0), or "beta" for the Beta Update'
         required: true
         default: 'v1.0.0'
 jobs:
@@ -19,15 +19,41 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RUN=$(gh run list -R "${{ github.repository }}" -w Build -b main -s success -L 1 --json databaseId -q '.[0].databaseId')
+          SHA=$(gh run view "$RUN" -R "${{ github.repository }}" --json headSha -q .headSha)
+          echo "SHA=$SHA" >> "$GITHUB_ENV"
           mkdir -p out
           gh run download "$RUN" -R "${{ github.repository }}" -n JalyClient-Setup -D out
           gh run download "$RUN" -R "${{ github.repository }}" -n JalyClient-mod -D out
+          if [ "${{ inputs.tag }}" = "beta" ]; then
+            # the extra Minecraft versions that already build (from the newest "More versions" run of the same commit or older)
+            VR=$(gh run list -R "${{ github.repository }}" -w "More versions" -b main -L 1 --json databaseId -q '.[0].databaseId')
+            for V in 1.21.4 1.21.5 1.21.8 1.21.10 1.21.11; do
+              gh run download "$VR" -R "${{ github.repository }}" -n "JalyClient-mc$V" -D "out/mc$V" 2>/dev/null && for j in out/mc$V/*.jar; do mv "$j" "out/JalyClient-mc$V.jar"; done || echo "no build for $V yet"
+            done
+          fi
           ls -la out
       - name: Create release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ inputs.tag }}" out/JalyClient-Setup.exe out/*.jar \
-            --title "JalyClient ${{ inputs.tag }}" \
-            --notes "The jolliest free Minecraft client. Download **JalyClient-Setup.exe**, run it, open JalyClient and press PLAY. Minecraft 1.21.1 (Fabric). The .jar is the mod on its own." \
-            --repo "${{ github.repository }}"
+          if [ "${{ inputs.tag }}" = "beta" ]; then
+            gh release delete beta --cleanup-tag -y --repo "${{ github.repository }}" 2>/dev/null || true
+            sleep 3
+            gh release create beta out/JalyClient-Setup.exe out/*.jar \
+              --prerelease --target "$SHA" \
+              --title "JalyClient Beta Update" \
+              --notes "**Beta Update** - new features that aren't finished yet, so expect bugs. Built from ${SHA:0:7}.
+
+          Turn it on in the launcher: **Settings > Beta testing**. JalyClient then updates itself to the newest beta.
+
+          In this beta:
+          - Beta testing switch in the launcher settings
+          - JalyClient mod builds for more Minecraft versions: 1.21.4, 1.21.5 and 1.21.7-1.21.8 (the JalyClient-mcX.jar files). 1.21.9-1.21.11 are still being ported
+          - Everything from 1.7.0 (Visuals, PvP tools, custom music discs, friends, profiles, credits)" \
+              --repo "${{ github.repository }}"
+          else
+            gh release create "${{ inputs.tag }}" out/JalyClient-Setup.exe out/*.jar \
+              --title "JalyClient ${{ inputs.tag }}" \
+              --notes "The jolliest free Minecraft client. Download **JalyClient-Setup.exe**, run it, open JalyClient and press PLAY. Minecraft 1.21.1 (Fabric). The .jar is the mod on its own." \
+              --repo "${{ github.repository }}"
+          fi
