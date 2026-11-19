@@ -17,7 +17,10 @@ import java.util.List;
 public class CustomizerScreen extends JalyScreen {
     static final String[][] PANORAMAS = {
         {"valley", "Snowy Valley", "Animated"}, {"aurora", "Aurora Night", "Animated"}, {"vanilla", "Minecraft Panorama + Snow", "Animated"},
+        {"lake", "Frozen Lake", "Animated"}, {"blizzard", "Blizzard Pines", "Animated"}, {"fireworks", "Fireworks Night", "Animated"}, {"gingertown", "Gingerbread Town", "Animated"},
         {"valley_still", "Snowy Valley (still)", "Still"}, {"lodge", "Cozy Lodge", "Still"}, {"candy", "Candy Stripes", "Still"}, {"midnight", "Midnight Sky", "Still"}};
+    static final String[] LOGOS = {"jaly", "frost", "ginger", "minecraft"};
+    static final String[] LOGO_NAMES = {"JalyClient", "Frosty", "Gingerbread", "Minecraft"};
     private int tab;
     private TextFieldWidget splashField;
 
@@ -40,8 +43,9 @@ public class CustomizerScreen extends JalyScreen {
         JalyConfig c = JalyConfig.get();
         if (tab == 0) {
             int by = py + ph - 46;
-            addDrawableChild(new JalyButton(cx(), by, 120, 14, Text.literal("Logo: " + ("minecraft".equals(c.logoStyle) ? "Minecraft" : "JalyClient")), b -> {
-                c.logoStyle = "minecraft".equals(c.logoStyle) ? "jaly" : "minecraft"; JalyConfig.save(); clearAndInit(); }));
+            int li = java.util.Arrays.asList(LOGOS).indexOf(c.logoStyle);
+            addDrawableChild(new JalyButton(cx(), by, 120, 14, Text.literal("Logo: " + LOGO_NAMES[Math.max(0, li)]), b -> {
+                c.logoStyle = LOGOS[(Math.max(0, java.util.Arrays.asList(LOGOS).indexOf(c.logoStyle)) + 1) % LOGOS.length]; JalyConfig.save(); clearAndInit(); }));
             addDrawableChild(new JalyButton(cx() + 124, by, 96, 14, Text.literal("Splash: " + (c.splashOn ? "On" : "Off")), b -> {
                 c.splashOn = !c.splashOn; JalyConfig.save(); clearAndInit(); }));
             addDrawableChild(new JalyButton(cx() + 224, by, 120, 14, Text.literal("Style: " + ("candy".equals(c.splashStyle) ? "Candy cane" : "Classic")), b -> {
@@ -109,6 +113,16 @@ public class CustomizerScreen extends JalyScreen {
 
     private void preview(DrawContext ctx, String id, int x, int y, int w, int h) {
         long t = Gfx.now();
+        if (fr.darkerdawn.jaly.ui.MenuScenes.has(id)) {
+            ctx.enableScissor(x, y, x + w, y + h);
+            ctx.getMatrices().push();
+            ctx.getMatrices().translate(x, y, 0);
+            ctx.getMatrices().scale(w / 240f, h / 135f, 1f);
+            fr.darkerdawn.jaly.ui.MenuScenes.draw(ctx, id, 240, 135, t / 1000f, t);
+            ctx.getMatrices().pop();
+            ctx.disableScissor();
+            return;
+        }
         switch (id) {
             case "valley", "valley_still" -> {
                 ctx.fillGradient(x, y, x + w, y + h, 0xFF0B1530, 0xFF2B4A80);

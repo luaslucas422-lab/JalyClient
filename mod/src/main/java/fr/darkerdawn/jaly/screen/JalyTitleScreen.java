@@ -216,6 +216,11 @@ public class JalyTitleScreen extends Screen {
     }
 
     private void drawOtherPanorama(DrawContext ctx, String pano, float s, long now, float delta) {
+        if (fr.darkerdawn.jaly.ui.MenuScenes.has(pano)) {
+            fr.darkerdawn.jaly.ui.MenuScenes.draw(ctx, pano, width, height, sceneTime, now);
+            ctx.fillGradient(0, 0, width, height / 3, 0x66000000, 0x00000000);
+            return;
+        }
         switch (pano) {
             case "aurora" -> {
                 Gfx.tex(ctx, SKY, 0, height - Math.round(TH * s), Math.round(TW * s), Math.round(TH * s), 0, 0, TW, TH, TW, TH, 1f);
@@ -308,7 +313,9 @@ public class JalyTitleScreen extends Screen {
         int lw = Math.round(188 * scale), lh = Math.round(37 * scale);
         int lx = (width - lw) / 2;
         int ly = (int) (height * 0.10f + (1 - drop) * -60 + Math.sin(now / 700.0) * 2);
-        Gfx.tex(ctx, LOGO, lx, ly, lw, lh, 0, 0, 188, 37, 188, 37, intro);
+        String ls = JalyConfig.get().logoStyle;
+        Identifier logo = "frost".equals(ls) ? Identifier.of("jalyclient", "textures/gui/logo_frost.png") : "ginger".equals(ls) ? Identifier.of("jalyclient", "textures/gui/logo_ginger.png") : LOGO;
+        Gfx.tex(ctx, logo, lx, ly, lw, lh, 0, 0, 188, 37, 188, 37, intro);
         int sy = ly + lh + 4;
         String sub = "The jolliest free Minecraft client";
         Gfx.centered(ctx, sub, width / 2, sy, Gfx.alpha(Gfx.GOLD_LIGHT, intro));

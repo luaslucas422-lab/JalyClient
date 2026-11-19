@@ -16,8 +16,9 @@ import java.util.WeakHashMap;
  * aurora (flowing colours), lights (chasing fairy lights), present (ribbon unwraps) and vanilla.
  */
 public class JalyButton extends ButtonWidget {
-    public static final String[] STYLES = {"jaly", "frost", "ginger", "aurora", "lights", "present", "vanilla"};
-    public static final String[] STYLE_NAMES = {"Jaly Classic", "Frost Shimmer", "Gingerbread", "Aurora Flow", "Fairy Lights", "Present Unwrap", "Vanilla"};
+    public static final String[] STYLES = {"jaly", "frost", "ginger", "aurora", "lights", "present", "candy", "ice", "ornament", "neon", "cocoa", "starry", "vanilla"};
+    public static final String[] STYLE_NAMES = {"Jaly Classic", "Frost Shimmer", "Gingerbread", "Aurora Flow", "Fairy Lights", "Present Unwrap",
+        "Candy Stripe", "Ice Crystal", "Ornament", "Neon Glow", "Hot Cocoa", "Starry Night", "Vanilla"};
     private static final Map<ClickableWidget, float[]> STATE = new WeakHashMap<>();
     private boolean selected;
     private boolean mainMenu;
@@ -73,6 +74,12 @@ public class JalyButton extends ButtonWidget {
             case "aurora" -> 0xF0101830;
             case "lights" -> Gfx.lerpColor(0xF0101A10, 0xF0182A18, hover);
             case "present" -> Gfx.lerpColor(0xF08E1B2C, 0xF0B11A33, hover);
+            case "candy" -> 0xF0F6F4F7;
+            case "ice" -> Gfx.lerpColor(0xD09BD3F0, 0xE0BFE8FF, hover);
+            case "ornament" -> Gfx.lerpColor(0xF0A0122A, 0xF0C8102E, hover);
+            case "neon" -> 0xF00A0A14;
+            case "cocoa" -> Gfx.lerpColor(0xF04A2A18, 0xF05C3620, hover);
+            case "starry" -> Gfx.lerpColor(0xF00A1030, 0xF0101848, hover);
             default -> Gfx.lerpColor(0xE6183018, 0xF0213E1A, hover);
         };
         Gfx.round(ctx, x, y, wd, h, Gfx.alpha(body, a));
@@ -123,6 +130,81 @@ public class JalyButton extends ButtonWidget {
                 if (hover > 0.3f) Gfx.sprite(ctx, Gfx.STAR, new int[]{Gfx.GOLD_LIGHT}, "#", x + wd - 9, y + 2, 1, hover * a);
                 rim = Gfx.lerpColor(0xFFC99E02, Gfx.GOLD_LIGHT, hover);
             }
+            case "candy" -> {
+                // red stripes that slide along on hover
+                int shift = (int) (now / 40 % 12 * hover);
+                ctx.enableScissor(x + 1, y + 1, x + wd - 1, y + h - 1);
+                for (int i = -h; i < wd + h; i += 12) {
+                    for (int k = 0; k < h; k++) ctx.fill(x + i + k + shift, y + k, x + i + k + shift + 5, y + k + 1, Gfx.alpha(0xFFD7263D, a));
+                }
+                ctx.disableScissor();
+                ctx.fill(x + 2, y + (h - 10) / 2, x + wd - 2, y + (h + 10) / 2, Gfx.alpha(0x88000000, a * (0.6f + 0.2f * hover)));
+                rim = Gfx.lerpColor(0xFFB11A33, Gfx.GOLD_LIGHT, hover);
+            }
+            case "ice" -> {
+                // cracks + glints that sparkle when you hover
+                int seed = wd * 31 + h;
+                for (int i = 0; i < 4; i++) {
+                    int cx0 = x + 6 + Math.floorMod(seed * (i + 3), Math.max(1, wd - 12)), cy0 = y + 2 + Math.floorMod(seed * (i + 7), Math.max(1, h - 4));
+                    for (int k = 0; k < 6; k++) ctx.fill(cx0 + k, cy0 + (k * (i % 2 == 0 ? 1 : -1)) / 2, cx0 + k + 1, cy0 + (k * (i % 2 == 0 ? 1 : -1)) / 2 + 1, Gfx.alpha(0x88FFFFFF, a));
+                }
+                for (int i = 0; i < 5; i++) {
+                    float tw = (float) Math.max(0, Math.sin(now / 180.0 + i * 1.9));
+                    int gx = x + 4 + (i * 37 + wd) % Math.max(1, wd - 8), gy = y + 2 + (i * 11) % Math.max(1, h - 4);
+                    int c = Gfx.alpha(0xFFFFFFFF, tw * (0.3f + 0.7f * hover) * a);
+                    ctx.fill(gx - 1, gy, gx + 2, gy + 1, c);
+                    ctx.fill(gx, gy - 1, gx + 1, gy + 2, c);
+                }
+                rim = Gfx.lerpColor(0xFF7FC4F0, 0xFFFFFFFF, hover);
+            }
+            case "ornament" -> {
+                // glossy bauble: shine band + gold cap that swings on hover
+                ctx.fill(x + 3, y + 2, x + wd - 3, y + 4, Gfx.alpha(0x55FFFFFF, a));
+                ctx.fill(x + 6, y + 4, x + wd / 3, y + 5, Gfx.alpha(0x33FFFFFF, a));
+                float swing = (float) Math.sin(now / 160.0) * 2 * hover;
+                int capX = x + 4 + Math.round(swing);
+                ctx.fill(capX, y + h / 2 - 3, capX + 4, y + h / 2 + 3, Gfx.alpha(0xFFFFD94A, a));
+                ctx.fill(capX + 1, y + h / 2 - 5, capX + 3, y + h / 2 - 3, Gfx.alpha(0xFFB8860B, a));
+                for (int i = 10; i < wd - 4; i += 9) ctx.fill(x + i, y + h - 3, x + i + 4, y + h - 2, Gfx.alpha(0x99FFD94A, a));
+                rim = Gfx.lerpColor(0xFFB8860B, 0xFFFFE9A0, hover);
+            }
+            case "neon" -> {
+                // pulsing neon tube in two colours
+                float pulse = 0.55f + 0.45f * (float) Math.sin(now / 260.0);
+                int c1 = Gfx.lerpColor(0xFFFF4FA0, 0xFF4CF0FF, (float) (0.5 + 0.5 * Math.sin(now / 900.0)));
+                float glow = (0.35f + 0.65f * hover) * pulse;
+                Gfx.outline(ctx, x - 1, y - 1, wd + 2, h + 2, Gfx.alpha(c1, glow * 0.45f * a));
+                Gfx.outline(ctx, x + 2, y + 2, wd - 4, h - 4, Gfx.alpha(c1, glow * 0.7f * a));
+                rim = Gfx.alpha(c1, 0.6f + 0.4f * pulse);
+            }
+            case "cocoa" -> {
+                // marshmallows bobbing on top, steam when hovered
+                for (int i = 4; i < wd - 6; i += 11) {
+                    int by2 = y + 2 + (int) Math.round(Math.sin(now / 300.0 + i) * hover);
+                    ctx.fill(x + i, by2, x + i + 5, by2 + 3, Gfx.alpha(0xFFFFF4E6, a));
+                }
+                if (hover > 0.05f) {
+                    for (int i = 0; i < 4; i++) {
+                        float ph = ((now / 1000f) * 0.8f + i / 4f) % 1f;
+                        int sx = x + wd / 5 * (i + 1) + (int) (Math.sin(ph * 6 + i) * 2), sy = y - (int) (ph * 8);
+                        ctx.fill(sx, sy, sx + 1, sy + 2, Gfx.alpha(0xFFFFFFFF, (1 - ph) * hover * 0.7f * a));
+                    }
+                }
+                rim = Gfx.lerpColor(0xFF2E1A0E, 0xFFE8C9A0, hover);
+            }
+            case "starry" -> {
+                for (int i = 0; i < Math.max(4, wd / 8); i++) {
+                    float tw = (float) (0.4 + 0.6 * Math.sin(now / 350.0 + i * 2.3));
+                    int sx = x + 3 + (i * 53) % Math.max(1, wd - 6), sy = y + 2 + (i * 17) % Math.max(1, h - 4);
+                    ctx.fill(sx, sy, sx + 1, sy + 1, Gfx.alpha(0xFFFFFFFF, tw * a));
+                }
+                if (hover > 0.05f) {
+                    float p = (now % 900) / 900f;
+                    int sx = x + (int) (p * wd), sy = y + 2 + (int) (p * (h - 6));
+                    for (int k = 0; k < 6; k++) ctx.fill(sx - k, sy - k / 2, sx - k + 1, sy - k / 2 + 1, Gfx.alpha(0xFFFFF4C0, (1 - k / 6f) * hover * a));
+                }
+                rim = Gfx.lerpColor(0xFF2A3A80, 0xFFFFE9A0, hover);
+            }
             default -> {
                 if (w.active && hover > 0.02f) {
                     int sw = (int) ((wd - 2) * hover);
@@ -138,7 +220,7 @@ public class JalyButton extends ButtonWidget {
         else if (selected) rim = Gfx.GOLD_LIGHT;
         if ((rim >>> 24) != 0) Gfx.outline(ctx, x, y, wd, h, Gfx.alpha(rim, a));
         if (!small) {
-            if (!"lights".equals(style)) Gfx.snowCap(ctx, x + 2, y, wd - 4, hover, a);
+            if (!"lights".equals(style) && !"neon".equals(style) && !"starry".equals(style)) Gfx.snowCap(ctx, x + 2, y, wd - 4, hover, a);
             if ("jaly".equals(style) && wd >= 60) Gfx.lights(ctx, x + 8, x + wd - 8, y + 2, Math.max(10, (wd - 16) / 6), w.active ? hover : 0f, now, a * (0.4f + 0.6f * hover));
         }
         int tc = !w.active ? 0xFF8A8A8A : Gfx.lerpColor(Gfx.SNOW, "frost".equals(style) ? 0xFFE8F6FF : Gfx.GOLD_LIGHT, Math.max(hover, selected ? 1f : 0f));

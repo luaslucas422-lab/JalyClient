@@ -67,7 +67,19 @@ final class Smoke {
             }
             if (titleTicks == 140) shot(c, "cosmetics preview without a world");
             if (titleTicks == 142) { fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.clear(); c.setScreen(new fr.darkerdawn.jaly.screen.JalyTitleScreen()); }
-            if (titleTicks == 160) {
+            String[][] menus = {{"lake", "frost", "neon"}, {"fireworks", "ginger", "candy"}, {"gingertown", "jaly", "cocoa"}, {"blizzard", "frost", "starry"}};
+            for (int m = 0; m < menus.length; m++) {
+                if (titleTicks == 150 + m * 18) {
+                    var cf = JalyConfig.get();
+                    cf.panorama = menus[m][0];
+                    cf.logoStyle = menus[m][1];
+                    cf.buttonStyle = menus[m][2];
+                    cf.buttonScope = "main";
+                    c.setScreen(new fr.darkerdawn.jaly.screen.JalyTitleScreen());
+                }
+                if (titleTicks == 166 + m * 18) shot(c, "menu " + menus[m][0] + " + " + menus[m][1] + " logo + " + menus[m][2] + " buttons");
+            }
+            if (titleTicks == 230) {
                 check("config file saved", Files.exists(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("jalyclient.json")));
                 System.out.println("[JALY-SMOKE] done, failures=" + fails);
                 c.scheduleStop();
