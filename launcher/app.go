@@ -23,6 +23,7 @@ type State struct {
 	Active    string                `json:"active"`
 	Profiles  []ProfileView         `json:"profiles"`
 	Versions  []string              `json:"versions"`
+	JalyVers  map[string]bool       `json:"jalyVersions"`
 	Colors    []string              `json:"colors"`
 }
 
@@ -52,6 +53,7 @@ func currentState() State {
 		Active:    st.Active,
 		Profiles:  profileViews(base),
 		Versions:  GameVersions,
+		JalyVers:  JalyVersions,
 		Colors:    ProfileColors,
 		DaysLeft:  daysUntilChristmas(time.Now()),
 		Settings:  set,

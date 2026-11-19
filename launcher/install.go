@@ -314,7 +314,7 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 
 	if JalyVersions[p.mc()] {
 		progress(0.12, "Unwrapping JalyClient...")
-		jar, err := installJaly(mods)
+		jar, err := installJaly(mods, p.mc())
 		if err != nil {
 			return r, err
 		}
@@ -443,18 +443,24 @@ func prettyName(slug string) string {
 	return "a helper mod"
 }
 
-func installJaly(mods string) (string, error) {
+// jalyJar finds the JalyClient jar built for one Minecraft build version ("...+mc1.21.4.jar").
+func jalyJar(build string) (string, []byte, bool) {
 	var name string
 	var data []byte
 	_ = fs.WalkDir(embedded, "embed", func(path string, d fs.DirEntry, err error) error {
-		if err == nil && !d.IsDir() && strings.HasSuffix(path, ".jar") {
+		if err == nil && !d.IsDir() && strings.HasSuffix(path, "+mc"+build+".jar") {
 			name = filepath.Base(path)
 			data, _ = embedded.ReadFile(path)
 		}
 		return nil
 	})
-	if data == nil {
-		return "", errors.New("this launcher build has no JalyClient mod inside")
+	return name, data, data != nil
+}
+
+func installJaly(mods, mc string) (string, error) {
+	name, data, ok := jalyJar(JalyBuilds[mc])
+	if !ok {
+		return "", errors.New("this launcher build has no JalyClient mod for Minecraft " + mc)
 	}
 	entries, _ := os.ReadDir(mods)
 	for _, e := range entries {

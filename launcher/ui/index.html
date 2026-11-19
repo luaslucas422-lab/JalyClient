@@ -212,7 +212,7 @@ input[type=range]{width:260px;accent-color:var(--red)}
       <h1>News</h1><p>What's new in JalyClient.</p>
       <div class="news"><div class="d">Beta Update</div><h3>Beta testing is here</h3><ul>
         <li>Settings &gt; Beta testing: turn it on to get the Beta Update, new stuff before it's finished</li>
-        <li>In the beta: JalyClient starts working on more Minecraft versions (1.21.4, 1.21.5, 1.21.7-1.21.8), with 1.21.9-1.21.11 on the way</li>
+        <li>In the beta: JalyClient runs on more Minecraft versions. Make a profile and pick a version with a ⭐ (1.21.4, 1.21.5, 1.21.7-1.21.8 and more coming)</li>
       </ul></div>
       <div class="news"><div class="d">Version 1.7.0</div><h3>Visuals, PvP tools and custom music discs</h3><ul>
         <li>New Visuals tab in Tools: Better Sounds, Tall Smooth Grass, Better Ambience, Better Rain, Better Glass and Interactive Blocks</li>
@@ -402,7 +402,7 @@ const PAPI={
   del:id=>window.jalyDeleteProfile?window.jalyDeleteProfile(id):Promise.resolve(),
   open:id=>window.jalyOpenProfile&&window.jalyOpenProfile(id)
 };
-const JALY=v=>v==='1.21'||v==='1.21.1';
+const JALY=v=>S.jalyVersions?!!S.jalyVersions[v]:(v==='1.21'||v==='1.21.1');
 function goPage(name){const b=$('.nav[data-p="'+name+'"]');if(b)b.click()}
 $('#profPick').onclick=()=>goPage('profiles');
 function activeProf(){return (S.profiles||[]).find(p=>p.id===S.active)||{name:'JalyClient',version:S.mc,color:'#E0384F',jaly:true}}

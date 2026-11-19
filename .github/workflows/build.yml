@@ -15,6 +15,13 @@ jobs:
       - name: Build + unit tests
         working-directory: mod
         run: gradle build --stacktrace
+      - name: Build JalyClient for the other Minecraft versions (beta)
+        working-directory: mod
+        run: |
+          for V in 1.21.4 1.21.5 1.21.8 1.21.10 1.21.11; do
+            if gradle build -x test -q -Pmc=$V > build-$V.log 2>&1; then echo "OK $V"; else echo "SKIP $V (doesn't build yet)"; grep -m5 "error:" build-$V.log || true; fi
+          done
+          ls -la build/libs
       - uses: actions/upload-artifact@v4
         with:
           name: JalyClient-mod

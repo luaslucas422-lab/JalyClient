@@ -30,8 +30,29 @@ type ProfileStore struct {
 var GameVersions = []string{"1.21.11", "1.21.10", "1.21.9", "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
 	"1.20.6", "1.20.4", "1.20.2", "1.20.1", "1.19.4", "1.19.2", "1.18.2", "1.17.1", "1.16.5"}
 
-// JalyVersions are the versions the JalyClient mod itself runs on. Other profiles get Fabric + their own mods.
-var JalyVersions = map[string]bool{"1.21": true, "1.21.1": true}
+// JalyBuilds maps each Minecraft version to the JalyClient build that runs on it.
+var JalyBuilds = map[string]string{
+	"1.21": "1.21.1", "1.21.1": "1.21.1",
+	"1.21.4": "1.21.4",
+	"1.21.5": "1.21.5",
+	"1.21.7": "1.21.8", "1.21.8": "1.21.8",
+	"1.21.9": "1.21.10", "1.21.10": "1.21.10",
+	"1.21.11": "1.21.11",
+}
+
+// JalyVersions are the versions the JalyClient mod itself runs on (the ones whose build is inside this launcher).
+// Other profiles get Fabric + their own mods.
+var JalyVersions = jalyVersions()
+
+func jalyVersions() map[string]bool {
+	out := map[string]bool{}
+	for mc, build := range JalyBuilds {
+		if _, _, ok := jalyJar(build); ok {
+			out[mc] = true
+		}
+	}
+	return out
+}
 
 var ProfileColors = []string{"#E0384F", "#C99E02", "#3FB950", "#4CC3FF", "#B35CFF", "#FF8A3D"}
 
