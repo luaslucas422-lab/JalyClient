@@ -22,7 +22,13 @@ public class HatFeature extends FeatureRenderer<net.minecraft.client.render.enti
     }
 
     @Override
+    //#if >=1.21.9
+    public void render(MatrixStack matrices, net.minecraft.client.render.command.OrderedRenderCommandQueue queue, int light, net.minecraft.client.render.entity.state.BipedEntityRenderState state, float limbAngle, float limbDistance) {
+        PartSink sink = PartSink.of(queue);
+    //#else
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.client.render.entity.state.BipedEntityRenderState state, float limbAngle, float limbDistance) {
+        PartSink sink = PartSink.of(vertexConsumers);
+    //#endif
         if (state.invisible || state.baby) return;
         String hat = Cosmetics.hatForState(state);
         if (hat == null) return;
@@ -37,7 +43,7 @@ public class HatFeature extends FeatureRenderer<net.minecraft.client.render.enti
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(t * 360f));
             l = LightmapTextureManager.MAX_LIGHT_COORDINATE;
         }
-        part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), l, OverlayTexture.DEFAULT_UV);
+        sink.part(part, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat)), l);
         matrices.pop();
     }
 }

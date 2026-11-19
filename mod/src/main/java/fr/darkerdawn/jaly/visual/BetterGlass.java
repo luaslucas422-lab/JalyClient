@@ -80,7 +80,7 @@ public final class BetterGlass {
 
     public static void render(WorldRenderContext ctx) {
         if (!Mods.on("better_glass") || faces.isEmpty() || (wet < 0.02f && frost < 0.02f)) return;
-        Vec3d cam = ctx.camera().getPos();
+        Vec3d cam = fr.darkerdawn.jaly.Compat.camPos();
         float t = (System.currentTimeMillis() % 1_000_000L) / 1000f;
         List<Face> list = faces;
         if (wet > 0.02f) {

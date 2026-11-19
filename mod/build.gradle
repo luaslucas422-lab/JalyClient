@@ -89,25 +89,25 @@ static String mcPreprocess(String text, String mc, String name) {
         def t = line.trim()
         if (t.startsWith('//#if ')) {
             boolean c = mcCond(t.substring(6), mc)
-            stack.push([active, active && c, c])
+            stack.add([active, active && c, c])
             active = active && c
             out.append('\n')
         } else if (t.startsWith('//#elif ')) {
-            def top = stack.last()
+            def top = stack[-1]
             boolean c = !top[2] && mcCond(t.substring(8), mc)
             top[1] = top[0] && c
             top[2] = top[2] || c
             active = top[1]
             out.append('\n')
         } else if (t == '//#else') {
-            def top = stack.last()
+            def top = stack[-1]
             top[1] = top[0] && !top[2]
             top[2] = true
             active = top[1]
             out.append('\n')
         } else if (t == '//#endif') {
             if (stack.isEmpty()) throw new GradleException("Unbalanced //#endif in " + name)
-            def top = stack.pop()
+            def top = stack.remove(stack.size() - 1)
             active = top[0]
             out.append('\n')
         } else {

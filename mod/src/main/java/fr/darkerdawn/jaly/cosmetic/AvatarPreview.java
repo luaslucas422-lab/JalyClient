@@ -24,12 +24,20 @@ public final class AvatarPreview {
 
     //#if >=1.21.2
     private static PlayerEntityModel wide, slim;
+    //#if >=1.21.9
+    private static net.minecraft.client.render.entity.model.PlayerCapeModel capeModel;
+    //#else
     private static net.minecraft.client.render.entity.model.PlayerCapeModel<net.minecraft.client.render.entity.state.PlayerEntityRenderState> capeModel;
+    //#endif
 
     private static PlayerEntityModel model(boolean isSlim) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (isSlim) {
+            //#if >=1.21.11
+            if (slim == null) slim = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER), false); // TODO slim arms on 1.21.11
+            //#else
             if (slim == null) slim = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_SLIM), true);
+            //#endif
             return slim;
         }
         if (wide == null) wide = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER), false);
@@ -170,7 +178,11 @@ public final class AvatarPreview {
             ms.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f));
             //#endif
             //#if >=1.21.2
+            //#if >=1.21.9
+            if (capeModel == null) capeModel = new net.minecraft.client.render.entity.model.PlayerCapeModel(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_CAPE));
+            //#else
             if (capeModel == null) capeModel = new net.minecraft.client.render.entity.model.PlayerCapeModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_CAPE));
+            //#endif
             capeModel.render(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
             //#else
             m.renderCape(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
@@ -187,9 +199,9 @@ public final class AvatarPreview {
             hatPart.render(ms, vc.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), light, OverlayTexture.DEFAULT_UV);
             ms.pop();
         }
-        PlayerExtrasFeature.renderWings(ms, vc, light, m.body, anim, true);
+        PlayerExtrasFeature.renderWings(ms, PartSink.of(vc), light, m.body, anim, true);
         PlayerExtrasFeature.compact = true;
-        PlayerExtrasFeature.renderPet(ms, vc, light, anim, anim * 0.45f, 0.5f, 0f); // the pet walks on the spot
+        PlayerExtrasFeature.renderPet(ms, PartSink.of(vc), light, anim, anim * 0.45f, 0.5f, 0f); // the pet walks on the spot
         PlayerExtrasFeature.compact = false;
     }
 }

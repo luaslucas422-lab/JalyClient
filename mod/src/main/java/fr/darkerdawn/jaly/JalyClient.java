@@ -106,7 +106,11 @@ public class JalyClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(SkyLyrics::render);
         WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.Ambience::render);
         WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.BetterRain::render);
+        //#if >=1.21.9
+        WorldRenderEvents.END_MAIN.register(fr.darkerdawn.jaly.visual.BetterGlass::render);
+        //#else
         WorldRenderEvents.AFTER_TRANSLUCENT.register(fr.darkerdawn.jaly.visual.BetterGlass::render);
+        //#endif
         net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
             if (fr.darkerdawn.jaly.Compat.isClient(world) && world.getBlockState(hit.getBlockPos()).isOf(net.minecraft.block.Blocks.JUKEBOX)) {
                 fr.darkerdawn.jaly.disc.CustomDiscs.rememberInsert(hit.getBlockPos(), player.getStackInHand(hand));

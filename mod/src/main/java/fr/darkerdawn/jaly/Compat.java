@@ -32,6 +32,14 @@ public final class Compat {
     }
     //#endif
 
+    public static net.minecraft.util.math.Vec3d camPos() {
+        //#if >=1.21.9
+        return net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        //#else
+        return net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
+        //#endif
+    }
+
     public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
         //#if >=1.21.9
         return skinOf(p).body().texturePath();

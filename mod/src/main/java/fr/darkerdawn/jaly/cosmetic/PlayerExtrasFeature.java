@@ -28,7 +28,13 @@ public class PlayerExtrasFeature extends FeatureRenderer<net.minecraft.client.re
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.client.render.entity.state.PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+    //#if >=1.21.9
+    public void render(MatrixStack matrices, net.minecraft.client.render.command.OrderedRenderCommandQueue queue, int light, net.minecraft.client.render.entity.state.PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        PartSink vertexConsumers = PartSink.of(queue);
+    //#else
+    public void render(MatrixStack matrices, VertexConsumerProvider vcp, int light, net.minecraft.client.render.entity.state.PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        PartSink vertexConsumers = PartSink.of(vcp);
+    //#endif
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || state.id != mc.player.getId() || state.invisible) return;
         renderWings(matrices, vertexConsumers, light, this.getContextModel().body, state.age, mc.player.isOnGround());
@@ -56,16 +62,17 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
 
 //#if <1.21.2
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player,
+    public void render(MatrixStack matrices, VertexConsumerProvider vcp, int light, AbstractClientPlayerEntity player,
                        float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         if (player != MinecraftClient.getInstance().player || player.isInvisible()) return;
+        PartSink vertexConsumers = PartSink.of(vcp);
         renderWings(matrices, vertexConsumers, light, this.getContextModel().body, animationProgress, player.isOnGround());
         renderPet(matrices, vertexConsumers, light, animationProgress, limbAngle, limbDistance, fr.darkerdawn.jaly.Features.petAir);
     }
 //#endif
 
     /** Wings on the back, flapping (faster in the air). Also used by the menu preview. */
-    public static void renderWings(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ModelPart body, float anim, boolean onGround) {
+    public static void renderWings(MatrixStack matrices, PartSink vertexConsumers, int light, ModelPart body, float anim, boolean onGround) {
         String w = Cosmetics.selected(Cosmetics.Type.WINGS);
         if (w.equals("none")) return;
         ModelPart m = wings();
@@ -77,7 +84,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         r.roll = 0.2f;
         matrices.push();
         fr.darkerdawn.jaly.Compat.applyTransform(body, matrices);
-        m.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.wingTexture(w))), light, OverlayTexture.DEFAULT_UV);
+        vertexConsumers.part(m, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.wingTexture(w)), light);
         matrices.pop();
     }
 
@@ -90,7 +97,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
     public static final java.util.Set<String> HOPPERS = java.util.Set.of("present", "snowman", "og", "tree");
 
     /** Your pet, walking beside your feet (or flying by your shoulder) with its own animation. Also used by the menu preview. */
-    public static void renderPet(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float anim, float limbAngle, float limbDistance, float airborne) {
+    public static void renderPet(MatrixStack matrices, PartSink vertexConsumers, int light, float anim, float limbAngle, float limbDistance, float airborne) {
         String p = Cosmetics.selected(Cosmetics.Type.PET);
         if (p.equals("none")) return;
         ModelPart part = Cosmetics.model("pet_" + p);
@@ -127,7 +134,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
             matrices.scale(0.72f, 0.72f * squash, 0.72f);
             animate(part, key, walk, amt, anim * 0.35f, p);
         }
-        part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(key))), light, OverlayTexture.DEFAULT_UV);
+        vertexConsumers.part(part, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(key)), light);
         matrices.pop();
     }
 

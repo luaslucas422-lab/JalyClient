@@ -80,8 +80,8 @@ public final class BetterRain {
         if (!Mods.on("better_rain") || mc.world == null || mc.player == null || strength <= 0 || !JalyConfig.get().rainNear) return;
         JalyConfig c = JalyConfig.get();
         boolean blocky = "blocky".equals(c.rainStyle);
-        Vec3d cam = ctx.camera().getPos();
-        float yaw = ctx.camera().getYaw();
+        Vec3d cam = fr.darkerdawn.jaly.Compat.camPos();
+        float yaw = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw();
         double ry = Math.toRadians(yaw);
         float rx = (float) Math.cos(ry), rz = (float) Math.sin(ry); // camera right vector (horizontal)
         int count = (int) (160 * c.rainDensity * Math.min(1.4f, strength));

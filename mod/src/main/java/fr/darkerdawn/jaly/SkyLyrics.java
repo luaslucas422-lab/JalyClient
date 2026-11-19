@@ -35,7 +35,7 @@ public final class SkyLyrics {
             changedAt = System.currentTimeMillis();
         }
         JalyConfig c = JalyConfig.get();
-        Camera cam = context.camera();
+        Camera cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
         float target = cam.getYaw();
         if (Float.isNaN(yaw)) yaw = target;
         yaw += MathHelper.wrapDegrees(target - yaw) * 0.04f;
