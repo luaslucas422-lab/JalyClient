@@ -71,7 +71,7 @@ public final class Ambience {
             WorldDraw.colored(true, true, b -> {
                 for (int layer = 0; layer < 3; layer++) {
                     float ph = layer * 1.7f, z0 = -dist * (0.8f + layer * 0.08f);
-                    float h0 = dist * (0.42f + layer * 0.05f), h1 = h0 + dist * (0.28f + 0.05f * MathHelper.sin(time * 0.1f + layer));
+                    float h0 = dist * (0.5f + layer * 0.06f), h1 = h0 + dist * (0.45f + 0.08f * MathHelper.sin(time * 0.1f + layer));
                     int seg = 48;
                     for (int i = 0; i < seg; i++) {
                         float a0 = (i / (float) seg - 0.5f) * 2.4f, a1 = ((i + 1) / (float) seg - 0.5f) * 2.4f;
@@ -81,9 +81,9 @@ public final class Ambience {
                         float edge0 = 1f - Math.abs(a0) / 1.2f, edge1 = 1f - Math.abs(a1) / 1.2f;
                         float shimmer0 = 0.6f + 0.4f * MathHelper.sin(a0 * 19f + time * 1.3f + ph), shimmer1 = 0.6f + 0.4f * MathHelper.sin(a1 * 19f + time * 1.3f + ph);
                         float g = layer == 1 ? 0.75f : 1f;
-                        int bot0 = WorldDraw.argb(0.42f * k * edge0 * shimmer0, 0.2f, g, 0.55f), bot1 = WorldDraw.argb(0.42f * k * edge1 * shimmer1, 0.2f, g, 0.55f);
+                        int bot0 = WorldDraw.argb(0.6f * k * edge0 * shimmer0, 0.2f, g, 0.55f), bot1 = WorldDraw.argb(0.6f * k * edge1 * shimmer1, 0.2f, g, 0.55f);
                         int top0 = WorldDraw.argb(0f, 0.65f, 0.3f, 0.95f), top1 = WorldDraw.argb(0f, 0.65f, 0.3f, 0.95f);
-                        int mid0 = WorldDraw.argb(0.22f * k * edge0 * shimmer0, 0.45f, 0.55f, 0.95f), mid1 = WorldDraw.argb(0.22f * k * edge1 * shimmer1, 0.45f, 0.55f, 0.95f);
+                        int mid0 = WorldDraw.argb(0.32f * k * edge0 * shimmer0, 0.45f, 0.55f, 0.95f), mid1 = WorldDraw.argb(0.32f * k * edge1 * shimmer1, 0.45f, 0.55f, 0.95f);
                         float hm = (h0 + h1) / 2f;
                         WorldDraw.v(b, x0, h0, z0 + w0, bot0); WorldDraw.v(b, x1, h0, z0 + w1, bot1); WorldDraw.v(b, x1, hm, z0 + w1, mid1); WorldDraw.v(b, x0, hm, z0 + w0, mid0);
                         WorldDraw.v(b, x0, hm, z0 + w0, mid0); WorldDraw.v(b, x1, hm, z0 + w1, mid1); WorldDraw.v(b, x1, h1, z0 + w1, top1); WorldDraw.v(b, x0, h1, z0 + w0, top0);

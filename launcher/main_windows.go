@@ -94,7 +94,7 @@ func main() {
 					msg = "Installed! Open the Minecraft Launcher and pick the JalyClient profile."
 				}
 			}
-			call(fmt.Sprintf("window.onDone(true, %s, %s)", jsonString(msg), jsonString(rep.Skipped)))
+			call(fmt.Sprintf("window.onDone(true, %s, %s, %s)", jsonString(msg), jsonString(rep.Skipped), jsonString(rep.Removed)))
 		}()
 	})
 	_ = w.Bind("jalyOpen", func(which string) {

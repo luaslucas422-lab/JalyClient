@@ -140,8 +140,8 @@ def drop(px, cx, cy, r, w, h):
 drops = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
 p = drops.load()
 rnd = random.Random(5)
-for _ in range(70):
-    drop(p, rnd.uniform(0, 64), rnd.uniform(0, 64), rnd.choice([0.7, 1.0, 1.4, 2.0]), 64, 64)
+for _ in range(34):
+    drop(p, rnd.uniform(0, 64), rnd.uniform(0, 64), rnd.choice([0.8, 1.2, 1.6, 2.2]), 64, 64)
 save(drops, f"{ASSETS}/textures/visual/glass_drops.png")
 streaks = Image.new("RGBA", (64, 128), (0, 0, 0, 0))
 p = streaks.load()

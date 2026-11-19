@@ -244,6 +244,15 @@ type mrVersion struct {
 }
 
 func latestVersion(project, mc string) (*mrVersion, error) {
+	vs, err := projectVersions(project, mc)
+	if err != nil {
+		return nil, err
+	}
+	return &vs[0], nil
+}
+
+// projectVersions lists a project's Fabric versions for mc, newest first.
+func projectVersions(project, mc string) ([]mrVersion, error) {
 	q := url.Values{}
 	q.Set("loaders", `["fabric"]`)
 	q.Set("game_versions", `["`+mc+`"]`)
@@ -254,7 +263,7 @@ func latestVersion(project, mc string) (*mrVersion, error) {
 	if len(vs) == 0 {
 		return nil, fmt.Errorf("%s has no version for Minecraft %s", project, mc)
 	}
-	return &vs[0], nil
+	return vs, nil
 }
 
 type manifest map[string]string // slug (or dependency project id) -> file name
@@ -279,6 +288,7 @@ type Report struct {
 	Skipped   map[string]string `json:"skipped"`
 	Profile   string            `json:"profile"`
 	JalyJar   string            `json:"jalyJar"`
+	Removed   map[string]string `json:"removed"`
 }
 
 type progressFn func(pct float64, msg string)
@@ -325,32 +335,56 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 	for i := 0; i < len(want); i++ {
 		slug := want[i]
 		progress(0.15+0.75*float64(i)/float64(len(want)+1), "Downloading "+prettyName(slug)+"...")
-		v, err := latestVersion(slug, p.mc())
+		vs, err := projectVersions(slug, p.mc())
 		if err != nil {
 			r.Skipped[slug] = err.Error()
+			continue
+		}
+		// Some uploads are tagged for a version they don't really run on: check the jar itself
+		// and fall back to the next newest file until one fits this Minecraft version.
+		var v *mrVersion
+		var f struct {
+			URL      string `json:"url"`
+			Filename string `json:"filename"`
+			Primary  bool   `json:"primary"`
+		}
+		var dest string
+		for i := 0; i < len(vs) && i < 6; i++ {
+			cand := vs[i]
+			if len(cand.Files) == 0 {
+				continue
+			}
+			cf := cand.Files[0]
+			for _, ff := range cand.Files {
+				if ff.Primary {
+					cf = ff
+				}
+			}
+			d := filepath.Join(mods, cf.Filename)
+			_, statErr := os.Stat(d)
+			if statErr != nil {
+				if err := download(cf.URL, d); err != nil {
+					continue
+				}
+			}
+			if !ModFits(d, p.mc()) {
+				if statErr != nil {
+					_ = os.Remove(d)
+				}
+				continue
+			}
+			v, f.URL, f.Filename, dest = &cand, cf.URL, cf.Filename, d
+			break
+		}
+		if v == nil {
+			r.Skipped[slug] = "no version that runs on Minecraft " + p.mc()
 			continue
 		}
 		if seen[v.ProjectID] {
 			continue
 		}
 		seen[v.ProjectID] = true
-		if len(v.Files) == 0 {
-			r.Skipped[slug] = "no file"
-			continue
-		}
-		f := v.Files[0]
-		for _, ff := range v.Files {
-			if ff.Primary {
-				f = ff
-			}
-		}
-		dest := filepath.Join(mods, f.Filename)
-		if _, err := os.Stat(dest); err != nil {
-			if err := download(f.URL, dest); err != nil {
-				r.Skipped[slug] = err.Error()
-				continue
-			}
-		}
+		_ = dest
 		if old, ok := man[slug]; ok && old != f.Filename {
 			_ = os.Remove(filepath.Join(mods, old))
 		}
@@ -369,6 +403,19 @@ func Install(p Paths, s Settings, progress progressFn) (*Report, error) {
 			if _, failed := r.Skipped[key]; !failed {
 				_ = os.Remove(filepath.Join(mods, file))
 				delete(man, key)
+			}
+		}
+	}
+	writeManifest(p, man)
+
+	// Anything left that can't run on this version (or clashes with another mod) is moved out,
+	// so Minecraft never stops with "Incompatible mods found".
+	progress(0.9, "Checking every mod fits Minecraft "+p.mc()+"...")
+	r.Removed = SweepMods(p.GameDir, p.mc())
+	for name := range r.Removed {
+		for k, file := range man {
+			if file == name {
+				delete(man, k)
 			}
 		}
 	}

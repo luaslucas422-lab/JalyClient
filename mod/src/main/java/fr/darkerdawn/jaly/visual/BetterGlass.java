@@ -80,7 +80,7 @@ public final class BetterGlass {
         float t = (System.currentTimeMillis() % 1_000_000L) / 1000f;
         List<Face> list = faces;
         if (wet > 0.02f) {
-            WorldDraw.textured(DROPS, true, b -> list.forEach(f -> quad(b, f, cam, 0.0f, 0f, 0f, WorldDraw.argb(wet * 0.9f, 1f, 1f, 1f))));
+            WorldDraw.textured(DROPS, true, b -> list.forEach(f -> quad(b, f, cam, 0.0f, 0f, 0f, WorldDraw.argb(wet * 0.55f, 1f, 1f, 1f))));
             WorldDraw.textured(STREAKS, true, b -> list.forEach(f -> quad(b, f, cam, 0.003f, (f.pos.getX() * 0.37f + f.pos.getZ() * 0.19f) % 1f, -t * 0.12f * (0.8f + (f.pos.hashCode() & 7) * 0.05f), WorldDraw.argb(wet * 0.8f, 1f, 1f, 1f))));
         }
         if (frost > 0.02f) {

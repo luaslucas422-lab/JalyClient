@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -190,5 +191,69 @@ func TestProfiles(t *testing.T) {
 	}
 	if _, err := os.Stat(pp.GameDir); err == nil {
 		t.Fatal("profile folder should move to deleted-profiles")
+	}
+}
+
+func fakeJar(t *testing.T, path, modJSON string) {
+	f, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	z := zip.NewWriter(f)
+	w, _ := z.Create("fabric.mod.json")
+	_, _ = w.Write([]byte(modJSON))
+	z.Close()
+	f.Close()
+}
+
+func TestVersionPredicates(t *testing.T) {
+	cases := []struct {
+		c    any
+		v    string
+		want bool
+	}{
+		{">=1.21- <1.21.1-", "1.21.1", false},
+		{">=1.21- <1.21.1-", "1.21", true},
+		{"1.21", "1.21.1", false},
+		{"~1.21", "1.21.1", true},
+		{"~1.21", "1.22", false},
+		{">=1.21 <=1.21.1", "1.21.1", true},
+		{"1.21.x", "1.21.4", true},
+		{"1.20.x", "1.21", false},
+		{[]any{"1.20.1", "1.21.1"}, "1.21.1", true},
+		{"*", "1.16.5", true},
+		{"<=0.6.13", "0.6.13+mc1.21.1", true},
+		{">=0.116.6+1.21.1", "0.102.0+1.21", false},
+	}
+	for _, c := range cases {
+		if got := matches(c.c, c.v); got != c.want {
+			t.Errorf("matches(%v, %s) = %v, want %v", c.c, c.v, got, c.want)
+		}
+	}
+}
+
+// The exact "Incompatible mods found!" mix a player sent: everything that can't load must be moved out.
+func TestSweepFixesIncompatibleMods(t *testing.T) {
+	dir := t.TempDir()
+	mods := filepath.Join(dir, "mods")
+	_ = os.MkdirAll(mods, 0o755)
+	fakeJar(t, filepath.Join(mods, "fabric-api-0.102.0+1.21.jar"), `{"id":"fabric-api","version":"0.102.0+1.21","depends":{"minecraft":">=1.21- <1.21.1-"}}`)
+	fakeJar(t, filepath.Join(mods, "controlling.jar"), `{"id":"controlling","version":"18.0.4","depends":{"minecraft":"1.21"}}`)
+	fakeJar(t, filepath.Join(mods, "sodium.jar"), `{"id":"sodium","version":"0.6.13+mc1.21.1","depends":{"minecraft":"1.21.1"}}`)
+	fakeJar(t, filepath.Join(mods, "moreculling.jar"), `{"id":"moreculling","version":"1.0.11","depends":{"minecraft":"1.21.1"},"breaks":{"sodium":"<=0.6.13"}}`)
+	fakeJar(t, filepath.Join(mods, "jalyclient.jar"), `{"id":"jalyclient","version":"1.7.0","depends":{"minecraft":">=1.21 <=1.21.1"}}`)
+	removed := SweepMods(dir, "1.21.1")
+	for _, n := range []string{"fabric-api-0.102.0+1.21.jar", "controlling.jar", "moreculling.jar"} {
+		if removed[n] == "" {
+			t.Errorf("%s should have been moved out: %v", n, removed)
+		}
+		if _, err := os.Stat(filepath.Join(dir, "mods-removed", n)); err != nil {
+			t.Errorf("%s not kept in mods-removed", n)
+		}
+	}
+	for _, n := range []string{"sodium.jar", "jalyclient.jar"} {
+		if removed[n] != "" {
+			t.Errorf("%s should stay: %s", n, removed[n])
+		}
 	}
 }
