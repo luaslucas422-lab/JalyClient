@@ -50,7 +50,7 @@ public final class BetterRain {
                 int x = MathHelper.floor(mc.player.getX() + RNG.nextGaussian() * 6), z = MathHelper.floor(mc.player.getZ() + RNG.nextGaussian() * 6);
                 int y = mc.world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
                 if (Math.abs(y - mc.player.getY()) > 12) continue;
-                mc.world.addParticle(RNG.nextInt(3) == 0 ? ParticleTypes.SPLASH : ParticleTypes.RAIN, x + RNG.nextDouble(), y + 0.05, z + RNG.nextDouble(), 0, 0, 0);
+                fr.darkerdawn.jaly.Compat.particle(mc.world, RNG.nextInt(3) == 0 ? ParticleTypes.SPLASH : ParticleTypes.RAIN, x + RNG.nextDouble(), y + 0.05, z + RNG.nextDouble(), 0, 0, 0);
             }
         }
         // drops on the "lens" when you're out in it and looking up

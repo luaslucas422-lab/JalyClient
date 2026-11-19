@@ -40,7 +40,7 @@ public final class LoadingScreen {
                 NativeImage img = NativeImage.read(in);
                 logoW = img.getWidth();
                 logoH = img.getHeight();
-                MinecraftClient.getInstance().getTextureManager().registerTexture(LOGO, new NativeImageBackedTexture(img));
+                MinecraftClient.getInstance().getTextureManager().registerTexture(LOGO, fr.darkerdawn.jaly.Compat.texture(img, "img"));
                 logoOk = true;
             }
         } catch (Exception e) {

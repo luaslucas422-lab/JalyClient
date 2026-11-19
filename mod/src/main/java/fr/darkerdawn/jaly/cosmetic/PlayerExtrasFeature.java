@@ -47,8 +47,8 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         if (wings == null) {
             ModelData data = new ModelData();
             ModelPartData root = data.getRoot();
-            root.addChild("left", ModelPartBuilder.create().uv(0, 0).cuboid(-12f, -2f, 0f, 12f, 16f, 1f), ModelTransform.pivot(-1f, 1f, 2.5f));
-            root.addChild("right", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(0f, -2f, 0f, 12f, 16f, 1f), ModelTransform.pivot(1f, 1f, 2.5f));
+            root.addChild("left", ModelPartBuilder.create().uv(0, 0).cuboid(-12f, -2f, 0f, 12f, 16f, 1f), fr.darkerdawn.jaly.Compat.at(-1f, 1f, 2.5f));
+            root.addChild("right", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(0f, -2f, 0f, 12f, 16f, 1f), fr.darkerdawn.jaly.Compat.at(1f, 1f, 2.5f));
             wings = TexturedModelData.of(data, 64, 32).createModel();
         }
         return wings;
@@ -76,7 +76,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         l.roll = -0.2f;
         r.roll = 0.2f;
         matrices.push();
-        body.rotate(matrices);
+        fr.darkerdawn.jaly.Compat.applyTransform(body, matrices);
         m.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.wingTexture(w))), light, OverlayTexture.DEFAULT_UV);
         matrices.pop();
     }

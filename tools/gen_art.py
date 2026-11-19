@@ -170,7 +170,7 @@ def build_hats():
             x, y, z, w, h, d, col = cube[:7]
             tag = cube[7] if len(cube) > 7 else None
             if tag is None:
-                parts.append(f'        r.addChild("p{i}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x}f, {y}f, {z}f, {w}f, {h}f, {d}f), ModelTransform.pivot(0f, 0f, 0f));')
+                parts.append(f'        r.addChild("p{i}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x}f, {y}f, {z}f, {w}f, {h}f, {d}f), fr.darkerdawn.jaly.Compat.at(0f, 0f, 0f));')
                 continue
             # joints: legs/arms swing from the top, wings flap from the body side, tails wag from the base
             if tag in ("L", "R", "AL", "AR"):
@@ -183,7 +183,7 @@ def build_hats():
                 pv = (x + w / 2, y + h / 2, z)
             name = f"p{i}_{tag}"
             rigged.append(name)
-            parts.append(f'        r.addChild("{name}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x - pv[0]}f, {y - pv[1]}f, {z - pv[2]}f, {w}f, {h}f, {d}f), ModelTransform.pivot({pv[0]}f, {pv[1]}f, {pv[2]}f));')
+            parts.append(f'        r.addChild("{name}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x - pv[0]}f, {y - pv[1]}f, {z - pv[2]}f, {w}f, {h}f, {d}f), fr.darkerdawn.jaly.Compat.at({pv[0]}f, {pv[1]}f, {pv[2]}f));')
         if rigged:
             rigs.append(f'        java.util.Map.entry("{hid}", new String[]{{{", ".join(chr(34) + n + chr(34) for n in rigged)}}})')
         lines.append(f"    static TexturedModelData {hid}() {{\n        ModelData data = new ModelData();\n        ModelPartData r = data.getRoot();\n" + "\n".join(parts) + "\n        return TexturedModelData.of(data, 64, 64);\n    }\n")

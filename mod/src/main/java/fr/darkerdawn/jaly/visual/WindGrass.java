@@ -34,6 +34,17 @@ public final class WindGrass {
 
         public Animator(net.minecraft.client.texture.Animator inner) { this.inner = inner; }
 
+        //#if >=1.21.5
+        @Override
+        public void tick(int x, int y, com.mojang.blaze3d.textures.GpuTexture tex) {
+            acc += speed();
+            int n = 0;
+            while (acc >= 1f && n++ < 5) {
+                inner.tick(x, y, tex);
+                acc -= 1f;
+            }
+        }
+        //#else
         @Override
         public void tick(int x, int y) {
             acc += speed();
@@ -43,6 +54,7 @@ public final class WindGrass {
                 acc -= 1f;
             }
         }
+        //#endif
 
         @Override
         public void close() { inner.close(); }

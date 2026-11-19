@@ -502,23 +502,23 @@ public class ShopScreen extends Screen {
     }
 
     private void drawSpinning(DrawContext ctx, int x, int feetY, int size, ClientPlayerEntity e) {
-        float bodyYaw = e.bodyYaw, yaw = e.getYaw(), pitch = e.getPitch(), prevHead = e.prevHeadYaw, head = e.headYaw, prevBody = e.prevBodyYaw;
+        float bodyYaw = e.bodyYaw, yaw = e.getYaw(), pitch = e.getPitch(), prevHead = fr.darkerdawn.jaly.Compat.prevHeadYaw(e), head = e.headYaw, prevBody = fr.darkerdawn.jaly.Compat.prevBodyYaw(e);
         float angle = 180f + spin;
         e.bodyYaw = angle;
-        e.prevBodyYaw = angle;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, angle, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(angle);
         e.setPitch(0);
         e.headYaw = angle;
-        e.prevHeadYaw = angle;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, fr.darkerdawn.jaly.Compat.prevBodyYaw(e), angle);
         Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI);
         float sc = size / e.getScale();
         InventoryScreen.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, sc, new Vector3f(0, e.getHeight() / 2f, 0), rot, new Quaternionf(), e);
         e.bodyYaw = bodyYaw;
-        e.prevBodyYaw = prevBody;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, prevBody, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(yaw);
         e.setPitch(pitch);
         e.headYaw = head;
-        e.prevHeadYaw = prevHead;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, fr.darkerdawn.jaly.Compat.prevBodyYaw(e), prevHead);
     }
 
     // coins: 4 packs as cards with growing coin piles

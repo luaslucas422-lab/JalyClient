@@ -135,7 +135,7 @@ public final class AvatarPreview {
         var hatPart = hat.equals("none") ? null : Cosmetics.model(hat);
         if (hatPart != null) {
             ms.push();
-            m.head.rotate(ms);
+            fr.darkerdawn.jaly.Compat.applyTransform(m.head, ms);
             if (hat.equals("halo")) ms.translate(0, -0.75f + MathHelper.sin(anim * 0.08f) * 0.03f, 0);
             hatPart.render(ms, vc.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), light, OverlayTexture.DEFAULT_UV);
             ms.pop();

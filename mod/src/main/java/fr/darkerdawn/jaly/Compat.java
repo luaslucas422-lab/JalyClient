@@ -61,6 +61,73 @@ public final class Compat {
         //#endif
     }
 
+    /** ModelTransform.pivot became origin in 1.21.5. */
+    public static net.minecraft.client.model.ModelTransform at(float x, float y, float z) {
+        //#if >=1.21.5
+        return net.minecraft.client.model.ModelTransform.origin(x, y, z);
+        //#else
+        return net.minecraft.client.model.ModelTransform.pivot(x, y, z);
+        //#endif
+    }
+
+    public static void applyTransform(net.minecraft.client.model.ModelPart part, net.minecraft.client.util.math.MatrixStack ms) {
+        //#if >=1.21.5
+        part.applyTransform(ms);
+        //#else
+        part.rotate(ms);
+        //#endif
+    }
+
+    public static void particle(World w, net.minecraft.particle.ParticleEffect fx, double x, double y, double z, double vx, double vy, double vz) {
+        //#if >=1.21.5
+        w.addParticleClient(fx, x, y, z, vx, vy, vz);
+        //#else
+        w.addParticle(fx, x, y, z, vx, vy, vz);
+        //#endif
+    }
+
+    public static net.minecraft.client.texture.NativeImageBackedTexture texture(NativeImage img, String name) {
+        //#if >=1.21.5
+        return new net.minecraft.client.texture.NativeImageBackedTexture(() -> "jalyclient:" + name, img);
+        //#else
+        return new net.minecraft.client.texture.NativeImageBackedTexture(img);
+        //#endif
+    }
+
+    public static float prevBodyYaw(net.minecraft.entity.LivingEntity e) {
+        //#if >=1.21.5
+        return e.lastBodyYaw;
+        //#else
+        return e.prevBodyYaw;
+        //#endif
+    }
+
+    public static float prevHeadYaw(net.minecraft.entity.LivingEntity e) {
+        //#if >=1.21.5
+        return e.lastHeadYaw;
+        //#else
+        return e.prevHeadYaw;
+        //#endif
+    }
+
+    public static void setPrevYaws(net.minecraft.entity.LivingEntity e, float body, float head) {
+        //#if >=1.21.5
+        e.lastBodyYaw = body;
+        e.lastHeadYaw = head;
+        //#else
+        e.prevBodyYaw = body;
+        e.prevHeadYaw = head;
+        //#endif
+    }
+
+    public static String nbtString(net.minecraft.nbt.NbtCompound n, String key) {
+        //#if >=1.21.5
+        return n.getString(key, null);
+        //#else
+        return n.contains(key) ? n.getString(key) : null;
+        //#endif
+    }
+
     public static Biome.Precipitation precipitation(World w, BlockPos pos) {
         //#if >=1.21.2
         return w.getBiome(pos).value().getPrecipitation(pos, w.getSeaLevel());

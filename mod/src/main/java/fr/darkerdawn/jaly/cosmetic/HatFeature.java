@@ -29,7 +29,7 @@ public class HatFeature extends FeatureRenderer<net.minecraft.client.render.enti
         ModelPart part = Cosmetics.model(hat);
         if (part == null) return;
         matrices.push();
-        this.getContextModel().head.rotate(matrices);
+        fr.darkerdawn.jaly.Compat.applyTransform(this.getContextModel().head, matrices);
         int l = light;
         if (hat.equals("halo")) {
             float t = (Util.getMeasuringTimeMs() % 4000L) / 4000f;
@@ -57,7 +57,7 @@ public class HatFeature extends FeatureRenderer<LivingEntity, BipedEntityModel<L
         ModelPart part = Cosmetics.model(hat);
         if (part == null) return;
         matrices.push();
-        this.getContextModel().head.rotate(matrices);
+        fr.darkerdawn.jaly.Compat.applyTransform(this.getContextModel().head, matrices);
         if (!entity.getEquippedStack(EquipmentSlot.HEAD).isEmpty() && !hat.equals("antlers")) {
             matrices.translate(0, -0.07f, 0);
             matrices.scale(1.12f, 1.12f, 1.12f);

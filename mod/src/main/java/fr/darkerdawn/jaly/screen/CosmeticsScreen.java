@@ -131,23 +131,23 @@ public class CosmeticsScreen extends JalyScreen {
 
     /** Like the inventory player preview, but spinning so you can see your cape. */
     private void drawSpinning(DrawContext ctx, int x, int feetY, int size, ClientPlayerEntity e) {
-        float bodyYaw = e.bodyYaw, yaw = e.getYaw(), pitch = e.getPitch(), prevHead = e.prevHeadYaw, head = e.headYaw, prevBody = e.prevBodyYaw;
+        float bodyYaw = e.bodyYaw, yaw = e.getYaw(), pitch = e.getPitch(), prevHead = fr.darkerdawn.jaly.Compat.prevHeadYaw(e), head = e.headYaw, prevBody = fr.darkerdawn.jaly.Compat.prevBodyYaw(e);
         float angle = 180f + spin;
         e.bodyYaw = angle;
-        e.prevBodyYaw = angle;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, angle, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(angle);
         e.setPitch(0);
         e.headYaw = angle;
-        e.prevHeadYaw = angle;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, fr.darkerdawn.jaly.Compat.prevBodyYaw(e), angle);
         Quaternionf rot = new Quaternionf().rotateZ((float) Math.PI);
         Quaternionf cam = new Quaternionf();
         float scale = size / e.getScale();
         InventoryScreen.drawEntity(ctx, x, feetY - size * e.getHeight() / 2f + 4, scale, new Vector3f(0, e.getHeight() / 2f, 0), rot, cam, e);
         e.bodyYaw = bodyYaw;
-        e.prevBodyYaw = prevBody;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, prevBody, fr.darkerdawn.jaly.Compat.prevHeadYaw(e));
         e.setYaw(yaw);
         e.setPitch(pitch);
-        e.prevHeadYaw = prevHead;
+        fr.darkerdawn.jaly.Compat.setPrevYaws(e, fr.darkerdawn.jaly.Compat.prevBodyYaw(e), prevHead);
         e.headYaw = head;
     }
 

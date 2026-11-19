@@ -200,7 +200,9 @@ public final class CustomDiscs {
         st.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(MODEL_BASE + d.icon));
         //#endif
         JukeboxPlayableComponent jp = st.get(DataComponentTypes.JUKEBOX_PLAYABLE);
+        //#if <1.21.5
         if (jp != null) st.set(DataComponentTypes.JUKEBOX_PLAYABLE, jp.withShowInTooltip(false));
+        //#endif
         NbtCompound n = new NbtCompound();
         n.putString("jaly_disc", d.id);
         st.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(n));
@@ -242,7 +244,7 @@ public final class CustomDiscs {
         NbtComponent c = st.get(DataComponentTypes.CUSTOM_DATA);
         if (c == null) return null;
         NbtCompound n = c.copyNbt();
-        return n.contains("jaly_disc") ? n.getString("jaly_disc") : null;
+        return fr.darkerdawn.jaly.Compat.nbtString(n, "jaly_disc");
     }
 
     // ------------------------------------------------------------------ playback

@@ -95,7 +95,7 @@ public final class RemoteImages {
     private static void upload(String key, NativeImage img) {
         MinecraftClient.getInstance().execute(() -> {
             Identifier id = Identifier.of("jalyclient", "remote/" + Integer.toHexString(key.hashCode()) + "_" + key.toLowerCase().replaceAll("[^a-z0-9_]", ""));
-            MinecraftClient.getInstance().getTextureManager().registerTexture(id, new NativeImageBackedTexture(img));
+            MinecraftClient.getInstance().getTextureManager().registerTexture(id, fr.darkerdawn.jaly.Compat.texture(img, "img"));
             READY.put(key, id);
         });
     }

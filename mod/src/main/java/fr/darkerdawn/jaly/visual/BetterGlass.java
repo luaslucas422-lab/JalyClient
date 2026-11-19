@@ -89,7 +89,7 @@ public final class BetterGlass {
     }
 
     /** One textured quad just outside the glass face. du/dv scroll the texture (running drops). */
-    private static void quad(net.minecraft.client.render.BufferBuilder b, Face f, Vec3d cam, float extra, float du, float dv, int col) {
+    private static void quad(net.minecraft.client.render.VertexConsumer b, Face f, Vec3d cam, float extra, float du, float dv, int col) {
         Direction d = f.side;
         double cx = f.pos.getX() + 0.5 - cam.x, cy = f.pos.getY() - cam.y, cz = f.pos.getZ() + 0.5 - cam.z;
         double out = (f.pane ? 0.0625 + 0.004 : 0.5 + 0.004) + extra;

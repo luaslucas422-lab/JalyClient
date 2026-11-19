@@ -36,7 +36,7 @@ public final class Minimap extends HudModule {
         if (mc.world == null || mc.player == null) return;
         if (image == null) {
             image = new NativeImage(SIZE, SIZE, true);
-            texture = new NativeImageBackedTexture(image);
+            texture = fr.darkerdawn.jaly.Compat.texture(image, "img");
             mc.getTextureManager().registerTexture(TEX, texture);
         }
         if (rowCursor == 0) {

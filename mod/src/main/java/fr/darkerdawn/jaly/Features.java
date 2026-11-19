@@ -112,16 +112,16 @@ public final class Features {
             double y = p.y + 6 + RNG.nextDouble() * 10;
             bp.set(x, y, z);
             if (!mc.world.isSkyVisible(bp)) continue;
-            mc.world.addParticle(RNG.nextInt(4) == 0 ? ParticleTypes.WHITE_ASH : ParticleTypes.SNOWFLAKE, x, y, z, (RNG.nextDouble() - 0.5) * 0.02, -0.04, (RNG.nextDouble() - 0.5) * 0.02);
+            fr.darkerdawn.jaly.Compat.particle(mc.world, RNG.nextInt(4) == 0 ? ParticleTypes.WHITE_ASH : ParticleTypes.SNOWFLAKE, x, y, z, (RNG.nextDouble() - 0.5) * 0.02, -0.04, (RNG.nextDouble() - 0.5) * 0.02);
         }
     }
 
     public static void snowBurst(MinecraftClient mc, Vec3d at) {
         for (int i = 0; i < 40; i++) {
-            mc.world.addParticle(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, (RNG.nextDouble() - 0.5) * 0.4, RNG.nextDouble() * 0.3, (RNG.nextDouble() - 0.5) * 0.4);
+            fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, (RNG.nextDouble() - 0.5) * 0.4, RNG.nextDouble() * 0.3, (RNG.nextDouble() - 0.5) * 0.4);
         }
         for (int i = 0; i < 12; i++) {
-            mc.world.addParticle(ParticleTypes.HAPPY_VILLAGER, at.x + (RNG.nextDouble() - 0.5), at.y + (RNG.nextDouble() - 0.5), at.z + (RNG.nextDouble() - 0.5), 0, 0, 0);
+            fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.HAPPY_VILLAGER, at.x + (RNG.nextDouble() - 0.5), at.y + (RNG.nextDouble() - 0.5), at.z + (RNG.nextDouble() - 0.5), 0, 0, 0);
         }
         Sounds.play(Sounds.KILL, 1f, 0.8f);
     }
@@ -139,7 +139,7 @@ public final class Features {
     private static void trail(MinecraftClient mc) {
         if ("sparkles".equals(Cosmetics.selected(Cosmetics.Type.NAME_FX)) && !mc.options.getPerspective().isFirstPerson() && (trailTick++ % 5 == 0)) {
             Vec3d h = mc.player.getPos().add(0, mc.player.getHeight() + 0.6, 0);
-            mc.world.addParticle(ParticleTypes.SNOWFLAKE, h.x + (RNG.nextDouble() - 0.5) * 0.9, h.y + RNG.nextDouble() * 0.3, h.z + (RNG.nextDouble() - 0.5) * 0.9, 0, -0.01, 0);
+            fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.SNOWFLAKE, h.x + (RNG.nextDouble() - 0.5) * 0.9, h.y + RNG.nextDouble() * 0.3, h.z + (RNG.nextDouble() - 0.5) * 0.9, 0, -0.01, 0);
         }
         String t = Cosmetics.selected(Cosmetics.Type.TRAIL);
         if (t.equals("none") || mc.player.isInvisible() || mc.player.isSpectator()) return;
@@ -164,7 +164,7 @@ public final class Features {
         };
         if (fx == null) return;
         double vx = t.equals("notes") ? RNG.nextInt(24) / 24.0 : (RNG.nextDouble() - 0.5) * 0.02;
-        mc.world.addParticle(fx, p.x + (RNG.nextDouble() - 0.5) * 0.4, p.y + 0.1 + RNG.nextDouble() * 0.3, p.z + (RNG.nextDouble() - 0.5) * 0.4, vx, 0.01, (RNG.nextDouble() - 0.5) * 0.02);
+        fr.darkerdawn.jaly.Compat.particle(mc.world, fx, p.x + (RNG.nextDouble() - 0.5) * 0.4, p.y + 0.1 + RNG.nextDouble() * 0.3, p.z + (RNG.nextDouble() - 0.5) * 0.4, vx, 0.01, (RNG.nextDouble() - 0.5) * 0.02);
     }
 
     /** How high you are above where you last stood: walking pets stay on the floor when you jump. */
@@ -183,7 +183,7 @@ public final class Features {
         double wx = lx * Math.cos(a) + lz * Math.sin(a), wz = -lx * Math.sin(a) + lz * Math.cos(a);
         double y = mc.player.getY() + 1.1;
         var fx = pet.equals("frost_dragon") ? ParticleTypes.SNOWFLAKE : pet.equals("sleigh") ? Compat.dust(1f, 0.85f, 0.3f, 0.7f) : ParticleTypes.WHITE_ASH;
-        mc.world.addParticle(fx, mc.player.getX() + wx + (RNG.nextDouble() - 0.5) * 0.3, y, mc.player.getZ() + wz + (RNG.nextDouble() - 0.5) * 0.3, 0, -0.03, 0);
+        fr.darkerdawn.jaly.Compat.particle(mc.world, fx, mc.player.getX() + wx + (RNG.nextDouble() - 0.5) * 0.3, y, mc.player.getZ() + wz + (RNG.nextDouble() - 0.5) * 0.3, 0, -0.03, 0);
     }
 
     private static boolean wasOnGround = true;
@@ -197,11 +197,11 @@ public final class Features {
             Vec3d v = mc.player.getVelocity();
             double sp = Math.sqrt(v.x * v.x + v.z * v.z);
             if (ground && sp > 0.03 && stepTick++ % 4 == 0) {
-                mc.world.addParticle(ParticleTypes.SNOWFLAKE, mc.player.getX() + (RNG.nextDouble() - 0.5) * 0.4, mc.player.getY() + 0.05, mc.player.getZ() + (RNG.nextDouble() - 0.5) * 0.4, 0, 0.02, 0);
+                fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.SNOWFLAKE, mc.player.getX() + (RNG.nextDouble() - 0.5) * 0.4, mc.player.getY() + 0.05, mc.player.getZ() + (RNG.nextDouble() - 0.5) * 0.4, 0, 0.02, 0);
             }
             if (wasOnGround && !ground && v.y > 0.2) {
                 for (int i = 0; i < 8; i++) {
-                    mc.world.addParticle(ParticleTypes.SNOWFLAKE, mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ(), (RNG.nextDouble() - 0.5) * 0.25, 0.08, (RNG.nextDouble() - 0.5) * 0.25);
+                    fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.SNOWFLAKE, mc.player.getX(), mc.player.getY() + 0.1, mc.player.getZ(), (RNG.nextDouble() - 0.5) * 0.25, 0.08, (RNG.nextDouble() - 0.5) * 0.25);
                 }
             }
         }

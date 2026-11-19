@@ -1,83 +1,51 @@
 package fr.darkerdawn.jaly.visual;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.BuiltBuffer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
 
 import java.util.function.Consumer;
 
-/** Small helpers for drawing coloured or textured quads in the world (camera-relative coordinates). */
+/**
+ * Small helpers for drawing coloured or textured quads in the world (camera-relative coordinates).
+ * Uses the game's own render layers, so it works the same on every Minecraft version.
+ */
 final class WorldDraw {
     private WorldDraw() {}
 
     static final Matrix4f ID = new Matrix4f();
 
-    /** Coloured quads. additive = glowy (aurora, stars); otherwise normal alpha blending. */
-    static void colored(boolean additive, boolean depthTest, Consumer<BufferBuilder> draw) {
-        BufferBuilder b = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        draw.accept(b);
-        BuiltBuffer built = b.endNullable();
-        if (built == null) return;
-        //#if >=1.21.2
-        RenderSystem.setShader(net.minecraft.client.gl.ShaderProgramKeys.POSITION_COLOR);
-        //#else
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        //#endif
-        setup(additive, depthTest);
-        BufferRenderer.drawWithGlobalProgram(built);
-        restore();
+    private static VertexConsumerProvider.Immediate imm() {
+        return MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+    }
+
+    /** Coloured quads. additive = glowy (aurora, stars); otherwise normal see-through colour. */
+    static void colored(boolean additive, boolean depthTest, Consumer<VertexConsumer> draw) {
+        RenderLayer layer = additive ? RenderLayer.getLightning() : RenderLayer.getDebugQuads();
+        VertexConsumerProvider.Immediate imm = imm();
+        draw.accept(imm.getBuffer(layer));
+        imm.draw(layer);
     }
 
     /** Textured + tinted quads (glass rain, frost). */
-    static void textured(Identifier tex, boolean depthTest, Consumer<BufferBuilder> draw) {
-        BufferBuilder b = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-        draw.accept(b);
-        BuiltBuffer built = b.endNullable();
-        if (built == null) return;
-        //#if >=1.21.2
-        RenderSystem.setShader(net.minecraft.client.gl.ShaderProgramKeys.POSITION_TEX_COLOR);
-        //#else
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-        //#endif
-        RenderSystem.setShaderTexture(0, tex);
-        setup(false, depthTest);
-        BufferRenderer.drawWithGlobalProgram(built);
-        restore();
+    static void textured(Identifier tex, boolean depthTest, Consumer<VertexConsumer> draw) {
+        RenderLayer layer = RenderLayer.getEntityTranslucent(tex);
+        VertexConsumerProvider.Immediate imm = imm();
+        draw.accept(imm.getBuffer(layer));
+        imm.draw(layer);
     }
 
-    private static void setup(boolean additive, boolean depthTest) {
-        RenderSystem.enableBlend();
-        if (additive) RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        else RenderSystem.defaultBlendFunc();
-        RenderSystem.depthMask(false);
-        if (depthTest) RenderSystem.enableDepthTest();
-        else RenderSystem.disableDepthTest();
-        RenderSystem.disableCull();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-    }
-
-    private static void restore() {
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableBlend();
-    }
-
-    static void v(BufferBuilder b, float x, float y, float z, int argb) {
+    static void v(VertexConsumer b, float x, float y, float z, int argb) {
         b.vertex(ID, x, y, z).color(argb);
     }
 
-    static void vt(BufferBuilder b, float x, float y, float z, float u, float vv, int argb) {
-        b.vertex(ID, x, y, z).texture(u, vv).color(argb);
+    static void vt(VertexConsumer b, float x, float y, float z, float u, float vv, int argb) {
+        b.vertex(ID, x, y, z).color(argb).texture(u, vv).overlay(OverlayTexture.DEFAULT_UV).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).normal(0f, 1f, 0f);
     }
 
     static int argb(float a, float r, float g, float bl) {
