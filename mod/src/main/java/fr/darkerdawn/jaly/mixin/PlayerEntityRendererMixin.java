@@ -20,7 +20,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerEntityRendererMixin {
     @Unique private static boolean jaly$isMe;
 
-    //#if >=1.21.2
+    //#if >=1.21.9
+    @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"))
+    private void jaly$who(net.minecraft.client.render.entity.state.PlayerEntityRenderState state, MatrixStack matrices, net.minecraft.client.render.command.OrderedRenderCommandQueue queue, net.minecraft.client.render.state.CameraRenderState cam, CallbackInfo ci) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player != null && state.id == mc.player.getId() && state.displayName != null && Mods.on("name_style"))
+            state.displayName = NameStyle.mine(state.displayName.getString());
+    }
+    //#elif >=1.21.2
     @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("HEAD"))
     private void jaly$who(net.minecraft.client.render.entity.state.PlayerEntityRenderState state, Text text, MatrixStack matrices, VertexConsumerProvider vcp, int light, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -33,6 +40,7 @@ public abstract class PlayerEntityRendererMixin {
     }
     //#endif
 
+    //#if <1.21.9
     //#if >=1.21.2
     @ModifyVariable(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("HEAD"), argsOnly = true)
     //#else
@@ -42,4 +50,5 @@ public abstract class PlayerEntityRendererMixin {
         if (jaly$isMe && Mods.on("name_style")) return NameStyle.mine(text.getString());
         return text;
     }
+    //#endif
 }
