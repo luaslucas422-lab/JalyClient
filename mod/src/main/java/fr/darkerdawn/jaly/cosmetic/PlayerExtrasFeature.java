@@ -105,7 +105,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
             matrices.translate(0, lift - idle, 0);
             matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(roll));
             if (amt < 0.05f) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(MathHelper.sin(anim * 0.02f) * 25f)); // looks around
-            matrices.scale(0.55f, 0.55f * squash, 0.55f);
+            matrices.scale(0.72f, 0.72f * squash, 0.72f);
             animate(part, key, walk, amt, anim * 0.35f, p);
         }
         part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(key))), light, OverlayTexture.DEFAULT_UV);
