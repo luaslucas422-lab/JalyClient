@@ -254,7 +254,11 @@ public final class CustomDiscs {
     }
 
     /** A jukebox started playing. Returns true if it's one of our discs (then the vanilla song is skipped). */
+    public static int events;
+    public static String lastWhy = "";
+
     public static boolean onJukeboxStart(BlockPos pos) {
+        events++;
         MinecraftClient mc = MinecraftClient.getInstance();
         String id = null;
         if (mc.getServer() != null && mc.world != null) {
@@ -262,11 +266,11 @@ public final class CustomDiscs {
             if (sw != null && sw.getBlockEntity(pos) instanceof JukeboxBlockEntity be) id = discId(be.getStack());
         }
         if (id == null) id = INSERTED.get(pos);
-        if (id == null) return false;
+        if (id == null) { lastWhy = "no disc id at " + pos; return false; }
         Disc d = byId(id);
-        if (d == null) return false;
+        if (d == null) { lastWhy = "unknown disc " + id; return false; }
         Path file = DIR.resolve(d.file);
-        if (!Files.exists(file)) return false;
+        if (!Files.exists(file)) { lastWhy = "missing file " + file; return false; }
         stop(pos);
         DiscSound s = new DiscSound(pos, file);
         PLAYING.put(pos.toImmutable(), s);

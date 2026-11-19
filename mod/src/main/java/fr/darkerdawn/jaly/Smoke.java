@@ -298,10 +298,13 @@ final class Smoke {
                 net.minecraft.util.math.BlockPos jb = c.player.getBlockPos().add(3, 0, 0);
                 c.getServer().execute(() -> {
                     sw.setBlockState(jb, net.minecraft.block.Blocks.JUKEBOX.getDefaultState());
-                    if (sw.getBlockEntity(jb) instanceof net.minecraft.block.entity.JukeboxBlockEntity be) be.setStack(d);
+                    var sp = c.getServer().getPlayerManager().getPlayer(c.player.getUuid());
+                    var res = net.minecraft.component.type.JukeboxPlayableComponent.tryPlayStack(sw, jb, d, sp);
+                    System.out.println("[JALY-SMOKE] jukebox insert: " + res + " has_record=" + sw.getBlockState(jb).get(net.minecraft.block.JukeboxBlock.HAS_RECORD));
                 });
             }
             case 456 -> {
+                System.out.println("[JALY-SMOKE] jukebox events=" + fr.darkerdawn.jaly.disc.CustomDiscs.events + " why=" + fr.darkerdawn.jaly.disc.CustomDiscs.lastWhy);
                 check("custom disc plays in a jukebox", fr.darkerdawn.jaly.disc.CustomDiscs.playing() > 0);
                 c.setScreen(new fr.darkerdawn.jaly.disc.CustomDiscScreen(null));
             }
