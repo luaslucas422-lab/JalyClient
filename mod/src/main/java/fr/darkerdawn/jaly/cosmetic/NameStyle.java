@@ -64,7 +64,11 @@ public final class NameStyle {
     /** The festive version of a name (logo + colours). */
     public static MutableText style(String name, String color, String fx, boolean logo) {
         MutableText out = Text.empty();
+        //#if >=1.21.9
+        if (logo) out.append(Text.literal("").setStyle(Style.EMPTY.withFont(new net.minecraft.text.StyleSpriteSource.Font(LOGO_FONT)))).append(Text.literal(" "));
+        //#else
         if (logo) out.append(Text.literal("").setStyle(Style.EMPTY.withFont(LOGO_FONT))).append(Text.literal(" "));
+        //#endif
         long t = System.currentTimeMillis();
         int n = name.length();
         for (int i = 0; i < n; i++) {

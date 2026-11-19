@@ -24,7 +24,11 @@ public final class Compat {
     public static void drawEntity(net.minecraft.client.gui.DrawContext ctx, float x, float y, float size, org.joml.Vector3f off, org.joml.Quaternionf rot, org.joml.Quaternionf cam, net.minecraft.entity.LivingEntity e) {
         //#if >=1.21.6
         int hw = Math.round(size * 1.2f), hh = Math.round(size * Math.max(1.2f, e.getHeight() * 0.75f));
+        //#if >=1.21.11
+        net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, Math.round(x) - hw, Math.round(y) - hh, Math.round(x) + hw, Math.round(y) + hh, Math.round(size), off, rot, cam, e);
+        //#else
         net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, Math.round(x) - hw, Math.round(y) - hh, Math.round(x) + hw, Math.round(y) + hh, size, off, rot, cam, e);
+        //#endif
         //#else
         net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, x, y, size, off, rot, cam, e);
         //#endif

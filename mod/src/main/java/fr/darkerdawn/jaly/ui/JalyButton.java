@@ -15,7 +15,11 @@ import java.util.WeakHashMap;
  * Christmas buttons. Styles: jaly (lights + candy sweep), frost (ice shimmer), ginger (wiggly icing),
  * aurora (flowing colours), lights (chasing fairy lights), present (ribbon unwraps) and vanilla.
  */
+//#if >=1.21.11
+public class JalyButton extends ButtonWidget.Text {
+//#else
 public class JalyButton extends ButtonWidget {
+//#endif
     public static final String[] STYLES = {"jaly", "frost", "ginger", "aurora", "lights", "present", "candy", "ice", "ornament", "neon", "cocoa", "starry", "vanilla"};
     public static final String[] STYLE_NAMES = {"Jaly Classic", "Frost Shimmer", "Gingerbread", "Aurora Flow", "Fairy Lights", "Present Unwrap",
         "Candy Stripe", "Ice Crystal", "Ornament", "Neon Glow", "Hot Cocoa", "Starry Night", "Vanilla"};
@@ -25,7 +29,7 @@ public class JalyButton extends ButtonWidget {
     private String forcedStyle;
     private final boolean small;
 
-    public JalyButton(int x, int y, int w, int h, Text text, PressAction action) {
+    public JalyButton(int x, int y, int w, int h, net.minecraft.text.Text text, PressAction action) {
         super(x, y, w, h, text, action, DEFAULT_NARRATION_SUPPLIER);
         this.small = h < 18;
     }
@@ -43,12 +47,21 @@ public class JalyButton extends ButtonWidget {
     }
 
     @Override
+    //#if >=1.21.11
+    protected void drawIcon(DrawContext ctx, int mouseX, int mouseY, float delta) {
+        String st = styleNow();
+        if ("vanilla".equals(st)) {
+            super.drawIcon(ctx, mouseX, mouseY, delta);
+            return;
+        }
+    //#else
     protected void renderWidget(DrawContext ctx, int mouseX, int mouseY, float delta) {
         String st = styleNow();
         if ("vanilla".equals(st)) {
             super.renderWidget(ctx, mouseX, mouseY, delta);
             return;
         }
+    //#endif
         renderStyled(ctx, this, st, selected, small);
     }
 
