@@ -12,9 +12,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mouse.class)
 public abstract class MouseMixin {
     @Inject(method = "onMouseButton", at = @At("HEAD"))
+    //#if >=1.21.9
+    private void jaly$cps(long window, net.minecraft.client.input.MouseInput input, int action, CallbackInfo ci) {
+        if (action == 1 && MinecraftClient.getInstance().currentScreen == null) Hud.click(input.button());
+    }
+    //#else
     private void jaly$cps(long window, int button, int action, int mods, CallbackInfo ci) {
         if (action == 1 && MinecraftClient.getInstance().currentScreen == null) Hud.click(button);
     }
+    //#endif
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void jaly$zoomScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
