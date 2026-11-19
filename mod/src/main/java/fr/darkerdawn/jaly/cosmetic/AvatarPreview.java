@@ -94,7 +94,22 @@ public final class AvatarPreview {
         ms.scale(0.9375f, 0.9375f, 0.9375f);
         ms.translate(0f, -1.501f, 0f);
         RenderSystem.setShaderLights(new Vector3f(0.2f, -1f, -1f).normalize(), new Vector3f(-0.2f, -1f, 0f).normalize());
+        //#if >=1.21.2
+        ctx.draw(vc -> renderAll(ms, vc, m, st, anim));
+        //#else
         VertexConsumerProvider.Immediate vc = ctx.getVertexConsumers();
+        renderAll(ms, vc, m, st, anim);
+        ctx.draw();
+        //#endif
+        ms.pop();
+        DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    //#if >=1.21.2
+    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel m, SkinTextures st, float anim) {
+    //#else
+    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel<AbstractClientPlayerEntity> m, SkinTextures st, float anim) {
+    //#endif
         int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
         m.render(ms, vc.getBuffer(RenderLayer.getEntityTranslucent(st.texture())), light, OverlayTexture.DEFAULT_UV);
         // cape
@@ -129,8 +144,5 @@ public final class AvatarPreview {
         PlayerExtrasFeature.compact = true;
         PlayerExtrasFeature.renderPet(ms, vc, light, anim, anim * 0.45f, 0.5f, 0f); // the pet walks on the spot
         PlayerExtrasFeature.compact = false;
-        ctx.draw();
-        ms.pop();
-        DiffuseLighting.enableGuiDepthLighting();
     }
 }

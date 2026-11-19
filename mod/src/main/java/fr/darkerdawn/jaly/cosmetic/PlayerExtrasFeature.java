@@ -41,6 +41,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
     public PlayerExtrasFeature(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
     }
+//#endif
 
     private static ModelPart wings() {
         if (wings == null) {
@@ -53,6 +54,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         return wings;
     }
 
+//#if <1.21.2
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player,
                        float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
