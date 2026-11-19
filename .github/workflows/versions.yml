@@ -25,6 +25,20 @@ jobs:
           grep -E "What went wrong" -A6 build.log | head -20
           echo "ERRORS $(grep -c 'error:' build.log)"
           [ "$ok" = 1 ]
+      - name: Launch Minecraft ${{ matrix.mc }} with JalyClient (title screen test)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri >/dev/null || true
+          pip install -q portablemc
+          mkdir -p work/mods
+          cp $(ls mod/build/libs/*.jar | grep -v sources) work/mods/
+          FAPI=$(grep fabric_version mod/versions/${{ matrix.mc }}.properties | cut -d= -f2)
+          curl -sL -o work/mods/fabric-api.jar "https://github.com/FabricMC/fabric/releases/download/${FAPI}/fabric-api-${FAPI}.jar" || true
+          [ -s work/mods/fabric-api.jar ] || curl -sL -o work/mods/fabric-api.jar "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FAPI}/fabric-api-${FAPI}.jar"
+          ls -la work/mods
+          printf 'onboardAccessibility:false\ntutorialStep:none\nnarrator:0\nsoundCategory_master:0.0\n' > work/options.txt
+          xvfb-run -a -s "-screen 0 1280x720x24" timeout 900 portablemc --main-dir "$PWD/mc" start --mc-dir "$PWD/work" -u JalyTester --jvm-arg=-Xmx3G --jvm-arg=-Djaly.smoke=true fabric:${{ matrix.mc }}:0.20.1 > client.out 2>&1 || echo "EXIT $?"
+          grep -nE "JALY|Mixin apply failed|InvalidInjection|Caused by|Exception" work/logs/latest.log | cut -c1-300 | head -60
+          grep -q "JALY-SMOKE\] done, failures=0" work/logs/latest.log
       - uses: actions/upload-artifact@v4
         with:
           name: JalyClient-mc${{ matrix.mc }}
