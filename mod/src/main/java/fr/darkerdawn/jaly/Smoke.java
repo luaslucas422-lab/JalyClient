@@ -61,12 +61,12 @@ final class Smoke {
                 shot(c, "main menu");
             }
             if (titleTicks == 125) {
-                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
-                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS, "dragon");
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.put(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.put(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS, "dragon");
                 c.setScreen(new fr.darkerdawn.jaly.screen.CosmeticsScreen(c.currentScreen));
             }
             if (titleTicks == 140) shot(c, "cosmetics preview without a world");
-            if (titleTicks == 142) c.setScreen(new fr.darkerdawn.jaly.screen.JalyTitleScreen());
+            if (titleTicks == 142) { fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.clear(); c.setScreen(new fr.darkerdawn.jaly.screen.JalyTitleScreen()); }
             if (titleTicks == 160) {
                 check("config file saved", Files.exists(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("jalyclient.json")));
                 System.out.println("[JALY-SMOKE] done, failures=" + fails);
@@ -159,7 +159,7 @@ final class Smoke {
                     cfg.set(id, true);
                 }
                 cfg.lowHealthAt = 40f; // force the low-health edges on for the screenshot
-                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.put(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
             }
             case 80 -> { shot(c, "in-game hud"); cfg.lowHealthAt = 6f; for (String id : new String[]{"target", "next_gift", "hunger", "durability", "snow_steps", "low_health"}) cfg.set(id, false); }
             case 82 -> c.player.setPitch(-28);
@@ -217,14 +217,15 @@ final class Smoke {
                 c.setScreen(null);
                 c.options.hudHidden = true;
                 c.options.setPerspective(net.minecraft.client.option.Perspective.THIRD_PERSON_BACK);
-                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.put(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
             }
             case 392 -> shot(c, "pet reindeer on the floor");
-            case 394 -> fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
+            case 394 -> fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.put(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
             case 404 -> shot(c, "pet frost dragon flying");
             case 406 -> {
                 c.options.hudHidden = false;
                 c.options.setPerspective(net.minecraft.client.option.Perspective.FIRST_PERSON);
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.clear();
             }
             case 470 -> {
                 var data = fr.darkerdawn.jaly.net.UserContent.data();
