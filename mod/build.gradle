@@ -2,6 +2,16 @@ plugins {
     id 'fabric-loom' version '1.14-SNAPSHOT'
 }
 
+// ---- multi-version: gradle build -Pmc=1.21.4 reads versions/1.21.4.properties
+def mcTarget = (project.findProperty('mc') ?: '1.21.1').toString()
+def versionFile = file("versions/${mcTarget}.properties")
+if (versionFile.exists()) {
+    def vp = new Properties()
+    versionFile.withInputStream { vp.load(it) }
+    vp.each { k, v -> project.ext.set(k.toString(), v.toString()) }
+}
+if (!project.hasProperty('mc_range')) project.ext.set('mc_range', '>=1.21 <=1.21.1')
+
 version = "${project.mod_version}+mc${project.minecraft_version}"
 group = 'fr.darkerdawn.jaly'
 
@@ -47,8 +57,102 @@ test {
     testLogging { events 'passed', 'failed'; exceptionFormat 'full' }
 }
 
+// ---- tiny preprocessor: //#if >=1.21.2 ... //#elif ... //#else ... //#endif (line numbers are kept)
+static int cmpMc(String a, String b) {
+    def x = a.tokenize('.').collect { it as int }, y = b.tokenize('.').collect { it as int }
+    for (int i = 0; i < Math.max(x.size(), y.size()); i++) {
+        int p = i < x.size() ? x[i] : 0, q = i < y.size() ? y[i] : 0
+        if (p != q) return p <=> q
+    }
+    return 0
+}
+static boolean mcCond(String cond, String mc) {
+    return cond.split('&&').every { part ->
+        def m = (part.trim() =~ /^(>=|<=|>|<|==|!=)?\s*([0-9][0-9.]*)$/)
+        if (!m.matches()) throw new GradleException("Bad //#if condition: " + cond)
+        int c = cmpMc(mc, m.group(2))
+        switch (m.group(1) ?: '==') {
+            case '>=': return c >= 0
+            case '<=': return c <= 0
+            case '>': return c > 0
+            case '<': return c < 0
+            case '!=': return c != 0
+            default: return c == 0
+        }
+    }
+}
+static String mcPreprocess(String text, String mc, String name) {
+    def out = new StringBuilder()
+    def stack = [] // each: [parentActive, thisActive, anyTaken]
+    boolean active = true
+    text.eachLine { line ->
+        def t = line.trim()
+        if (t.startsWith('//#if ')) {
+            boolean c = mcCond(t.substring(6), mc)
+            stack.push([active, active && c, c])
+            active = active && c
+            out.append('\n')
+        } else if (t.startsWith('//#elif ')) {
+            def top = stack.last()
+            boolean c = !top[2] && mcCond(t.substring(8), mc)
+            top[1] = top[0] && c
+            top[2] = top[2] || c
+            active = top[1]
+            out.append('\n')
+        } else if (t == '//#else') {
+            def top = stack.last()
+            top[1] = top[0] && !top[2]
+            top[2] = true
+            active = top[1]
+            out.append('\n')
+        } else if (t == '//#endif') {
+            if (stack.isEmpty()) throw new GradleException("Unbalanced //#endif in " + name)
+            def top = stack.pop()
+            active = top[0]
+            out.append('\n')
+        } else {
+            out.append(active ? line : '').append('\n')
+        }
+    }
+    if (!stack.isEmpty()) throw new GradleException("Missing //#endif in " + name)
+    return out.toString()
+}
+
+def ppJava = layout.buildDirectory.dir("pp/${mcTarget}/java")
+def ppRes = layout.buildDirectory.dir("pp/${mcTarget}/resources")
+tasks.register('preprocess') {
+    inputs.dir('src/main/java')
+    inputs.dir('src/main/resources')
+    inputs.property('mc', project.minecraft_version)
+    outputs.dir(ppJava)
+    outputs.dir(ppRes)
+    doLast {
+        def mc = project.minecraft_version.toString()
+        [[file('src/main/java'), ppJava.get().asFile], [file('src/main/resources'), ppRes.get().asFile]].each { pair ->
+            def src = pair[0], dst = pair[1]
+            project.delete(dst)
+            src.eachFileRecurse(groovy.io.FileType.FILES) { f ->
+                def rel = src.toPath().relativize(f.toPath()).toString()
+                def target = new File(dst, rel)
+                target.parentFile.mkdirs()
+                if (rel.endsWith('.java') || rel.endsWith('.json')) {
+                    def txt = f.getText('UTF-8')
+                    target.setText(txt.contains('//#') ? mcPreprocess(txt, mc, rel) : txt, 'UTF-8')
+                } else {
+                    java.nio.file.Files.copy(f.toPath(), target.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+                }
+            }
+        }
+    }
+}
+sourceSets.main.java.srcDirs = [ppJava]
+sourceSets.main.resources.srcDirs = [ppRes]
+tasks.named('compileJava') { dependsOn 'preprocess' }
+tasks.named('processResources') { dependsOn 'preprocess' }
+tasks.matching { it.name == 'sourcesJar' }.configureEach { dependsOn 'preprocess' }
+
 processResources {
-    def props = [version: project.version, minecraft_version: project.minecraft_version]
+    def props = [version: project.version, minecraft_version: project.minecraft_version, mc_range: project.mc_range]
     inputs.properties props
     filesMatching('fabric.mod.json') { expand props }
 }
