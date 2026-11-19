@@ -48,6 +48,11 @@ final class WorldDraw {
         b.vertex(ID, x, y, z).color(argb).texture(u, vv).overlay(OverlayTexture.DEFAULT_UV).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).normal(0f, 1f, 0f);
     }
 
+    /** Textured vertex with real world light (packed lightmap coords). */
+    static void vtl(VertexConsumer b, float x, float y, float z, float u, float vv, int argb, int light) {
+        b.vertex(ID, x, y, z).color(argb).texture(u, vv).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0f, 1f, 0f);
+    }
+
     static int argb(float a, float r, float g, float bl) {
         return ((int) (Math.max(0, Math.min(1, a)) * 255) << 24) | ((int) (r * 255) << 16) | ((int) (g * 255) << 8) | (int) (bl * 255);
     }

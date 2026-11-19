@@ -65,6 +65,7 @@ public class JalyClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_pvp"), c, Text.literal("Jaly PvP"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_crystal"), c, Text.literal("Jaly Crystal"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_grass"), c, Text.literal("Jaly Tall Smooth Grass"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_glass_ctm"), c, Text.literal("Jaly Connected Glass"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_grass_xl"), c, Text.literal("Jaly Extra Tall Grass"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_rain"), c, Text.literal("Jaly Realistic Rain"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_rain_blocky"), c, Text.literal("Jaly Blocky Rain"), ResourcePackActivationType.NORMAL);
@@ -88,6 +89,8 @@ public class JalyClient implements ClientModInitializer {
             fr.darkerdawn.jaly.visual.Ambience.tick(client);
             fr.darkerdawn.jaly.visual.BetterRain.tick(client);
             fr.darkerdawn.jaly.visual.BetterGlass.tick(client);
+            fr.darkerdawn.jaly.visual.BlockBlend.tick(client);
+            fr.darkerdawn.jaly.visual.ConnectedGlass.tick(client);
             fr.darkerdawn.jaly.visual.InteractiveBlocks.tick(client);
             fr.darkerdawn.jaly.visual.BetterSounds.tick(client);
             PvpExtras.tick(client);
@@ -106,6 +109,8 @@ public class JalyClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(SkyLyrics::render);
         WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.Ambience::render);
         WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.BetterRain::render);
+        WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.BlockBlend::render);
+        WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.ConnectedGlass::render);
         //#if >=1.21.9
         WorldRenderEvents.END_MAIN.register(fr.darkerdawn.jaly.visual.BetterGlass::render);
         //#else

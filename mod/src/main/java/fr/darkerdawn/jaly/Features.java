@@ -49,7 +49,7 @@ public final class Features {
         if (mc == null || mc.options == null) return;
         if (id.equals("fullbright")) applyFullbright(mc, on);
         if (id.equals("toggle_sprint") && !on) releaseSprint(mc);
-        if (id.equals("tall_grass") || id.equals("better_rain")) fr.darkerdawn.jaly.visual.VisualPacks.sync();
+        if (id.equals("tall_grass") || id.equals("better_rain") || id.equals("connected_textures")) fr.darkerdawn.jaly.visual.VisualPacks.sync();
     }
 
     public static void applyFullbright(MinecraftClient mc, boolean on) {

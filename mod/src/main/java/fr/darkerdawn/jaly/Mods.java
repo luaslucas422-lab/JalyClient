@@ -156,6 +156,15 @@ public final class Mods {
             .with(new Toggle("Rain on windows", () -> c.glassDrops, v -> { c.glassDrops = v; JalyConfig.save(); }))
             .with(new Toggle("Frost in the cold", () -> c.glassFrost, v -> { c.glassFrost = v; JalyConfig.save(); }))
             .with(new Slider("Range (less = less lag)", 4, 16, 1, () -> c.glassRange, v -> { c.glassRange = v.floatValue(); JalyConfig.save(); }, " blocks"));
+        add(new Entry("block_blend", "Realistic Blending", "Different blocks blend softly into each other where they meet: sand into red sand, grass into dirt, stone into gravel", Category.VISUAL, false, null))
+            .with(new Slider("Strength", 0.2, 1, 0.05, () -> c.blendStrength, v -> { c.blendStrength = v.floatValue(); JalyConfig.save(); }, ""))
+            .with(new Slider("Blend width", 0.15, 0.5, 0.05, () -> c.blendWidth, v -> { c.blendWidth = v.floatValue(); JalyConfig.save(); }, " blocks"))
+            .with(new Cycle("Blocks", new String[]{"ground", "all"}, new String[]{"Ground (sand, dirt, stone...)", "Every full block"}, () -> c.blendWhich, v -> { c.blendWhich = v; JalyConfig.save(); }))
+            .with(new Toggle("Blend grass edges", () -> c.blendGrass, v -> { c.blendGrass = v; JalyConfig.save(); }))
+            .with(new Slider("Range (less = less lag)", 8, 32, 1, () -> c.blendRange, v -> { c.blendRange = v.floatValue(); JalyConfig.save(); }, " blocks"));
+        add(new Entry("connected_textures", "Connected Textures", "Glass connects into one clean window with a frame only around the outside (turns itself off if you have Continuity)", Category.VISUAL, false, null))
+            .with(new Slider("Frame thickness", 0.5, 2, 0.5, () -> c.ctmFrame, v -> { c.ctmFrame = v.floatValue(); JalyConfig.save(); }, " px"))
+            .with(new Slider("Range (less = less lag)", 8, 32, 1, () -> c.ctmRange, v -> { c.ctmRange = v.floatValue(); JalyConfig.save(); }, " blocks"));
         add(new Entry("interactive_blocks", "Interactive Blocks", "Grass you keep walking on wears into a path and plants get trampled (your singleplayer worlds)", Category.VISUAL, false, null))
             .with(new Cycle("Wear speed", new String[]{"fast", "normal", "slow"}, new String[]{"Fast", "Normal", "Slow"}, () -> c.wearSpeed, v -> { c.wearSpeed = v; JalyConfig.save(); }))
             .with(new Toggle("Trample plants", () -> c.tramplePlants, v -> { c.tramplePlants = v; JalyConfig.save(); }));

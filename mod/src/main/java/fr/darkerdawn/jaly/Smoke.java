@@ -261,11 +261,16 @@ final class Smoke {
                 sw.setWeather(0, 6000, true, false);
                 cfg.set("better_rain", true);
                 cfg.set("better_glass", true);
-                c.player.setPitch(0f);
+                cfg.set("block_blend", true);
+                cfg.set("connected_textures", true);
+                fr.darkerdawn.jaly.visual.VisualPacks.sync();
+                c.player.setPitch(20f);
                 net.minecraft.util.math.BlockPos base = c.player.getBlockPos();
                 c.getServer().execute(() -> {
                     for (int dx = -2; dx <= 2; dx++) for (int dy = 0; dy <= 2; dy++)
                         sw.setBlockState(base.add(dx, dy, -3), net.minecraft.block.Blocks.GLASS.getDefaultState());
+                    for (int dx = -3; dx <= 3; dx++) for (int dz = -2; dz <= 0; dz++)
+                        sw.setBlockState(base.add(dx, -1, dz), ((dx + 3) / 2 % 2 == 0 ? net.minecraft.block.Blocks.SAND : net.minecraft.block.Blocks.RED_SAND).getDefaultState());
                 });
                 check("grass + rain packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_grass") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_rain_blocky") != null);
                 check("wind grass knows the grass sprites", fr.darkerdawn.jaly.visual.WindGrass.isGrass(net.minecraft.util.Identifier.ofVanilla("block/short_grass")));
@@ -274,6 +279,8 @@ final class Smoke {
             case 440 -> {
                 shot(c, "better rain and glass");
                 check("rainy windows found (" + fr.darkerdawn.jaly.visual.BetterGlass.faces() + ")", fr.darkerdawn.jaly.visual.BetterGlass.faces() > 0);
+                check("blended edges found (" + fr.darkerdawn.jaly.visual.BlockBlend.count() + ")", fr.darkerdawn.jaly.visual.BlockBlend.count() > 0);
+                check("connected glass frame found (" + fr.darkerdawn.jaly.visual.ConnectedGlass.count() + ")", fr.darkerdawn.jaly.visual.ConnectedGlass.count() > 0);
                 // custom music disc from a song file
                 try {
                     java.nio.file.Path tmp = java.nio.file.Files.createTempFile("jaly-test", ".mp3");
@@ -319,6 +326,9 @@ final class Smoke {
                 c.options.hudHidden = false;
                 cfg.set("better_rain", false);
                 cfg.set("better_glass", false);
+                cfg.set("block_blend", false);
+                cfg.set("connected_textures", false);
+                fr.darkerdawn.jaly.visual.VisualPacks.sync();
             }
             case 470 -> {
                 var data = fr.darkerdawn.jaly.net.UserContent.data();

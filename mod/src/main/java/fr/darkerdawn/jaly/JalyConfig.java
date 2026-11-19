@@ -85,6 +85,10 @@ public class JalyConfig {
     public float rainDensity = 1f;
     public boolean rainNear = true, rainLens = true, rainSplashes = true;
     public boolean glassDrops = true, glassFrost = true;
+    // Realistic Blending + Connected Textures
+    public float blendStrength = 0.7f, blendWidth = 0.4f, blendRange = 20f, ctmRange = 16f, ctmFrame = 1f;
+    public String blendWhich = "ground";
+    public boolean blendGrass = true;
     public float glassRange = 8f;
     public String wearSpeed = "normal";
     public boolean tramplePlants = true;

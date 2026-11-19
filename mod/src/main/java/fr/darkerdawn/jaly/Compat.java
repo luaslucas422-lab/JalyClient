@@ -332,4 +332,21 @@ public final class Compat {
         //#endif
     }
 
+    public static boolean opaqueCube(net.minecraft.block.BlockState s, net.minecraft.world.BlockView w, net.minecraft.util.math.BlockPos p) {
+        //#if >=1.21.2
+        return s.isOpaqueFullCube();
+        //#else
+        return s.isOpaqueFullCube(w, p);
+        //#endif
+    }
+
+    /** A sprite from the block atlas, e.g. minecraft:block/sand. */
+    public static net.minecraft.client.texture.Sprite blockSprite(net.minecraft.util.Identifier id) {
+        //#if >=1.21.11
+        return net.minecraft.client.MinecraftClient.getInstance().getAtlasManager().getSprite(new net.minecraft.client.util.SpriteIdentifier(net.minecraft.client.texture.SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, id));
+        //#else
+        return net.minecraft.client.MinecraftClient.getInstance().getSpriteAtlas(net.minecraft.client.texture.SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(id);
+        //#endif
+    }
+
 }

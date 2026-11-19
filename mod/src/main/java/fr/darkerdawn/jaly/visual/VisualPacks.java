@@ -23,7 +23,8 @@ public final class VisualPacks {
             "jaly_grass", grass && !"xl".equals(c.grassHeight),
             "jaly_grass_xl", grass && "xl".equals(c.grassHeight),
             "jaly_rain", rain && !"blocky".equals(c.rainStyle),
-            "jaly_rain_blocky", rain && "blocky".equals(c.rainStyle));
+            "jaly_rain_blocky", rain && "blocky".equals(c.rainStyle),
+            "jaly_glass_ctm", ConnectedGlass.active());
         ResourcePackManager m = mc.getResourcePackManager();
         List<String> ids = new ArrayList<>(m.getEnabledIds());
         boolean changed = false;
