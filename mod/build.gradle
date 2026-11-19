@@ -177,7 +177,7 @@ tasks.register('apiDump') {
             int first = parts.findIndexOf { Character.isUpperCase(it.charAt(0)) }
             first < 0 ? c.trim() : (parts[0..first].join('.') + (first + 1 < parts.size() ? '$' + parts[(first + 1)..-1].join('$') : ''))
         }
-        def pb = new ProcessBuilder(['javap', '-protected', '-cp', cp] + classes)
+        def pb = new ProcessBuilder(['javap', '-p', '-cp', cp] + classes)
         pb.redirectErrorStream(true)
         def proc = pb.start()
         def out = new File(buildDir, 'api.txt')

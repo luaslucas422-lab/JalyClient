@@ -1,4 +1,5 @@
 com.mojang.authlib.GameProfile
+com.mojang.blaze3d.pipeline.RenderPipeline
 com.mojang.blaze3d.platform.GlStateManager
 com.mojang.blaze3d.systems.RenderSystem
 net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
@@ -8,6 +9,7 @@ net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback
 net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 net.fabricmc.fabric.api.client.screen.v1.Screens
 net.fabricmc.fabric.api.event.player.AttackEntityCallback
@@ -23,6 +25,9 @@ net.minecraft.block.entity.JukeboxBlockEntity
 net.minecraft.client.MinecraftClient
 net.minecraft.client.Mouse
 net.minecraft.client.font.TextRenderer
+net.minecraft.client.gl.RenderPipelines
+net.minecraft.client.gl.ShaderProgramKeys
+net.minecraft.client.gui.Click
 net.minecraft.client.gui.DrawContext
 net.minecraft.client.gui.Element
 net.minecraft.client.gui.LogoDrawer
@@ -46,6 +51,9 @@ net.minecraft.client.gui.widget.ButtonWidget
 net.minecraft.client.gui.widget.ClickableWidget
 net.minecraft.client.gui.widget.PressableWidget
 net.minecraft.client.gui.widget.TextFieldWidget
+net.minecraft.client.input.CharInput
+net.minecraft.client.input.KeyInput
+net.minecraft.client.input.MouseInput
 net.minecraft.client.model.ModelData
 net.minecraft.client.model.ModelPart
 net.minecraft.client.model.ModelPartBuilder
@@ -76,14 +84,22 @@ net.minecraft.client.render.TexturedRenderLayers
 net.minecraft.client.render.VertexConsumerProvider
 net.minecraft.client.render.VertexFormat
 net.minecraft.client.render.VertexFormats
+net.minecraft.client.render.VertexRendering
 net.minecraft.client.render.WorldRenderer
 net.minecraft.client.render.entity.LivingEntityRenderer
 net.minecraft.client.render.entity.PlayerEntityRenderer
+net.minecraft.client.render.entity.feature.CapeFeatureRenderer
 net.minecraft.client.render.entity.feature.FeatureRenderer
 net.minecraft.client.render.entity.feature.FeatureRendererContext
 net.minecraft.client.render.entity.model.BipedEntityModel
 net.minecraft.client.render.entity.model.EntityModelLayers
+net.minecraft.client.render.entity.model.PlayerCapeModel
 net.minecraft.client.render.entity.model.PlayerEntityModel
+net.minecraft.client.render.entity.state.BipedEntityRenderState
+net.minecraft.client.render.entity.state.EntityRenderState
+net.minecraft.client.render.entity.state.LivingEntityRenderState
+net.minecraft.client.render.entity.state.PlayerEntityRenderState
+net.minecraft.client.render.item.ItemRenderer
 net.minecraft.client.sound.AbstractSoundInstance
 net.minecraft.client.sound.AudioStream
 net.minecraft.client.sound.MovingSoundInstance
@@ -104,6 +120,7 @@ net.minecraft.client.util.ScreenshotRecorder
 net.minecraft.client.util.SkinTextures
 net.minecraft.client.util.math.MatrixStack
 net.minecraft.client.world.ClientWorld
+net.minecraft.client.world.WorldEventHandler
 net.minecraft.component.DataComponentTypes
 net.minecraft.component.type.CustomModelDataComponent
 net.minecraft.component.type.JukeboxPlayableComponent
