@@ -11,7 +11,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+//#if >=1.21.9
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+//#else
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+//#endif
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -48,10 +52,10 @@ public class JalyClient implements ClientModInitializer {
         //#endif
         LOG.info("JalyClient {} loaded with {} mods. Merry Christmas!", VERSION, Mods.ALL.size());
 
-        MENU_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY));
-        ZOOM_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY));
-        HUD_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY));
-        DISC_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.disc", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY));
+        MENU_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, fr.darkerdawn.jaly.Compat.KEY_CATEGORY));
+        ZOOM_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, fr.darkerdawn.jaly.Compat.KEY_CATEGORY));
+        HUD_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, fr.darkerdawn.jaly.Compat.KEY_CATEGORY));
+        DISC_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.disc", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, fr.darkerdawn.jaly.Compat.KEY_CATEGORY));
 
         FabricLoader.getInstance().getModContainer("jalyclient").ifPresent(c -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_christmas"), c, Text.literal("Jaly Christmas"), ResourcePackActivationType.DEFAULT_ENABLED);
@@ -104,7 +108,7 @@ public class JalyClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.BetterRain::render);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(fr.darkerdawn.jaly.visual.BetterGlass::render);
         net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
-            if (world.isClient && world.getBlockState(hit.getBlockPos()).isOf(net.minecraft.block.Blocks.JUKEBOX)) {
+            if (fr.darkerdawn.jaly.Compat.isClient(world) && world.getBlockState(hit.getBlockPos()).isOf(net.minecraft.block.Blocks.JUKEBOX)) {
                 fr.darkerdawn.jaly.disc.CustomDiscs.rememberInsert(hit.getBlockPos(), player.getStackInHand(hand));
             }
             return ActionResult.PASS;
@@ -120,7 +124,7 @@ public class JalyClient implements ClientModInitializer {
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hit) -> {
-            if (world.isClient) {
+            if (fr.darkerdawn.jaly.Compat.isClient(world)) {
                 Features.onAttack(entity);
                 PvpExtras.onHit(entity);
             }

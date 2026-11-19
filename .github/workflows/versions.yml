@@ -41,6 +41,12 @@ jobs:
           printf 'onboardAccessibility:false\ntutorialStep:none\nnarrator:0\nsoundCategory_master:0.0\n' > work/options.txt
           xvfb-run -a -s "-screen 0 1280x720x24" timeout 900 portablemc --main-dir "$PWD/mc" start --mc-dir "$PWD/work" -u JalyTester --jvm-arg=-Xmx3G --jvm-arg=-Djaly.smoke=true fabric:${{ matrix.mc }}:0.20.1 > client.out 2>&1 || echo "EXIT $?"
           grep -nE "JALY|Mixin apply failed|InvalidInjection|Caused by|Exception" work/logs/latest.log | cut -c1-300 | head -60
+          i=0
+          for f in work/screenshots/*.png; do
+            [ -f "$f" ] || continue
+            i=$((i+1)); convert "$f" -resize 800x -quality 65 shot.jpg
+            echo "=====SHOT $i"; base64 -w 120 shot.jpg; echo "=====ENDSHOT"
+          done
           grep -q "JALY-SMOKE\] done, failures=0" work/logs/latest.log
       - uses: actions/upload-artifact@v4
         with:

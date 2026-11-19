@@ -21,12 +21,536 @@ public final class Compat {
     }
 
     /** Entity in a GUI, centred on (x, y), `size` pixels per block. */
+    //#if >=1.21.9
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static final net.minecraft.client.option.KeyBinding.Category KEY_CATEGORY = net.minecraft.client.option.KeyBinding.Category.create(net.minecraft.util.Identifier.of("jalyclient", "main"));
+    //#else
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static final String KEY_CATEGORY = "key.categories.jalyclient";
+    //#endif
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.math.Vec3d pos(net.minecraft.entity.Entity e) {
+        //#if >=1.21.9
+        return e.getEntityPos();
+        //#else
+        return e.getPos();
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static net.minecraft.world.World world(net.minecraft.entity.Entity e) {
+        //#if >=1.21.9
+        return e.getEntityWorld();
+        //#else
+        return e.getWorld();
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static boolean isClient(net.minecraft.world.World w) {
+        //#if >=1.21.9
+        return w.isClient();
+        //#else
+        return w.isClient;
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static boolean keyDown(int code) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.InputUtil.isKeyPressed(net.minecraft.client.MinecraftClient.getInstance().getWindow(), code);
+        //#else
+        return net.minecraft.client.util.InputUtil.isKeyPressed(net.minecraft.client.MinecraftClient.getInstance().getWindow().getHandle(), code);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static java.util.UUID profileId(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return p.id();
+        //#else
+        return p.getId();
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static String profileName(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return p.name();
+        //#else
+        return p.getName();
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    public static com.mojang.authlib.minecraft.MinecraftSessionService sessionService(net.minecraft.client.MinecraftClient mc) {
+        //#if >=1.21.9
+        return mc.getApiServices().sessionService();
+        //#else
+        return mc.getSessionService();
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static void drawEntity(net.minecraft.client.gui.DrawContext ctx, float x, float y, float size, org.joml.Vector3f off, org.joml.Quaternionf rot, org.joml.Quaternionf cam, net.minecraft.entity.LivingEntity e) {
         //#if >=1.21.6
         int hw = Math.round(size * 1.2f), hh = Math.round(size * Math.max(1.2f, e.getHeight() * 0.75f));
         net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, Math.round(x) - hw, Math.round(y) - hh, Math.round(x) + hw, Math.round(y) + hh, size, off, rot, cam, e);
         //#else
         net.minecraft.client.gui.screen.ingame.InventoryScreen.drawEntity(ctx, x, y, size, off, rot, cam, e);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -40,6 +564,48 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static net.minecraft.client.sound.PositionedSoundInstance music(net.minecraft.sound.SoundEvent ev) {
         //#if >=1.21.6
         return net.minecraft.client.sound.PositionedSoundInstance.music(ev, 1f);
@@ -48,11 +614,95 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static DustParticleEffect dust(float r, float g, float b, float size) {
         //#if >=1.21.2
         return new DustParticleEffect(rgb(r, g, b), size);
         //#else
         return new DustParticleEffect(new Vector3f(r, g, b), size);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -65,6 +715,48 @@ public final class Compat {
     }
 
     /** Pixel get/set in the image's own colour order (whatever this version uses). */
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static int getPixel(NativeImage img, int x, int y) {
         //#if >=1.21.2
         return img.getColorArgb(x, y);
@@ -73,11 +765,95 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static void setPixel(NativeImage img, int x, int y, int c) {
         //#if >=1.21.2
         img.setColorArgb(x, y, c);
         //#else
         img.setColor(x, y, c);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -90,11 +866,95 @@ public final class Compat {
     }
 
     /** ModelTransform.pivot became origin in 1.21.5. */
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static net.minecraft.client.model.ModelTransform at(float x, float y, float z) {
         //#if >=1.21.5
         return net.minecraft.client.model.ModelTransform.origin(x, y, z);
         //#else
         return net.minecraft.client.model.ModelTransform.pivot(x, y, z);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -106,11 +966,95 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static void particle(World w, net.minecraft.particle.ParticleEffect fx, double x, double y, double z, double vx, double vy, double vz) {
         //#if >=1.21.5
         w.addParticleClient(fx, x, y, z, vx, vy, vz);
         //#else
         w.addParticle(fx, x, y, z, vx, vy, vz);
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -122,6 +1066,48 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static float prevBodyYaw(net.minecraft.entity.LivingEntity e) {
         //#if >=1.21.5
         return e.lastBodyYaw;
@@ -130,11 +1116,95 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static float prevHeadYaw(net.minecraft.entity.LivingEntity e) {
         //#if >=1.21.5
         return e.lastHeadYaw;
         //#else
         return e.prevHeadYaw;
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 
@@ -148,11 +1218,95 @@ public final class Compat {
         //#endif
     }
 
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
     public static String nbtString(net.minecraft.nbt.NbtCompound n, String key) {
         //#if >=1.21.5
         return n.getString(key, null);
         //#else
         return n.contains(key) ? n.getString(key) : null;
+        //#endif
+    }
+
+    //#if >=1.21.9
+    private static net.minecraft.entity.player.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().supplySkinTextures(p, true).get();
+    }
+    //#else
+    private static net.minecraft.client.util.SkinTextures skinOf(com.mojang.authlib.GameProfile p) {
+        return net.minecraft.client.MinecraftClient.getInstance().getSkinProvider().getSkinTextures(p);
+    }
+    //#endif
+
+    public static net.minecraft.util.Identifier profileSkin(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).body().texturePath();
+        //#else
+        return skinOf(p).texture();
+        //#endif
+    }
+
+    public static boolean profileSlim(com.mojang.authlib.GameProfile p) {
+        //#if >=1.21.9
+        return skinOf(p).model() == net.minecraft.entity.player.PlayerSkinType.SLIM;
+        //#else
+        return skinOf(p).model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier playerSkin(net.minecraft.client.network.AbstractClientPlayerEntity p) {
+        //#if >=1.21.9
+        return p.getSkin().body().texturePath();
+        //#else
+        return p.getSkinTextures().texture();
+        //#endif
+    }
+
+    public static net.minecraft.util.Identifier defaultSkin(java.util.UUID id) {
+        //#if >=1.21.9
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
+        //#else
+        return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
         //#endif
     }
 

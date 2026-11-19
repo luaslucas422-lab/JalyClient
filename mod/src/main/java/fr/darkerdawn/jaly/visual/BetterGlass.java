@@ -2,7 +2,11 @@ package fr.darkerdawn.jaly.visual;
 
 import fr.darkerdawn.jaly.JalyConfig;
 import fr.darkerdawn.jaly.Mods;
+//#if >=1.21.9
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+//#else
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+//#endif
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.Blocks;

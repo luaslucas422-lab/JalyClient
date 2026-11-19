@@ -145,7 +145,7 @@ public class JalyTitleScreen extends Screen {
         String st = JalyConfig.get().playerCard;
         if ("off".equals(st)) return;
         String name = client.getSession().getUsername();
-        var skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
+        var skin = fr.darkerdawn.jaly.Compat.profileSkin(client.getGameProfile());
         net.minecraft.text.MutableText styled = "gold".equals(st)
             ? fr.darkerdawn.jaly.cosmetic.NameStyle.style(name, "gold", "shine", true)
             : fr.darkerdawn.jaly.cosmetic.NameStyle.style(name, "white", "candy", true);

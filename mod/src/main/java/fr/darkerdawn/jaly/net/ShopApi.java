@@ -143,7 +143,7 @@ public final class ShopApi {
             }
             String serverId = call("POST", "/auth/start", "{}").get("serverId").getAsString();
             try {
-                mc.getSessionService().joinServer(session.getUuidOrNull(), session.getAccessToken(), serverId);
+                fr.darkerdawn.jaly.Compat.sessionService(mc).joinServer(session.getUuidOrNull(), session.getAccessToken(), serverId);
             } catch (Exception e) {
                 throw new IllegalStateException("Minecraft couldn't confirm your account");
             }

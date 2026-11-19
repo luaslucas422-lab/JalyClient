@@ -1,7 +1,11 @@
 package fr.darkerdawn.jaly;
 
 import fr.darkerdawn.jaly.ui.Gfx;
+//#if >=1.21.9
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+//#else
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+//#endif
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Camera;

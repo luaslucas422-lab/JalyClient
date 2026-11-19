@@ -12,6 +12,6 @@ public abstract class LivingEntityStatusMixin {
     @Inject(method = "handleStatus", at = @At("HEAD"))
     private void jaly$totem(byte status, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (status == 35 && self.getWorld().isClient) PvpExtras.onTotem(self);
+        if (status == 35 && fr.darkerdawn.jaly.Compat.isClient(fr.darkerdawn.jaly.Compat.world(self))) PvpExtras.onTotem(self);
     }
 }

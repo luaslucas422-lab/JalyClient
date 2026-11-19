@@ -31,14 +31,14 @@ public final class Heads {
         if (prof == null && ASKED.putIfAbsent(uuid, true) == null) {
             CompletableFuture.runAsync(() -> {
                 try {
-                    var res = mc.getSessionService().fetchProfile(uuid, false);
+                    var res = fr.darkerdawn.jaly.Compat.sessionService(mc).fetchProfile(uuid, false);
                     if (res != null) PROFILES.put(uuid, res.profile());
                 } catch (Exception ignored) {
                 }
             });
         }
-        if (prof != null) return mc.getSkinProvider().getSkinTextures(prof).texture();
-        return DefaultSkinHelper.getSkinTextures(uuid).texture();
+        if (prof != null) return fr.darkerdawn.jaly.Compat.profileSkin(prof);
+        return fr.darkerdawn.jaly.Compat.defaultSkin(uuid);
     }
 
     /** Draws a head (face + hat layer) at x,y with the given size. */

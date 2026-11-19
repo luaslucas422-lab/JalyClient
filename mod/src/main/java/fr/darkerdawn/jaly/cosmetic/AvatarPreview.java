@@ -11,7 +11,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -53,8 +52,8 @@ public final class AvatarPreview {
     /** Draws you standing at (x, feetY), `size` pixels per block, turned by yawDeg. */
     public static void draw(DrawContext ctx, int x, int feetY, float size, float yawDeg) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        SkinTextures st = mc.getSkinProvider().getSkinTextures(mc.getGameProfile());
-        boolean isSlim = st.model() == SkinTextures.Model.SLIM;
+        Identifier st = fr.darkerdawn.jaly.Compat.profileSkin(mc.getGameProfile());
+        boolean isSlim = fr.darkerdawn.jaly.Compat.profileSlim(mc.getGameProfile());
         //#if >=1.21.2
         PlayerEntityModel m = model(isSlim);
         //#else
@@ -114,7 +113,7 @@ public final class AvatarPreview {
 
     //#if >=1.21.6
     /** What the GUI needs to draw the spinning avatar later this frame (1.21.6+ draws 3D GUI bits off-screen). */
-    public record State(PlayerEntityModel model, SkinTextures skin, float anim, float yaw, int x1, int y1, int x2, int y2, float scale,
+    public record State(PlayerEntityModel model, Identifier skin, float anim, float yaw, int x1, int y1, int x2, int y2, float scale,
                         float feetOffset, net.minecraft.client.gui.ScreenRect scissorArea, net.minecraft.client.gui.ScreenRect bounds)
             implements net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState {}
 
@@ -154,12 +153,12 @@ public final class AvatarPreview {
     //#endif
 
     //#if >=1.21.2
-    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel m, SkinTextures st, float anim) {
+    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel m, Identifier st, float anim) {
     //#else
-    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel<AbstractClientPlayerEntity> m, SkinTextures st, float anim) {
+    private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel<AbstractClientPlayerEntity> m, Identifier st, float anim) {
     //#endif
         int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-        m.render(ms, vc.getBuffer(RenderLayer.getEntityTranslucent(st.texture())), light, OverlayTexture.DEFAULT_UV);
+        m.render(ms, vc.getBuffer(RenderLayer.getEntityTranslucent(st)), light, OverlayTexture.DEFAULT_UV);
         // cape
         String cape = Cosmetics.selected(Cosmetics.Type.CAPE);
         if (!cape.equals("none")) {

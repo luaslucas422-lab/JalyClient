@@ -65,7 +65,7 @@ public final class Features {
 
     private static void releaseSprint(MinecraftClient mc) {
         InputUtil.Key key = KeyBindingHelper.getBoundKeyOf(mc.options.sprintKey);
-        boolean physical = key.getCategory() == InputUtil.Type.KEYSYM && key.getCode() > 0 && InputUtil.isKeyPressed(mc.getWindow().getHandle(), key.getCode());
+        boolean physical = key.getCategory() == InputUtil.Type.KEYSYM && key.getCode() > 0 && fr.darkerdawn.jaly.Compat.keyDown(key.getCode());
         mc.options.sprintKey.setPressed(physical);
     }
 
@@ -78,7 +78,7 @@ public final class Features {
         trail(mc);
         snowSteps(mc);
         petTick(mc);
-        Vec3d p = mc.player.getPos();
+        Vec3d p = fr.darkerdawn.jaly.Compat.pos(mc.player);
         if (lastPos != null) {
             double dx = p.x - lastPos.x, dz = p.z - lastPos.z;
             Hud.speed = Hud.speed * 0.7 + Math.sqrt(dx * dx + dz * dz) * 20 * 0.3;
@@ -92,7 +92,7 @@ public final class Features {
             boolean dead = e == null ? System.currentTimeMillis() - lastAttackTime < 150 : e instanceof LivingEntity le && (le.isDead() || le.getHealth() <= 0);
             if (System.currentTimeMillis() - lastAttackTime > 2500) lastAttackedId = -1;
             else if (dead && e != null) {
-                if (Mods.on("kill_effect")) snowBurst(mc, e.getPos().add(0, e.getHeight() / 2, 0));
+                if (Mods.on("kill_effect")) snowBurst(mc, fr.darkerdawn.jaly.Compat.pos(e).add(0, e.getHeight() / 2, 0));
                 lastAttackedId = -1;
             }
         }
@@ -104,7 +104,7 @@ public final class Features {
             case "medium" -> 9;
             default -> 4;
         };
-        Vec3d p = mc.player.getPos();
+        Vec3d p = fr.darkerdawn.jaly.Compat.pos(mc.player);
         BlockPos.Mutable bp = new BlockPos.Mutable();
         for (int i = 0; i < n; i++) {
             double x = p.x + (RNG.nextDouble() - 0.5) * 28;
@@ -133,12 +133,12 @@ public final class Features {
         InputUtil.Key key = KeyBindingHelper.getBoundKeyOf(JalyClient.ZOOM_KEY);
         long win = mc.getWindow().getHandle();
         if (key.getCategory() == InputUtil.Type.MOUSE) return org.lwjgl.glfw.GLFW.glfwGetMouseButton(win, key.getCode()) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
-        return key.getCode() > 0 && InputUtil.isKeyPressed(win, key.getCode());
+        return key.getCode() > 0 && fr.darkerdawn.jaly.Compat.keyDown(key.getCode());
     }
 
     private static void trail(MinecraftClient mc) {
         if ("sparkles".equals(Cosmetics.selected(Cosmetics.Type.NAME_FX)) && !mc.options.getPerspective().isFirstPerson() && (trailTick++ % 5 == 0)) {
-            Vec3d h = mc.player.getPos().add(0, mc.player.getHeight() + 0.6, 0);
+            Vec3d h = fr.darkerdawn.jaly.Compat.pos(mc.player).add(0, mc.player.getHeight() + 0.6, 0);
             fr.darkerdawn.jaly.Compat.particle(mc.world, ParticleTypes.SNOWFLAKE, h.x + (RNG.nextDouble() - 0.5) * 0.9, h.y + RNG.nextDouble() * 0.3, h.z + (RNG.nextDouble() - 0.5) * 0.9, 0, -0.01, 0);
         }
         String t = Cosmetics.selected(Cosmetics.Type.TRAIL);
@@ -146,7 +146,7 @@ public final class Features {
         Vec3d v = mc.player.getVelocity();
         if (v.horizontalLengthSquared() < 0.0009 && mc.player.isOnGround()) return;
         trailTick++;
-        Vec3d p = mc.player.getPos().subtract(v.x * 2, 0, v.z * 2);
+        Vec3d p = fr.darkerdawn.jaly.Compat.pos(mc.player).subtract(v.x * 2, 0, v.z * 2);
         ParticleEffect fx = switch (t) {
             case "candy" -> (trailTick % 2 == 0 ? Compat.dust(0.88f, 0.22f, 0.31f, 1.1f) : Compat.dust(1f, 1f, 1f, 1.1f));
             case "hearts" -> trailTick % 5 == 0 ? ParticleTypes.HEART : null;

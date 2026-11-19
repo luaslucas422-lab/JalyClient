@@ -250,8 +250,8 @@ public class ShopScreen extends Screen {
 
     private void drawShopkeeper(DrawContext ctx, float in, long now, int mx, int my) {
         Identifier skin;
-        if (client.player != null) skin = client.player.getSkinTextures().texture();
-        else skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
+        if (client.player != null) skin = fr.darkerdawn.jaly.Compat.playerSkin(client.player);
+        else skin = fr.darkerdawn.jaly.Compat.profileSkin(client.getGameProfile());
         skin = InvertedSkin.get(client, skin);
         float px = scale * KS;
         float breathe = (float) Math.sin(now / 520.0) * 0.4f;

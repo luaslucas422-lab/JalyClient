@@ -2,7 +2,11 @@ package fr.darkerdawn.jaly.visual;
 
 import fr.darkerdawn.jaly.JalyConfig;
 import fr.darkerdawn.jaly.Mods;
+//#if >=1.21.9
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+//#else
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+//#endif
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;

@@ -292,8 +292,8 @@ public class LodgeScreen extends Screen {
 
     private void drawCharacter(DrawContext ctx, float in) {
         net.minecraft.util.Identifier skin;
-        if (client.player != null) skin = client.player.getSkinTextures().texture();
-        else skin = client.getSkinProvider().getSkinTextures(client.getGameProfile()).texture();
+        if (client.player != null) skin = fr.darkerdawn.jaly.Compat.playerSkin(client.player);
+        else skin = fr.darkerdawn.jaly.Compat.profileSkin(client.getGameProfile());
         float px = scale * 1.5f;
         long now = Gfx.now();
         float breathe = (float) Math.sin(now / 600.0) * 0.3f;
