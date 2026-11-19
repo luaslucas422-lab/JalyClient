@@ -118,11 +118,11 @@ public class GiftsScreen extends JalyScreen {
         int w = Math.min(250, width - 30), h = 150;
         int x = (width - w) / 2, y = (height - h) / 2;
         ctx.fill(0, 0, width, height, Gfx.alpha(0x99000000, Math.min(1, k)));
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(0, 0, 300);
-        ctx.getMatrices().translate(width / 2f, y + h / 2f + (1 - k) * 80, 0);
-        ctx.getMatrices().scale(Math.max(0.01f, k), Math.max(0.01f, k), 1);
-        ctx.getMatrices().translate(-width / 2f, -(y + h / 2f), 0);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, 0, 0);
+        Gfx.translate(ctx, width / 2f, y + h / 2f + (1 - k) * 80);
+        Gfx.scale(ctx, Math.max(0.01f, k), Math.max(0.01f, k));
+        Gfx.translate(ctx, -width / 2f, -(y + h / 2f));
         Gfx.round(ctx, x + 3, y + 4, w, h, 0x77000000);
         Gfx.round(ctx, x, y, w, h, 0xFFF6F4F7);
         Gfx.candy(ctx, x + 1, y + 1, w - 2, 6, (int) (now / 70 % 8), 1f);
@@ -150,7 +150,7 @@ public class GiftsScreen extends JalyScreen {
         Gfx.text(ctx, "You unwrapped:", x + 38, ry + 4, 0xFF8FA088, false);
         Gfx.text(ctx, Gfx.trim(fr.darkerdawn.jaly.cosmetic.Cosmetics.rewardName(reward), w - 50), x + 38, ry + 14, Gfx.GOLD_LIGHT, true);
         Gfx.text(ctx, "Click outside to close", x + w - 10 - textRenderer.getWidth("Click outside to close"), y + h - 12, 0xFF9AA3A0, false);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
     }
 
     @Override

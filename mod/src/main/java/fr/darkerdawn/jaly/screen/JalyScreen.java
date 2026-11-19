@@ -55,17 +55,17 @@ public abstract class JalyScreen extends Screen {
         }
         SNOW.renderFull(ctx, width, height, 0.9f);
         float s = 0.92f + 0.08f * Gfx.easeOutBack(tOpen);
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(width / 2f, height / 2f, 0);
-        ctx.getMatrices().scale(s, s, 1);
-        ctx.getMatrices().translate(-width / 2f, -height / 2f, 0);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, width / 2f, height / 2f);
+        Gfx.scale(ctx, s, s);
+        Gfx.translate(ctx, -width / 2f, -height / 2f);
         Gfx.panel(ctx, px, py, pw, ph, tOpen);
         Gfx.lights(ctx, px + 6, px + pw - 6, py + 1, 18, 1f, Gfx.now(), tOpen);
         String t = getTitle().getString();
         int tw = textRenderer.getWidth(t);
         Gfx.scaledText(ctx, t, px + (pw - tw * 1.5f) / 2f, py + 9, 1.5f, Gfx.alpha(Gfx.GOLD_LIGHT, tOpen), true);
         Gfx.candy(ctx, px + (pw - (int) (tw * 1.5f)) / 2, py + 23, (int) (tw * 1.5f), 2, (int) (Gfx.now() / 80 % 8), tOpen);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         for (Element e : children()) if (e instanceof ClickableWidget w) w.setAlpha(tOpen);
         drawContent(ctx, mouseX, mouseY, delta);
     }

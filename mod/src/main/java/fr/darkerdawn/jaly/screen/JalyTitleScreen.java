@@ -93,11 +93,11 @@ public class JalyTitleScreen extends Screen {
         int gx = 5, gy = height - 47;
         Gfx.round(ctx, gx - 1, gy - 1, 22, 22, Gfx.alpha(0xC0122312, 0.6f + 0.4f * gearHover));
         if (gearHover > 0.01f) Gfx.outline(ctx, gx - 1, gy - 1, 22, 22, Gfx.alpha(Gfx.GOLD_LIGHT, gearHover));
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(gx + 10, gy + 10, 0);
-        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees((now % 6000) / 6000f * 360f * gearHover));
+        Gfx.push(ctx);
+        Gfx.translate(ctx, gx + 10, gy + 10);
+        Gfx.rotate(ctx, (now % 6000) / 6000f * 360f * gearHover);
         Gfx.tex(ctx, Identifier.of("jalyclient", "textures/gui/gear.png"), -10, -10, 20, 20, 0, 0, 20, 20, 20, 20, 1f);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         if (gearHover > 0.05f) {
             ctx.enableScissor(gx - 1, gy - 1, gx + 21, gy + 21);
             gearSnow.render(ctx, gx - 1, gy - 1, 22, 22, 1f, gearHover);
@@ -113,10 +113,10 @@ public class JalyTitleScreen extends Screen {
         String text = c.splashText != null && !c.splashText.isBlank() ? c.splashText : splash;
         float pulse = 1.8f - Math.abs((float) Math.sin((now % 1000L) / 1000f * Math.PI * 2) * 0.1f);
         pulse = pulse * 100f / (textRenderer.getWidth(text) + 32);
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(x, y, 0);
-        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(-20f));
-        ctx.getMatrices().scale(pulse, pulse, 1);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, x, y);
+        Gfx.rotate(ctx, -20f);
+        Gfx.scale(ctx, pulse, pulse);
         int tw = textRenderer.getWidth(text);
         if ("candy".equals(c.splashStyle)) {
             int cx = -tw / 2;
@@ -129,7 +129,7 @@ public class JalyTitleScreen extends Screen {
         } else {
             ctx.drawText(textRenderer, text, -tw / 2, -4, 0xFFFFFF00, true);
         }
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
     }
 
     private void drawPlayerCard(DrawContext ctx) {

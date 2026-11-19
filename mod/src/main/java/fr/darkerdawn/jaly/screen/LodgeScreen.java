@@ -97,11 +97,11 @@ public class LodgeScreen extends Screen {
         float in = Math.min(1f, (now - openedAt) / 300f);
         ctx.fill(0, 0, width, height, Gfx.alpha(0xF0050A0E, Math.max(in, client.world == null ? 1f : 0f)));
         int sw = Math.round(W * scale), sh = Math.round(H * scale);
-        ctx.getMatrices().push();
+        Gfx.push(ctx);
         float pop = 0.94f + 0.06f * Gfx.easeOutBack(in);
-        ctx.getMatrices().translate(width / 2f, oy + sh / 2f, 0);
-        ctx.getMatrices().scale(pop, pop, 1);
-        ctx.getMatrices().translate(-width / 2f, -(oy + sh / 2f), 0);
+        Gfx.translate(ctx, width / 2f, oy + sh / 2f);
+        Gfx.scale(ctx, pop, pop);
+        Gfx.translate(ctx, -width / 2f, -(oy + sh / 2f));
         // snow behind the window first, then the room on top (window glass is opaque art, so draw snow over it)
         Gfx.tex(ctx, LODGE, ox, oy, sw, sh, 0, 0, W, H, W, H, in);
         ctx.enableScissor(sx(152), sy(24), sx(198), sy(72));
@@ -163,7 +163,7 @@ public class LodgeScreen extends Screen {
             Gfx.outline(ctx, lx, ly, lw, 12, Gfx.alpha(Gfx.GOLD, glow[i]));
             Gfx.text(ctx, label, lx + 5, ly + 2, Gfx.alpha(Gfx.GOLD_LIGHT, glow[i]), true);
         }
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         // soft vignette
         ctx.fillGradient(0, 0, width, height / 5, Gfx.alpha(0x88000000, in), 0x00000000);
         // header strip
@@ -275,10 +275,10 @@ public class LodgeScreen extends Screen {
         float px = scale * 1.5f;
         long now = Gfx.now();
         float breathe = (float) Math.sin(now / 600.0) * 0.3f;
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(sx(212), sy(152), 0);
-        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(-7f));
-        ctx.getMatrices().scale(px, px, 1);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, sx(212), sy(152));
+        Gfx.rotate(ctx, -7f);
+        Gfx.scale(ctx, px, px);
         // legs (feet at 0), body, head, arms crossed over the chest
         Gfx.tex(ctx, skin, -4, -12, 4, 12, 4, 20, 4, 12, 64, 64, in);
         Gfx.tex(ctx, skin, 0, -12, 4, 12, 20, 52, 4, 12, 64, 64, in);
@@ -288,16 +288,16 @@ public class LodgeScreen extends Screen {
         Gfx.tex(ctx, skin, 0, -13, 5, 13, 4, 52, 4, 12, 64, 64, in);
         Gfx.tex(ctx, skin, -5, -25, 10, 13, 20, 36, 8, 12, 64, 64, in);
         float hy = -32 + breathe;
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(0, hy + 8, 0);
-        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(pokes > 0 && now - speechAt < 2500 ? 12f : 4f));
+        Gfx.push(ctx);
+        Gfx.translate(ctx, 0, hy + 8);
+        Gfx.rotate(ctx, pokes > 0 && now - speechAt < 2500 ? 12f : 4f);
         Gfx.tex(ctx, skin, -4, -8, 8, 8, 8, 8, 8, 8, 64, 64, in);
         Gfx.tex(ctx, skin, -4, -8, 8, 8, 40, 8, 8, 8, 64, 64, in);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         for (int side = 0; side < 2; side++) {
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(side == 0 ? -6 : 6, -20 + side * 3, 0);
-            ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(side == 0 ? -90f : 90f));
+            Gfx.push(ctx);
+            Gfx.translate(ctx, side == 0 ? -6 : 6, -20 + side * 3);
+            Gfx.rotate(ctx, side == 0 ? -90f : 90f);
             if (side == 0) {
                 Gfx.tex(ctx, skin, -2, -2, 4, 12, 44, 20, 4, 12, 64, 64, in);
                 Gfx.tex(ctx, skin, -3, -2, 5, 13, 44, 36, 4, 12, 64, 64, in);
@@ -305,9 +305,9 @@ public class LodgeScreen extends Screen {
                 Gfx.tex(ctx, skin, -2, -2, 4, 12, 36, 52, 4, 12, 64, 64, in);
                 Gfx.tex(ctx, skin, -3, -2, 5, 13, 52, 52, 4, 12, 64, 64, in);
             }
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
         }
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         if (!speech.isEmpty() && (choosing || now - speechAt < 3500)) {
             float a = choosing ? 1f : Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3000 ? (3500 - (now - speechAt)) / 500f : 1f);
             int tw = textRenderer.getWidth(speech) + 10;

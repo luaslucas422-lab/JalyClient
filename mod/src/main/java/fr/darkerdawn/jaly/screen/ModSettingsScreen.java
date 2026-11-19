@@ -127,10 +127,10 @@ public class ModSettingsScreen extends JalyScreen {
             Gfx.text(ctx, "Preview", bx + 5, by + 4, 0xFF8FA088, false);
             ctx.enableScissor(bx + 1, by + 14, bx + 141, by + 109);
             int[] b = Hud.size(client, hud, true);
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(bx + 71 - b[0] / 2, by + 62 - b[1] / 2, 0);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, bx + 71 - b[0] / 2, by + 62 - b[1] / 2);
             Hud.drawAt(ctx, client, hud, true);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
             ctx.disableScissor();
         }
     }

@@ -115,11 +115,11 @@ public class CustomizerScreen extends JalyScreen {
         long t = Gfx.now();
         if (fr.darkerdawn.jaly.ui.MenuScenes.has(id)) {
             ctx.enableScissor(x, y, x + w, y + h);
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(x, y, 0);
-            ctx.getMatrices().scale(w / 240f, h / 135f, 1f);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, x, y);
+            Gfx.scale(ctx, w / 240f, h / 135f);
             fr.darkerdawn.jaly.ui.MenuScenes.draw(ctx, id, 240, 135, t / 1000f, t);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
             ctx.disableScissor();
             return;
         }

@@ -157,11 +157,11 @@ public class CustomDiscScreen extends JalyScreen {
             }
             case LOADING -> {
                 float spin = (now % 1200) / 1200f * 360f;
-                ctx.getMatrices().push();
-                ctx.getMatrices().translate(px + pw / 2f, cy() + 70, 0);
-                ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(spin));
+                Gfx.push(ctx);
+                Gfx.translate(ctx, px + pw / 2f, cy() + 70);
+                Gfx.rotate(ctx, spin);
                 Gfx.tex(ctx, icon((int) (now / 600 % 8)), -16, -16, 32, 32, 0, 0, 16, 16, 16, 16, open);
-                ctx.getMatrices().pop();
+                Gfx.pop(ctx);
             }
             case NAME -> {
                 Gfx.text(ctx, "2. Name your disc", x, cy() + 6, Gfx.GOLD_LIGHT, true);

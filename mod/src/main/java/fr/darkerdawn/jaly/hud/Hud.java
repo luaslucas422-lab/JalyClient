@@ -97,8 +97,8 @@ public final class Hud {
         @Override public int height(MinecraftClient mc, boolean preview) { return 64; }
 
         private void key(DrawContext ctx, MinecraftClient mc, JalyConfig.HudStyle s, int x, int y, int w, int h, String label, boolean down, String sub) {
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(x, y, 0);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, x, y);
             if (down) {
                 Gfx.round(ctx, 0, 0, w, h, 0xE0B11A33);
                 Gfx.outline(ctx, 0, 0, w, h, 0xFFFDE68A);
@@ -109,13 +109,13 @@ public final class Hud {
             int ty = sub == null ? (h - 8) / 2 : 2;
             ctx.drawText(mc.textRenderer, label, (w - mc.textRenderer.getWidth(label)) / 2, ty, tc, s.shadow);
             if (sub != null) {
-                ctx.getMatrices().push();
-                ctx.getMatrices().translate(w / 2f, 10.5f, 0);
-                ctx.getMatrices().scale(0.5f, 0.5f, 1);
+                Gfx.push(ctx);
+                Gfx.translate(ctx, w / 2f, 10.5f);
+                Gfx.scale(ctx, 0.5f, 0.5f);
                 ctx.drawText(mc.textRenderer, sub, -mc.textRenderer.getWidth(sub) / 2, 0, down ? 0xFFFFFFFF : s.accent, false);
-                ctx.getMatrices().pop();
+                Gfx.pop(ctx);
             }
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
         }
 
         private boolean pressed(KeyBinding k, boolean preview, boolean demo) {
@@ -131,12 +131,12 @@ public final class Hud {
             key(ctx, mc, s, 40, 20, 18, 18, "D", pressed(o.rightKey, preview, false), null);
             key(ctx, mc, s, 0, 40, 28, 14, "LMB", pressed(o.attackKey, preview, false), cps(0) + " CPS");
             key(ctx, mc, s, 30, 40, 28, 14, "RMB", pressed(o.useKey, preview, false), cps(1) + " CPS");
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(0, 56, 0);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, 0, 56);
             boolean sp = pressed(o.jumpKey, preview, false);
             if (sp) Gfx.round(ctx, 0, 0, 58, 8, 0xE0B11A33); else box(ctx, 58, 8, s);
             ctx.fill(18, 3, 40, 4, sp ? 0xFFFFFFFF : s.text);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
         }
     }
 
@@ -277,13 +277,13 @@ public final class Hud {
             int bx = 44, bw = w - 50, by = 32;
             ctx.fill(bx, by, bx + bw, by + 2, 0xFF4D4D4D);
             if (dur > 0) ctx.fill(bx, by, bx + (int) (bw * Math.min(1, pos / (double) dur)), by + 2, 0xFF1DB954);
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(bx, by + 4, 0);
-            ctx.getMatrices().scale(0.5f, 0.5f, 1);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, bx, by + 4);
+            Gfx.scale(ctx, 0.5f, 0.5f);
             ctx.drawText(mc.textRenderer, fmt(pos), 0, 0, 0xFFB3B3B3, false);
             String d = dur > 0 ? fmt(dur) : "";
             ctx.drawText(mc.textRenderer, d, bw * 2 - mc.textRenderer.getWidth(d), 0, 0xFFB3B3B3, false);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
             if (lyricsOn()) {
                 String line = preview && Music.current == null ? "Jingle bell, jingle bell, jingle bell rock" : Music.currentLine();
                 if (line.isEmpty()) line = Music.lyricsStatus.isEmpty() ? "..." : Music.lyricsStatus;
@@ -392,23 +392,23 @@ public final class Hud {
 
     public static void drawModule(DrawContext ctx, MinecraftClient mc, HudModule m, int sw, int sh, boolean preview) {
         int[] b = bounds(mc, m, sw, sh, preview);
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(b[0], b[1], 0);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, b[0], b[1]);
         drawAt(ctx, mc, m, preview);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
     }
 
     /** Draws a module with its style at the current origin. */
     public static void drawAt(DrawContext ctx, MinecraftClient mc, HudModule m, boolean preview) {
         JalyConfig.HudStyle s = JalyConfig.get().style(m.id);
         float total = JalyConfig.get().hudScale * s.scale;
-        ctx.getMatrices().push();
-        ctx.getMatrices().scale(total, total, 1);
+        Gfx.push(ctx);
+        Gfx.scale(ctx, total, total);
         if (!(m instanceof Keystrokes) && !(m instanceof Armor) && !(m instanceof Potions) && !(m instanceof NowPlaying) && !(m instanceof Minimap)) {
             HudModule.box(ctx, m.width(mc, preview), m.height(mc, preview), s);
         }
         m.draw(ctx, mc, s, preview);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
     }
 
     /** Scaled size {w, h} of a module. */

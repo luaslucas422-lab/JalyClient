@@ -207,10 +207,10 @@ public class ShopScreen extends Screen {
         ox = baseOx + Math.round(shift);
         float in = Math.min(1f, (now - openedAt) / 300f);
         ctx.fill(0, 0, width, height, Gfx.alpha(0xF0050A0E, Math.max(in, client.world == null ? 1f : 0f)));
-        ctx.getMatrices().push();
+        Gfx.push(ctx);
         if (rageAt > 0 && now - rageAt < 600) {
             float k = 1f - (now - rageAt) / 600f;
-            ctx.getMatrices().translate((float) Math.sin(now / 18.0) * 4 * k, (float) Math.cos(now / 23.0) * 3 * k, 0);
+            Gfx.translate(ctx, (float) Math.sin(now / 18.0) * 4 * k, (float) Math.cos(now / 23.0) * 3 * k);
         }
         int sw = Math.round(W * scale), sh = Math.round(H * scale);
         Gfx.tex(ctx, ROOM, ox, oy, sw, sh, 0, 0, W, H, W, H, in);
@@ -228,7 +228,7 @@ public class ShopScreen extends Screen {
             float tw = (float) Math.sin(now / 260.0 + i * 2.1);
             if (tw > 0.6f) ctx.fill(sx(134 + i * 5), sy(92 - i * 2), sx(134 + i * 5) + Math.max(1, Math.round(scale)), sy(92 - i * 2) + Math.max(1, Math.round(scale)), Gfx.alpha(0xFFFFFFFF, in));
         }
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         ctx.fillGradient(0, 0, width, height / 5, Gfx.alpha(0x88000000, in), 0x00000000);
         drawSpeech(ctx, in, now);
         drawBalance(ctx, in);
@@ -257,14 +257,14 @@ public class ShopScreen extends Screen {
         float breathe = (float) Math.sin(now / 520.0) * 0.4f;
         float shake = anger >= 3 ? (float) Math.sin(now / 40.0) * (anger - 2.5f) * 0.25f : 0f;
         boolean hover = overKeeper(mx, my);
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(sx(KX) + shake * px, sy(KFEET), 0);
-        ctx.getMatrices().scale(px, px, 1);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, sx(KX) + shake * px, sy(KFEET));
+        Gfx.scale(ctx, px, px);
         // legs + body
         Gfx.tex(ctx, skin, -4, -12, 4, 12, 4, 20, 4, 12, 64, 64, in);
         Gfx.tex(ctx, skin, 0, -12, 4, 12, 20, 52, 4, 12, 64, 64, in);
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(0, breathe, 0);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, 0, breathe);
         Gfx.tex(ctx, skin, -4, -24, 8, 12, 20, 20, 8, 12, 64, 64, in);
         Gfx.tex(ctx, skin, -4, -24, 8, 12, 20, 36, 8, 12, 64, 64, in);
         // big gold chain with a J coin
@@ -278,9 +278,9 @@ public class ShopScreen extends Screen {
         ctx.fill(0, cy + 4, 1, cy + 5, Gfx.alpha(0xFFB11A33, in));
         // arms resting on the counter, slightly flared
         for (int side = 0; side < 2; side++) {
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(side == 0 ? -6 : 6, -23, 0);
-            ctx.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(side == 0 ? 14f : -14f));
+            Gfx.push(ctx);
+            Gfx.translate(ctx, side == 0 ? -6 : 6, -23);
+            Gfx.rotate(ctx, side == 0 ? 14f : -14f);
             if (side == 0) {
                 Gfx.tex(ctx, skin, -2, 0, 4, 12, 44, 20, 4, 12, 64, 64, in);
                 Gfx.tex(ctx, skin, -2, 0, 4, 12, 44, 36, 4, 12, 64, 64, in);
@@ -288,13 +288,13 @@ public class ShopScreen extends Screen {
                 Gfx.tex(ctx, skin, -2, 0, 4, 12, 36, 52, 4, 12, 64, 64, in);
                 Gfx.tex(ctx, skin, -2, 0, 4, 12, 52, 52, 4, 12, 64, 64, in);
             }
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
         }
         // head (shakes when angry, tilts when hovered)
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(0, -24, 0);
+        Gfx.push(ctx);
+        Gfx.translate(ctx, 0, -24);
         float tilt = (hover ? -6f : 3f) + (anger >= 4 ? (float) Math.sin(now / 30.0) * 4f : 0f);
-        ctx.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(tilt));
+        Gfx.rotate(ctx, tilt);
         Gfx.tex(ctx, skin, -4, -8, 8, 8, 8, 8, 8, 8, 64, 64, in);
         Gfx.tex(ctx, skin, -4, -8, 8, 8, 40, 8, 8, 8, 64, 64, in);
         // angry eyebrows
@@ -329,9 +329,9 @@ public class ShopScreen extends Screen {
         ctx.fill(-4, -1, -2, 0, stache);
         ctx.fill(2, -1, 4, 0, stache);
         // crooked Santa hat
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(0, -8, 0);
-        ctx.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-16f));
+        Gfx.push(ctx);
+        Gfx.translate(ctx, 0, -8);
+        Gfx.rotate(ctx, -16f);
         int red = Gfx.alpha(0xFFC8102E, in), redD = Gfx.alpha(0xFF8E0B20, in), white = Gfx.alpha(0xFFF6F4F7, in);
         ctx.fill(-4, -4, 4, -1, red);
         ctx.fill(-3, -6, 3, -4, red);
@@ -339,18 +339,18 @@ public class ShopScreen extends Screen {
         ctx.fill(2, -9, 6, -7, redD);
         ctx.fill(5, -10, 7, -8, white);
         ctx.fill(-5, -1, 5, 1, white);
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         // anger marks
         int marks = Math.min(3, (int) anger);
         for (int m = 0; m < marks; m++) {
             float pulse = 1f + 0.25f * (float) Math.sin(now / 90.0 + m * 2);
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(m == 0 ? 6 : m == 1 ? -7 : 7, m == 1 ? -9 : m == 0 ? -10 : -3, 0);
-            ctx.getMatrices().scale(pulse * 0.5f, pulse * 0.5f, 1);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, m == 0 ? 6 : m == 1 ? -7 : 7, m == 1 ? -9 : m == 0 ? -10 : -3);
+            Gfx.scale(ctx, pulse * 0.5f, pulse * 0.5f);
             angerMark(ctx, Gfx.alpha(0xFFE8202A, in));
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
         }
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
         // steam puffs when he's cross
         if (anger >= 2.5f) {
             for (int i = 0; i < 3; i++) {
@@ -360,8 +360,8 @@ public class ShopScreen extends Screen {
                 ctx.fill(Math.round(side * (5 + t * 4)), Math.round(-34 - t * 8), Math.round(side * (5 + t * 4)) + 2, Math.round(-32 - t * 8), (a << 24) | 0xDDDDDD);
             }
         }
-        ctx.getMatrices().pop();
-        ctx.getMatrices().pop();
+        Gfx.pop(ctx);
+        Gfx.pop(ctx);
     }
 
     /** The classic cartoon "vein" anger symbol: four little brackets around a centre. */
@@ -435,21 +435,21 @@ public class ShopScreen extends Screen {
                 drawSpinning(ctx, px + 6 + lw / 2, py + ph - 60, Math.min(52, (ph - 100) / 2), p);
             } else if (t == Cosmetics.Type.NAME_FX) {
                 var styled = NameStyle.style(client.getSession().getUsername(), Cosmetics.selected(Cosmetics.Type.NAME_COLOR), id, true);
-                ctx.getMatrices().push();
-                ctx.getMatrices().translate(px + 6 + lw / 2f, py + 24 + (ph - 52) / 2f - 8, 0);
-                ctx.getMatrices().scale(1.6f, 1.6f, 1);
+                Gfx.push(ctx);
+                Gfx.translate(ctx, px + 6 + lw / 2f, py + 24 + (ph - 52) / 2f - 8);
+                Gfx.scale(ctx, 1.6f, 1.6f);
                 ctx.drawText(textRenderer, styled, -textRenderer.getWidth(styled) / 2, 0, 0xFFFFFFFF, true);
-                ctx.getMatrices().pop();
+                Gfx.pop(ctx);
             } else {
                 drawIcon(ctx, selected, px + 6 + lw / 2 - 32, py + 40, 64);
             }
             float ts = Math.max(0.7f, Math.min(1f, (lw - 6) / (float) Math.max(1, textRenderer.getWidth(selected.name()))));
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(px + 6 + lw / 2f, py + 28, 0);
-            ctx.getMatrices().scale(ts, ts, 1);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, px + 6 + lw / 2f, py + 28);
+            Gfx.scale(ctx, ts, ts);
             String nm = Gfx.trim(selected.name(), Math.round((lw - 6) / ts));
             Gfx.text(ctx, nm, -textRenderer.getWidth(nm) / 2, 0, Gfx.GOLD_LIGHT, true);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
             if (p != null && t == Cosmetics.Type.TRAIL) Gfx.centered(ctx, "(trails show in the world)", px + 6 + lw / 2, py + 40, Gfx.MUTED);
         } else {
             Gfx.centered(ctx, "Pick something to", px + 6 + lw / 2, py + ph / 2 - 10, Gfx.MUTED);
@@ -471,11 +471,11 @@ public class ShopScreen extends Screen {
             Gfx.outline(ctx, lx, y, lwid, ROW - 2, sel ? Gfx.GOLD_LIGHT : hov ? Gfx.GOLD : 0x55C99E02);
             drawIcon(ctx, it, lx + 3, y + 2, 24);
             float ns = Math.max(0.75f, Math.min(1f, (lwid - 34) / (float) Math.max(1, textRenderer.getWidth(it.name()))));
-            ctx.getMatrices().push();
-            ctx.getMatrices().translate(lx + 30, y + 4, 0);
-            ctx.getMatrices().scale(ns, ns, 1);
+            Gfx.push(ctx);
+            Gfx.translate(ctx, lx + 30, y + 4);
+            Gfx.scale(ctx, ns, ns);
             Gfx.text(ctx, Gfx.trim(it.name(), Math.round((lwid - 34) / ns)), 0, 0, owned ? Gfx.GREEN_ON : Gfx.SNOW, true);
-            ctx.getMatrices().pop();
+            Gfx.pop(ctx);
             if (owned) Gfx.text(ctx, "Owned", lx + 30, y + 15, Gfx.GREEN_ON, false);
             else {
                 Gfx.tex(ctx, COIN, lx + 30, y + 14, 9, 9, 0, 0, 16, 16, 16, 16, 1f);

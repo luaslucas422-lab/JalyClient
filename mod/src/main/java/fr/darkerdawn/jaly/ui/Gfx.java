@@ -142,6 +142,47 @@ public final class Gfx {
     public static final String[] GEAR = {".#.#.", "#####", "##.##", "#####", ".#.#."};
     public static final String[] TREE = {"...#...", "..###..", ".#####.", "..###..", ".#####.", "#######", "...#..."};
 
+    // ---- GUI matrix helpers (1.21.6 switched the GUI to 2D matrices)
+    public static void push(DrawContext ctx) {
+        //#if >=1.21.6
+        ctx.getMatrices().pushMatrix();
+        //#else
+        ctx.getMatrices().push();
+        //#endif
+    }
+
+    public static void pop(DrawContext ctx) {
+        //#if >=1.21.6
+        ctx.getMatrices().popMatrix();
+        //#else
+        pop(ctx);
+        //#endif
+    }
+
+    public static void translate(DrawContext ctx, double x, double y) {
+        //#if >=1.21.6
+        ctx.getMatrices().translate((float) x, (float) y);
+        //#else
+        ctx.getMatrices().translate(x, y, 0);
+        //#endif
+    }
+
+    public static void scale(DrawContext ctx, float x, float y) {
+        //#if >=1.21.6
+        ctx.getMatrices().scale(x, y);
+        //#else
+        ctx.getMatrices().scale(x, y, 1f);
+        //#endif
+    }
+
+    public static void rotate(DrawContext ctx, float degrees) {
+        //#if >=1.21.6
+        ctx.getMatrices().rotate((float) Math.toRadians(degrees));
+        //#else
+        ctx.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(degrees));
+        //#endif
+    }
+
     public static void tex(DrawContext ctx, Identifier id, int x, int y, int w, int h, float u, float v, int rw, int rh, int tw, int th, float alpha) {
         //#if >=1.21.2
         int col = ((int) (Math.max(0f, Math.min(1f, alpha)) * 255) << 24) | 0xFFFFFF;
@@ -165,11 +206,11 @@ public final class Gfx {
     }
 
     public static void scaledText(DrawContext ctx, String s, float x, float y, float scale, int color, boolean shadow) {
-        ctx.getMatrices().push();
-        ctx.getMatrices().translate(x, y, 0);
-        ctx.getMatrices().scale(scale, scale, 1);
+        push(ctx);
+        translate(ctx, x, y);
+        scale(ctx, scale, scale);
         text(ctx, s, 0, 0, color, shadow);
-        ctx.getMatrices().pop();
+        pop(ctx);
     }
 
     public static String trim(String s, int width) {

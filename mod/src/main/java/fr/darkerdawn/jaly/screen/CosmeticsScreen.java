@@ -100,12 +100,12 @@ public class CosmeticsScreen extends JalyScreen {
                 String nm = client.getSession().getUsername();
                 var styled = tab == Cosmetics.Type.NAME_COLOR ? fr.darkerdawn.jaly.cosmetic.NameStyle.style(nm, id, "none", true)
                     : fr.darkerdawn.jaly.cosmetic.NameStyle.style(nm, Cosmetics.selected(Cosmetics.Type.NAME_COLOR), id, true);
-                ctx.getMatrices().push();
-                ctx.getMatrices().translate(x + TILE_W / 2f, y - lift + 18, 0);
+                Gfx.push(ctx);
+                Gfx.translate(ctx, x + TILE_W / 2f, y - lift + 18);
                 float sc = Math.min(1f, (TILE_W - 6) / (float) Math.max(1, textRenderer.getWidth(styled)));
-                ctx.getMatrices().scale(sc, sc, 1);
+                Gfx.scale(ctx, sc, sc);
                 ctx.drawText(textRenderer, styled, -textRenderer.getWidth(styled) / 2, 0, 0xFFFFFFFF, true);
-                ctx.getMatrices().pop();
+                Gfx.pop(ctx);
             } else if (id.equals("none")) {
                 Gfx.centered(ctx, "-", x + TILE_W / 2, y - lift + 16, 0xFF8FA088);
             } else if (tab == Cosmetics.Type.CAPE) {
