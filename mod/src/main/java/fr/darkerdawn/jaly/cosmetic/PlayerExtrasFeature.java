@@ -32,7 +32,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<net.minecraft.client.re
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || state.id != mc.player.getId() || state.invisible) return;
         renderWings(matrices, vertexConsumers, light, this.getContextModel().body, state.age, mc.player.isOnGround());
-        renderPet(matrices, vertexConsumers, light, state.age, state.limbFrequency, state.limbAmplitudeMultiplier, fr.darkerdawn.jaly.Features.petAir);
+        renderPet(matrices, vertexConsumers, light, state.age, limbAngle, limbDistance, fr.darkerdawn.jaly.Features.petAir);
     }
 //#else
 public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {

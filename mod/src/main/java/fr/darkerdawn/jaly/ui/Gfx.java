@@ -155,7 +155,7 @@ public final class Gfx {
         //#if >=1.21.6
         ctx.getMatrices().popMatrix();
         //#else
-        pop(ctx);
+        ctx.getMatrices().pop();
         //#endif
     }
 
