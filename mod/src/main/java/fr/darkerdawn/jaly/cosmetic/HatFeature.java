@@ -14,6 +14,34 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.RotationAxis;
 
+//#if >=1.21.2
+/** Draws the chosen festive hat on any biped (players, zombies, skeletons...). */
+public class HatFeature extends FeatureRenderer<net.minecraft.client.render.entity.state.BipedEntityRenderState, BipedEntityModel<net.minecraft.client.render.entity.state.BipedEntityRenderState>> {
+    public HatFeature(FeatureRendererContext<net.minecraft.client.render.entity.state.BipedEntityRenderState, BipedEntityModel<net.minecraft.client.render.entity.state.BipedEntityRenderState>> context) {
+        super(context);
+    }
+
+    @Override
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.client.render.entity.state.BipedEntityRenderState state, float limbAngle, float limbDistance) {
+        if (state.invisible || state.baby) return;
+        String hat = Cosmetics.hatForState(state);
+        if (hat == null) return;
+        ModelPart part = Cosmetics.model(hat);
+        if (part == null) return;
+        matrices.push();
+        this.getContextModel().head.rotate(matrices);
+        int l = light;
+        if (hat.equals("halo")) {
+            float t = (Util.getMeasuringTimeMs() % 4000L) / 4000f;
+            matrices.translate(0, -0.75f + (float) Math.sin(t * Math.PI * 2) * 0.03f, 0);
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(t * 360f));
+            l = LightmapTextureManager.MAX_LIGHT_COORDINATE;
+        }
+        part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), l, OverlayTexture.DEFAULT_UV);
+        matrices.pop();
+    }
+}
+//#else
 /** Draws the chosen festive hat on any biped (players, zombies, skeletons...). */
 public class HatFeature extends FeatureRenderer<LivingEntity, BipedEntityModel<LivingEntity>> {
     public HatFeature(FeatureRendererContext<LivingEntity, BipedEntityModel<LivingEntity>> context) {
@@ -45,3 +73,4 @@ public class HatFeature extends FeatureRenderer<LivingEntity, BipedEntityModel<L
         matrices.pop();
     }
 }
+//#endif

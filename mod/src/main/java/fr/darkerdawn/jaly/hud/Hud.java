@@ -197,7 +197,11 @@ public final class Hud {
             box(ctx, 112, l.size() * 20 + 2, s);
             int y = 2;
             for (StatusEffectInstance e : l) {
+                //#if >=1.21.2
+                ctx.drawSpriteStretched(net.minecraft.client.render.RenderLayer::getGuiTextured, mc.getStatusEffectSpriteManager().getSprite(e.getEffectType()), 2, y, 18, 18);
+                //#else
                 ctx.drawSprite(2, y, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(e.getEffectType()));
+                //#endif
                 String name = e.getEffectType().value().getName().getString();
                 if (e.getAmplifier() > 0) name += " " + roman(e.getAmplifier() + 1);
                 ctx.drawText(mc.textRenderer, Gfx.trim(name, 86), 23, y + 1, s.text, s.shadow);

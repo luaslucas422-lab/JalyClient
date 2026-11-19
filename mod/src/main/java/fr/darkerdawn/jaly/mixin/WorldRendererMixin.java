@@ -11,9 +11,15 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 /** Festive block outline colours. */
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
+    //#if >=1.21.2
+    @org.spongepowered.asm.mixin.injection.ModifyVariable(method = "drawBlockOutline", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+    private int jaly$outline(int color) {
+        if (!Mods.on("block_outline")) return color;
+    //#else
     @ModifyArgs(method = "drawBlockOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawCuboidShapeOutline(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/util/shape/VoxelShape;DDDFFFF)V"))
     private void jaly$outline(Args args) {
         if (!Mods.on("block_outline")) return;
+    //#endif
         long t = System.currentTimeMillis();
         float r, g, b;
         switch (JalyConfig.get().outlineStyle) {
@@ -27,9 +33,13 @@ public abstract class WorldRendererMixin {
             }
             default -> { boolean red = (t / 400) % 2 == 0; r = red ? 0.88f : 1f; g = red ? 0.15f : 1f; b = red ? 0.25f : 1f; }
         }
+        //#if >=1.21.2
+        return (0xE6 << 24) | ((int) (r * 255) << 16) | ((int) (g * 255) << 8) | (int) (b * 255);
+        //#else
         args.set(6, r);
         args.set(7, g);
         args.set(8, b);
         args.set(9, 0.9f);
+        //#endif
     }
 }

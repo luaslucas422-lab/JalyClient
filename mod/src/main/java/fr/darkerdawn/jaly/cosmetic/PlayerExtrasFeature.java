@@ -19,6 +19,22 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 /** Your wings (flapping) and your pet (floating by your shoulder). Only you see them. */
+//#if >=1.21.2
+public class PlayerExtrasFeature extends FeatureRenderer<net.minecraft.client.render.entity.state.PlayerEntityRenderState, PlayerEntityModel> {
+    private static ModelPart wings;
+
+    public PlayerExtrasFeature(FeatureRendererContext<net.minecraft.client.render.entity.state.PlayerEntityRenderState, PlayerEntityModel> context) {
+        super(context);
+    }
+
+    @Override
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.client.render.entity.state.PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player == null || state.id != mc.player.getId() || state.invisible) return;
+        renderWings(matrices, vertexConsumers, light, this.getContextModel().body, state.age, mc.player.isOnGround());
+        renderPet(matrices, vertexConsumers, light, state.age, state.limbFrequency, state.limbAmplitudeMultiplier, fr.darkerdawn.jaly.Features.petAir);
+    }
+//#else
 public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
     private static ModelPart wings;
 
@@ -44,6 +60,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         renderWings(matrices, vertexConsumers, light, this.getContextModel().body, animationProgress, player.isOnGround());
         renderPet(matrices, vertexConsumers, light, animationProgress, limbAngle, limbDistance, fr.darkerdawn.jaly.Features.petAir);
     }
+//#endif
 
     /** Wings on the back, flapping (faster in the air). Also used by the menu preview. */
     public static void renderWings(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ModelPart body, float anim, boolean onGround) {

@@ -23,6 +23,20 @@ import org.joml.Vector3f;
 public final class AvatarPreview {
     private AvatarPreview() {}
 
+    //#if >=1.21.2
+    private static PlayerEntityModel wide, slim;
+    private static net.minecraft.client.render.entity.model.PlayerCapeModel<net.minecraft.client.render.entity.state.PlayerEntityRenderState> capeModel;
+
+    private static PlayerEntityModel model(boolean isSlim) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (isSlim) {
+            if (slim == null) slim = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_SLIM), true);
+            return slim;
+        }
+        if (wide == null) wide = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER), false);
+        return wide;
+    }
+    //#else
     private static PlayerEntityModel<AbstractClientPlayerEntity> wide, slim;
 
     private static PlayerEntityModel<AbstractClientPlayerEntity> model(boolean isSlim) {
@@ -34,17 +48,24 @@ public final class AvatarPreview {
         if (wide == null) wide = new PlayerEntityModel<>(mc.getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER), false);
         return wide;
     }
+    //#endif
 
     /** Draws you standing at (x, feetY), `size` pixels per block, turned by yawDeg. */
     public static void draw(DrawContext ctx, int x, int feetY, float size, float yawDeg) {
         MinecraftClient mc = MinecraftClient.getInstance();
         SkinTextures st = mc.getSkinProvider().getSkinTextures(mc.getGameProfile());
         boolean isSlim = st.model() == SkinTextures.Model.SLIM;
+        //#if >=1.21.2
+        PlayerEntityModel m = model(isSlim);
+        //#else
         PlayerEntityModel<AbstractClientPlayerEntity> m = model(isSlim);
+        //#endif
         float anim = (Util.getMeasuringTimeMs() % 1_000_000L) / 50f;
         // relaxed idle pose
+        //#if <1.21.2
         m.child = false;
         m.sneaking = false;
+        //#endif
         m.head.pitch = 0.05f;
         m.head.yaw = MathHelper.sin(anim * 0.03f) * 0.25f;
         m.leftArm.pitch = MathHelper.sin(anim * 0.067f) * 0.05f;
@@ -53,12 +74,14 @@ public final class AvatarPreview {
         m.rightArm.roll = 0.08f + MathHelper.cos(anim * 0.09f) * 0.05f;
         m.leftLeg.pitch = 0;
         m.rightLeg.pitch = 0;
+        //#if <1.21.2
         m.hat.copyTransform(m.head);
         m.leftSleeve.copyTransform(m.leftArm);
         m.rightSleeve.copyTransform(m.rightArm);
         m.leftPants.copyTransform(m.leftLeg);
         m.rightPants.copyTransform(m.rightLeg);
         m.jacket.copyTransform(m.body);
+        //#endif
 
         MatrixStack ms = ctx.getMatrices();
         ms.push();
@@ -79,10 +102,17 @@ public final class AvatarPreview {
         if (!cape.equals("none")) {
             Identifier tex = Cosmetics.ANIMATED_CAPES.contains(cape) ? Cosmetics.capeTexture(cape + "_f" + (Util.getMeasuringTimeMs() / 110 % 8)) : Cosmetics.capeTexture(cape);
             ms.push();
+            //#if <1.21.2
             ms.translate(0f, 0f, 0.125f);
             ms.multiply(RotationAxis.POSITIVE_X.rotationDegrees(6f + MathHelper.sin(anim * 0.05f) * 3f));
             ms.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f));
+            //#endif
+            //#if >=1.21.2
+            if (capeModel == null) capeModel = new net.minecraft.client.render.entity.model.PlayerCapeModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_CAPE));
+            capeModel.render(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
+            //#else
             m.renderCape(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
+            //#endif
             ms.pop();
         }
         // hat

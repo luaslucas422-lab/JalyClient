@@ -20,12 +20,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerEntityRendererMixin {
     @Unique private static boolean jaly$isMe;
 
+    //#if >=1.21.2
+    @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("HEAD"))
+    private void jaly$who(net.minecraft.client.render.entity.state.PlayerEntityRenderState state, Text text, MatrixStack matrices, VertexConsumerProvider vcp, int light, CallbackInfo ci) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        jaly$isMe = mc.player != null && state.id == mc.player.getId();
+    }
+    //#else
     @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V", at = @At("HEAD"))
     private void jaly$who(AbstractClientPlayerEntity player, Text text, MatrixStack matrices, VertexConsumerProvider vcp, int light, float tickDelta, CallbackInfo ci) {
         jaly$isMe = player == MinecraftClient.getInstance().player;
     }
+    //#endif
 
+    //#if >=1.21.2
+    @ModifyVariable(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("HEAD"), argsOnly = true)
+    //#else
     @ModifyVariable(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V", at = @At("HEAD"), argsOnly = true)
+    //#endif
     private Text jaly$styled(Text text) {
         if (jaly$isMe && Mods.on("name_style")) return NameStyle.mine(text.getString());
         return text;

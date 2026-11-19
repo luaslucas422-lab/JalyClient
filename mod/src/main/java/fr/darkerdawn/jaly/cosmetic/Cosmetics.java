@@ -152,6 +152,21 @@ public final class Cosmetics {
         return Mods.on("mob_hats") ? "santa" : null;
     }
 
+    //#if >=1.21.2
+    /** Same as hatFor, from a render state (1.21.2+ renders from states, not entities). */
+    public static String hatForState(net.minecraft.client.render.entity.state.BipedEntityRenderState s) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (s instanceof net.minecraft.client.render.entity.state.PlayerEntityRenderState p) {
+            if (mc.player != null && p.id == mc.player.getId()) {
+                String h = selected(Type.HAT);
+                return h.equals("none") ? null : h;
+            }
+            return Mods.on("player_hats") ? "santa" : null;
+        }
+        return Mods.on("mob_hats") ? "santa" : null;
+    }
+    //#endif
+
     public static Identifier capeFor(Entity e) {
         if (e != MinecraftClient.getInstance().player) return null;
         String c = selected(Type.CAPE);

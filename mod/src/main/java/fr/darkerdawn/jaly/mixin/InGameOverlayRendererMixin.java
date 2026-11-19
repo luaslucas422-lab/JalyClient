@@ -15,7 +15,11 @@ public abstract class InGameOverlayRendererMixin {
     @Unique private static boolean jaly$pushed;
 
     @Inject(method = "renderFireOverlay", at = @At("HEAD"))
+    //#if >=1.21.2
+    private static void jaly$lowFireStart(MatrixStack matrices, net.minecraft.client.render.VertexConsumerProvider vcp, CallbackInfo ci) {
+    //#else
     private static void jaly$lowFireStart(MinecraftClient client, MatrixStack matrices, CallbackInfo ci) {
+    //#endif
         jaly$pushed = Mods.on("low_fire");
         if (jaly$pushed) {
             matrices.push();
@@ -24,7 +28,11 @@ public abstract class InGameOverlayRendererMixin {
     }
 
     @Inject(method = "renderFireOverlay", at = @At("RETURN"))
+    //#if >=1.21.2
+    private static void jaly$lowFireEnd(MatrixStack matrices, net.minecraft.client.render.VertexConsumerProvider vcp, CallbackInfo ci) {
+    //#else
     private static void jaly$lowFireEnd(MinecraftClient client, MatrixStack matrices, CallbackInfo ci) {
+    //#endif
         if (jaly$pushed) {
             matrices.pop();
             jaly$pushed = false;

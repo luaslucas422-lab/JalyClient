@@ -109,10 +109,10 @@ public class JalyClient implements ClientModInitializer {
 
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
             if (renderer.getModel() instanceof BipedEntityModel) {
-                helper.register(new HatFeature((FeatureRendererContext) renderer));
+                helper.register((net.minecraft.client.render.entity.feature.FeatureRenderer) new HatFeature((FeatureRendererContext) renderer));
             }
             if (renderer instanceof net.minecraft.client.render.entity.PlayerEntityRenderer) {
-                helper.register(new fr.darkerdawn.jaly.cosmetic.PlayerExtrasFeature((FeatureRendererContext) renderer));
+                helper.register((net.minecraft.client.render.entity.feature.FeatureRenderer) new fr.darkerdawn.jaly.cosmetic.PlayerExtrasFeature((FeatureRendererContext) renderer));
             }
         });
 

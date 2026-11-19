@@ -14,9 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
+    //#if >=1.21.2
+    private void jaly$zoom(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> cir) {
+        cir.setReturnValue((float) Features.applyZoom(cir.getReturnValue()));
+    }
+    //#else
     private void jaly$zoom(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
         cir.setReturnValue(Features.applyZoom(cir.getReturnValue()));
     }
+    //#endif
 
     @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)
     private void jaly$noHurtCam(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
