@@ -30,7 +30,7 @@ jobs:
           [ "$ok" = 1 ]
       - name: Launch Minecraft ${{ matrix.mc }} with JalyClient (title screen test)
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri >/dev/null || true
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri imagemagick >/dev/null || true
           pip install -q portablemc
           mkdir -p work/mods
           cp $(ls mod/build/libs/*.jar | grep -v sources) work/mods/
@@ -44,7 +44,7 @@ jobs:
           i=0
           for f in work/screenshots/*.png; do
             [ -f "$f" ] || continue
-            i=$((i+1)); convert "$f" -resize 800x -quality 65 shot.jpg
+            i=$((i+1)); convert "$f" -resize 800x -quality 65 shot.jpg || continue
             echo "=====SHOT $i"; base64 -w 120 shot.jpg; echo "=====ENDSHOT"
           done
           grep -q "JALY-SMOKE\] done, failures=0" work/logs/latest.log
