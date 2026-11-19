@@ -109,31 +109,47 @@ HATS.update({
     "santa_mech": [(-5, -10, -5, 10, 3, 10, "#C8102E"), (-4, -14, -4, 8, 4, 8, "#9A0C22"), (-5.5, -9, -5.5, 11, 1, 11, "#D8DCE2"), (-6, -12, -1, 1, 3, 2, "#5E5E66"), (5, -12, -1, 1, 3, 2, "#5E5E66"),
                    (-2, -16, -2, 4, 2, 4, "#D8DCE2"), (-1, -18, -1, 2, 2, 2, "#FFFFFF"), (-3, -11, -5.5, 6, 1, 1, "#4CC3FF")],
     "pet_sleigh": [(-4, -3, -6, 8, 3, 10, "#B11A33"), (-4, -6, 1, 8, 3, 3, "#B11A33"), (-4.5, 0, -7, 1, 1, 12, "#FFD94A"), (3.5, 0, -7, 1, 1, 12, "#FFD94A"), (-2, -6, -4, 4, 3, 4, "#2C6FB0"),
-                   (-1.5, -5, -11, 3, 3, 4, "#8C5B32"), (-1, -7, -12, 2, 2, 2, "#8C5B32"), (-0.5, -6.5, -13, 1, 1, 1, "#FF2020"), (-1.5, -9, -12, 1, 2, 1, "#5A3A22"), (0.5, -9, -12, 1, 2, 1, "#5A3A22")],
-    "pet_ice_golem": [(-3, -5, -2, 6, 5, 4, "#BFE3FF"), (-4, -11, -2.5, 8, 6, 5, "#9BD3FF"), (-2.5, -15, -2.5, 5, 4, 5, "#E8F6FF"), (-5.5, -11, -1, 2, 6, 2, "#9BD3FF"), (3.5, -11, -1, 2, 6, 2, "#9BD3FF"),
-                      (-1.5, -13.5, -3, 1, 1, 1, "#4CC3FF"), (0.5, -13.5, -3, 1, 1, 1, "#4CC3FF")],
-    "pet_buddy": [(-2, -4, -1, 2, 4, 2, "#A0612E"), (0, -4, -1, 2, 4, 2, "#A0612E"), (-2.5, -9, -1.5, 5, 5, 3, "#B5733A"), (-4.5, -9, -1, 2, 2, 2, "#B5733A"), (2.5, -9, -1, 2, 2, 2, "#B5733A"),
+                   (-1.5, -5, -11, 3, 3, 4, "#8C5B32"), (-1, -7, -12, 2, 2, 2, "#8C5B32"), (-0.5, -6.5, -13, 1, 1, 1, "#FF2020"), (-1.5, -9, -12, 1, 2, 1, "#5A3A22"), (0.5, -9, -12, 1, 2, 1, "#5A3A22"),
+                   (-1.5, -2, -11, 1, 2, 1, "#6B4423", "L"), (0.5, -2, -11, 1, 2, 1, "#6B4423", "R"), (-1.5, -2, -8, 1, 2, 1, "#6B4423", "R"), (0.5, -2, -8, 1, 2, 1, "#6B4423", "L"),
+                   (-0.5, -4, -7.5, 1, 1, 2, "#FFD94A")],
+    "pet_ice_golem": [(-3, -5, -2, 3, 5, 4, "#BFE3FF", "L"), (0, -5, -2, 3, 5, 4, "#BFE3FF", "R"), (-4, -11, -2.5, 8, 6, 5, "#9BD3FF"), (-2.5, -15, -2.5, 5, 4, 5, "#E8F6FF"),
+                      (-5.5, -11, -1, 2, 6, 2, "#9BD3FF", "AL"), (3.5, -11, -1, 2, 6, 2, "#9BD3FF", "AR"), (-1.5, -13.5, -3, 1, 1, 1, "#4CC3FF"), (0.5, -13.5, -3, 1, 1, 1, "#4CC3FF")],
+    "pet_buddy": [(-2, -4, -1, 2, 4, 2, "#A0612E", "L"), (0, -4, -1, 2, 4, 2, "#A0612E", "R"), (-2.5, -9, -1.5, 5, 5, 3, "#B5733A"), (-4.5, -9, -1, 2, 4, 2, "#B5733A", "AL"), (2.5, -9, -1, 2, 4, 2, "#B5733A", "AR"),
                   (-2, -13, -2, 4, 4, 4, "#B5733A"), (-1.5, -12, -2.5, 1, 1, 1, "#FFFFFF"), (0.5, -12, -2.5, 1, 1, 1, "#FFFFFF"), (-1, -10.5, -2.5, 2, 1, 1, "#FFFFFF"),
                   (-2.5, -9.5, -2, 5, 1, 4, "#C8102E"), (1.5, -9.5, -2.5, 1, 3, 1, "#C8102E"), (-0.5, -8, -2.2, 1, 1, 1, "#2E8B47"), (-0.5, -6.5, -2.2, 1, 1, 1, "#2E8B47"),
-                  (3.5, -11, -2, 2, 2, 1, "#E0384F"), (4.5, -10, -2, 1, 1, 1, "#E0384F"), (3, -10, -2, 1, 1, 1, "#E0384F")],
+                  (3.5, -6, -2, 2, 2, 1, "#E0384F")],
+    "pet_frost_dragon": [(-2, -6, -3, 4, 4, 7, "#5AA0D8"), (-1.5, -5, -3.2, 3, 3, 6, "#BFE3FF"), (-1, -9, -5, 2, 4, 2, "#5AA0D8"), (-1.5, -11, -8, 3, 3, 4, "#5AA0D8"),
+                         (-1, -10, -9, 2, 1, 1, "#3A7AC8"), (-1.2, -10.5, -8.3, 1, 1, 1, "#FFD94A"), (0.2, -10.5, -8.3, 1, 1, 1, "#FFD94A"), (-1.5, -13, -6, 1, 2, 1, "#E8F6FF"), (0.5, -13, -6, 1, 2, 1, "#E8F6FF"),
+                         (-0.5, -7, -1, 1, 1, 1, "#E8F6FF"), (-0.5, -7, 1, 1, 1, 1, "#E8F6FF"),
+                         (-9, -8, -2, 7, 1, 5, "#9BD3FF", "WL"), (2, -8, -2, 7, 1, 5, "#9BD3FF", "WR"),
+                         (-1, -5, 4, 2, 2, 4, "#5AA0D8", "T"), (-1.5, -2, -2, 1, 2, 1, "#3A7AC8", "L"), (0.5, -2, -2, 1, 2, 1, "#3A7AC8", "R"), (-1.5, -2, 2, 1, 2, 1, "#3A7AC8", "R"), (0.5, -2, 2, 1, 2, 1, "#3A7AC8", "L")],
+    "pet_owl": [(-2.5, -7, -2, 5, 6, 4, "#F6F4F7"), (-2, -10, -2, 4, 3, 4, "#F6F4F7"), (-1.5, -9, -2.3, 1, 1, 1, "#FFD94A"), (0.5, -9, -2.3, 1, 1, 1, "#FFD94A"), (-0.5, -8, -2.5, 1, 1, 1, "#F28C28"),
+                (-2, -11, -2, 1, 1, 1, "#C9CCD6"), (1, -11, -2, 1, 1, 1, "#C9CCD6"), (-1.5, -5, -2.2, 1, 1, 1, "#C9CCD6"), (0.5, -4, -2.2, 1, 1, 1, "#C9CCD6"),
+                (-6, -7, -1, 4, 1, 4, "#E0E4EC", "WL"), (2, -7, -1, 4, 1, 4, "#E0E4EC", "WR"), (-1.5, -1, -1.5, 1, 1, 2, "#F28C28", "L"), (0.5, -1, -1.5, 1, 1, 2, "#F28C28", "R")],
     "pet_snowman": [(-3, -6, -3, 6, 6, 6, "#FAFCFF"), (-2, -10, -2, 4, 4, 4, "#FAFCFF"), (-1.5, -13, -1.5, 3, 3, 3, "#FAFCFF"), (-1.5, -14, -1.5, 3, 1, 3, "#1C1C22"), (-1, -16, -1, 2, 2, 2, "#1C1C22"), (-0.5, -12, -2.5, 1, 1, 1, "#F28C28"), (-2.5, -10.5, -2.5, 5, 1, 5, "#B11A33")],
     "pet_present": [(-3, -6, -3, 6, 6, 6, "#B11A33"), (-1, -6.5, -3.5, 2, 7, 7, "#FDE68A"), (-3.5, -6.5, -1, 7, 7, 2, "#FDE68A"), (-2, -8, -1, 2, 2, 2, "#FDE68A"), (0, -8, -1, 2, 2, 2, "#FDE68A")],
-    "pet_penguin": [(-2.5, -7, -2, 5, 7, 4, "#1C1C22"), (-1.5, -6, -2.3, 3, 5, 1, "#F4F4F4"), (-2, -10, -2, 4, 3, 4, "#1C1C22"), (-0.5, -9, -3, 1, 1, 1, "#F28C28"), (-1.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (0.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (-2, -11, -2, 4, 1, 4, "#C8102E"), (-1, -12, -1, 2, 1, 2, "#C8102E"), (-0.5, -13, -0.5, 1, 1, 1, "#FFFFFF")],
+    "pet_penguin": [(-2.5, -7, -2, 5, 6, 4, "#1C1C22"), (-1.5, -6, -2.3, 3, 4, 1, "#F4F4F4"), (-2, -10, -2, 4, 3, 4, "#1C1C22"), (-0.5, -9, -3, 1, 1, 1, "#F28C28"),
+                    (-1.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (0.5, -9.5, -2.2, 1, 1, 1, "#FFFFFF"), (-2, -11, -2, 4, 1, 4, "#C8102E"), (-1, -12, -1, 2, 1, 2, "#C8102E"), (-0.5, -13, -0.5, 1, 1, 1, "#FFFFFF"),
+                    (-2, -1, -2.5, 2, 1, 3, "#F28C28", "L"), (0, -1, -2.5, 2, 1, 3, "#F28C28", "R"), (-3.5, -7, -1, 1, 4, 2, "#1C1C22", "WL"), (2.5, -7, -1, 1, 4, 2, "#1C1C22", "WR")],
     "pet_tree": [(-0.5, -2, -0.5, 1, 2, 1, "#5A3A22"), (-3, -5, -3, 6, 3, 6, "#1E6B34"), (-2, -8, -2, 4, 3, 4, "#1E6B34"), (-1, -10, -1, 2, 2, 2, "#1E6B34"), (-0.5, -11.5, -0.5, 1, 1, 1, "#FFD94A"), (-3.2, -4, -1, 1, 1, 1, "#E01E37"), (2.2, -6, 0, 1, 1, 1, "#FDE68A"), (-1, -7, -2.2, 1, 1, 1, "#4CC3FF")],
-    "pet_reindeer": [(-2, -5, -3, 4, 3, 6, "#8C5B32"), (-1.5, -8, -4.5, 3, 3, 3, "#8C5B32"), (-0.5, -6.5, -5, 1, 1, 1, "#FF2020"), (-2, -2, -3, 1, 2, 1, "#6B4423"), (1, -2, -3, 1, 2, 1, "#6B4423"), (-2, -2, 2, 1, 2, 1, "#6B4423"), (1, -2, 2, 1, 2, 1, "#6B4423"), (-1.5, -10, -3.5, 1, 2, 1, "#5A3A22"), (0.5, -10, -3.5, 1, 2, 1, "#5A3A22")],
+    "pet_reindeer": [(-2, -5, -3, 4, 3, 6, "#8C5B32"), (-1.5, -8, -4.5, 3, 3, 3, "#8C5B32"), (-0.5, -6.5, -5, 1, 1, 1, "#FF2020"),
+                     (-2, -2, -3, 1, 2, 1, "#6B4423", "L"), (1, -2, -3, 1, 2, 1, "#6B4423", "R"), (-2, -2, 2, 1, 2, 1, "#6B4423", "R"), (1, -2, 2, 1, 2, 1, "#6B4423", "L"),
+                     (-1.5, -10, -3.5, 1, 2, 1, "#5A3A22"), (0.5, -10, -3.5, 1, 2, 1, "#5A3A22"), (-0.5, -5, 3, 1, 2, 1, "#F6F4F7", "T")],
 })
 HAT_NAMES = {"santa": "Santa Hat", "antlers": "Reindeer Antlers", "elf": "Elf Hat", "tophat": "Snowman Top Hat", "halo": "Star Halo"}
 
 
 def build_hats():
     lines = []
+    rigs = []
     for hid, cubes in HATS.items():
         img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
         px = img.load()
         u, v, rowh = 0, 0, 0
         placed = []
         rnd = random.Random(hid)
-        for (x, y, z, w, h, d, col) in cubes:
+        for cube in cubes:
+            x, y, z, w, h, d, col = cube[:7]
             rw, rh = 2 * (w + d), d + h
             if u + rw > 64:
                 u, v, rowh = 0, v + rowh, 0
@@ -149,8 +165,27 @@ def build_hats():
             rowh = max(rowh, rh)
         save(img, f"{TEX}/hat/{hid}.png")
         parts = []
-        for i, ((x, y, z, w, h, d, col), (uu, vv)) in enumerate(zip(cubes, placed)):
-            parts.append(f'        r.addChild("p{i}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x}f, {y}f, {z}f, {w}f, {h}f, {d}f), ModelTransform.pivot(0f, 0f, 0f));')
+        rigged = []
+        for i, (cube, (uu, vv)) in enumerate(zip(cubes, placed)):
+            x, y, z, w, h, d, col = cube[:7]
+            tag = cube[7] if len(cube) > 7 else None
+            if tag is None:
+                parts.append(f'        r.addChild("p{i}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x}f, {y}f, {z}f, {w}f, {h}f, {d}f), ModelTransform.pivot(0f, 0f, 0f));')
+                continue
+            # joints: legs/arms swing from the top, wings flap from the body side, tails wag from the base
+            if tag in ("L", "R", "AL", "AR"):
+                pv = (x + w / 2, y, z + d / 2)
+            elif tag == "WL":
+                pv = (x + w, y, z + d / 2)
+            elif tag == "WR":
+                pv = (x, y, z + d / 2)
+            else:
+                pv = (x + w / 2, y + h / 2, z)
+            name = f"p{i}_{tag}"
+            rigged.append(name)
+            parts.append(f'        r.addChild("{name}", ModelPartBuilder.create().uv({uu}, {vv}).cuboid({x - pv[0]}f, {y - pv[1]}f, {z - pv[2]}f, {w}f, {h}f, {d}f), ModelTransform.pivot({pv[0]}f, {pv[1]}f, {pv[2]}f));')
+        if rigged:
+            rigs.append(f'        java.util.Map.entry("{hid}", new String[]{{{", ".join(chr(34) + n + chr(34) for n in rigged)}}})')
         lines.append(f"    static TexturedModelData {hid}() {{\n        ModelData data = new ModelData();\n        ModelPartData r = data.getRoot();\n" + "\n".join(parts) + "\n        return TexturedModelData.of(data, 64, 64);\n    }\n")
         # front-view icon 32x32
         icon = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
@@ -161,7 +196,7 @@ def build_hats():
         sc = min(28 / (maxx - minx), 28 / (maxy - miny))
         ox = 16 - (minx + maxx) / 2 * sc
         oy = 16 - (miny + maxy) / 2 * sc
-        for (x, y, z, w, h, d, col) in sorted(cubes, key=lambda c: -c[2]):
+        for (x, y, z, w, h, d, col) in sorted((c[:7] for c in cubes), key=lambda c: -c[2]):
             dr.rectangle([ox + x * sc, oy + y * sc, ox + (x + w) * sc - 1, oy + (y + h) * sc - 1], fill=hexc(col), outline=shade(hexc(col), 0.7))
         save(icon, f"{TEX}/gui/hat_{hid}.png")
     java = """package fr.darkerdawn.jaly.cosmetic;
@@ -175,6 +210,10 @@ import net.minecraft.client.model.TexturedModelData;
 /** Generated by tools/gen_art.py - do not edit by hand. */
 final class HatModels {
     private HatModels() {}
+
+    /** Animated parts of each model (name suffix: L/R legs, AL/AR arms, WL/WR wings, T tail). */
+    static final java.util.Map<String, String[]> RIG = java.util.Map.ofEntries(
+""" + ",\n".join(rigs) + """);
 
 """ + "\n".join(lines) + "}\n"
     with open(os.path.join(JAVA, "HatModels.java"), "w") as f:

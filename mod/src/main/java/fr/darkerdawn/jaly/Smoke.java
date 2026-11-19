@@ -60,7 +60,14 @@ final class Smoke {
                 check("title screen is the Jaly menu", c.currentScreen instanceof fr.darkerdawn.jaly.screen.JalyTitleScreen);
                 shot(c, "main menu");
             }
-            if (titleTicks == 150) {
+            if (titleTicks == 125) {
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "frost_dragon");
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS, "dragon");
+                c.setScreen(new fr.darkerdawn.jaly.screen.CosmeticsScreen(c.currentScreen));
+            }
+            if (titleTicks == 140) shot(c, "cosmetics preview without a world");
+            if (titleTicks == 142) c.setScreen(new fr.darkerdawn.jaly.screen.JalyTitleScreen());
+            if (titleTicks == 160) {
                 check("config file saved", Files.exists(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("jalyclient.json")));
                 System.out.println("[JALY-SMOKE] done, failures=" + fails);
                 c.scheduleStop();
@@ -152,6 +159,7 @@ final class Smoke {
                     cfg.set(id, true);
                 }
                 cfg.lowHealthAt = 40f; // force the low-health edges on for the screenshot
+                fr.darkerdawn.jaly.cosmetic.Cosmetics.select(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "reindeer");
             }
             case 80 -> { shot(c, "in-game hud"); cfg.lowHealthAt = 6f; for (String id : new String[]{"target", "next_gift", "hunger", "durability", "snow_steps", "low_health"}) cfg.set(id, false); }
             case 82 -> c.player.setPitch(-28);
@@ -245,10 +253,12 @@ final class Smoke {
             case 682 -> c.setScreen(new LodgeScreen(null));
             case 690 -> {
                 fr.darkerdawn.jaly.net.Friends.fakeForTest();
+                fr.darkerdawn.jaly.net.ShopApi.signedIn = true;
                 c.setScreen(new fr.darkerdawn.jaly.screen.FriendsScreen(null));
             }
             case 697 -> {
                 shot(c, "friends list");
+                fr.darkerdawn.jaly.net.ShopApi.signedIn = false;
                 check("Ginger Buddy pet locked until a real friend", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "buddy"));
                 check("Modrinth icons loaded (" + fr.darkerdawn.jaly.net.RemoteImages.loaded() + ")", fr.darkerdawn.jaly.net.RemoteImages.loaded() > 0);
             }

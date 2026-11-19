@@ -73,12 +73,10 @@ public class CosmeticsScreen extends JalyScreen {
             drawSpinning(ctx, pcx, pby - 6, Math.min(56, bh / 3), p);
             ctx.disableScissor();
         } else {
-            String cape = Cosmetics.selected(Cosmetics.Type.CAPE);
-            if (!cape.equals("none")) Gfx.tex(ctx, Cosmetics.capeTexture(cape), pcx - 20, pby - 70, 40, 64, 4, 4, 40, 64, 256, 128, 1f);
-            String hat = Cosmetics.selected(Cosmetics.Type.HAT);
-            if (!hat.equals("none")) Gfx.tex(ctx, Cosmetics.hatIcon(hat), pcx - 16, pby - 108, 32, 32, 0, 0, 32, 32, 32, 32, 1f);
-            Gfx.centered(ctx, "Join a world to see", pcx, by + 6, 0xFF8FA088);
-            Gfx.centered(ctx, "yourself spin!", pcx, by + 16, 0xFF8FA088);
+            // no world: draw your skin and cosmetics ourselves
+            ctx.enableScissor(bx + 1, by + 1, bx + bw - 1, by + bh - 1);
+            fr.darkerdawn.jaly.cosmetic.AvatarPreview.draw(ctx, pcx, pby + 2, Math.min(56, bh / 3) * 0.95f, -spin);
+            ctx.disableScissor();
         }
         Gfx.centered(ctx, "Drag to spin", pcx, by + bh - 10, 0xFF6F8068);
         // grid

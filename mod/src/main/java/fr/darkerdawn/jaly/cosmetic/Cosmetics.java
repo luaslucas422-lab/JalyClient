@@ -47,7 +47,7 @@ public final class Cosmetics {
         put(Type.WINGS, "krampus", "Krampus Wings"); put(Type.WINGS, "og", "OG Wings");
         put(Type.NAME_COLOR, "white", "Snow White"); put(Type.NAME_COLOR, "red", "Candy Red"); put(Type.NAME_COLOR, "gold", "Gold");
         put(Type.NAME_COLOR, "ice", "Ice Blue"); put(Type.NAME_COLOR, "holly", "Holly Green"); put(Type.NAME_COLOR, "ginger", "Gingerbread");
-        put(Type.NAME_COLOR, "pink", "Sugar Plum"); put(Type.NAME_COLOR, "custom", "Custom (Pre Installs)"); put(Type.NAME_COLOR, "og", "OG");
+        put(Type.NAME_COLOR, "pink", "Sugar Plum"); put(Type.NAME_COLOR, "custom", "Custom (Tools)"); put(Type.NAME_COLOR, "og", "OG");
         put(Type.NAME_FX, "candy", "Candy Cane Gradient"); put(Type.NAME_FX, "rainbow", "Rainbow Gradient"); put(Type.NAME_FX, "ice", "Ice Gradient");
         put(Type.NAME_FX, "gold", "Gold Gradient"); put(Type.NAME_FX, "shine", "Shine Sweep"); put(Type.NAME_FX, "sparkles", "Snow Sparkles");
         put(Type.NAME_FX, "wave", "Colour Wave");
@@ -56,6 +56,7 @@ public final class Cosmetics {
         put(Type.CAPE, "starlight", "Starlight (animated)"); put(Type.CAPE, "ice_king", "Ice King (animated)"); put(Type.CAPE, "royal_velvet", "Royal Velvet");
         put(Type.HAT, "crystal_crown", "Crystal Crown"); put(Type.HAT, "santa_mech", "Santa Mech Helmet"); put(Type.HAT, "snow_globe", "Snow Globe Head");
         put(Type.PET, "buddy", "Ginger Buddy (first friend)");
+        put(Type.PET, "owl", "Snowy Owl"); put(Type.PET, "frost_dragon", "Baby Frost Dragon");
         put(Type.PET, "sleigh", "Mini Sleigh"); put(Type.PET, "ice_golem", "Ice Golem");
         put(Type.TRAIL, "fireworks", "Fireworks"); put(Type.TRAIL, "galaxy", "Galaxy");
         put(Type.NAME_FX, "prism", "Prism"); put(Type.NAME_FX, "inferno", "Inferno");
@@ -71,7 +72,8 @@ public final class Cosmetics {
         MODELS.put("tophat", HatModels::tophat); MODELS.put("halo", HatModels::halo); MODELS.put("beanie", HatModels::beanie);
         MODELS.put("holly", HatModels::holly); MODELS.put("gift", HatModels::gift);
         MODELS.put("crystal_crown", HatModels::crystal_crown); MODELS.put("santa_mech", HatModels::santa_mech); MODELS.put("snow_globe", HatModels::snow_globe);
-        MODELS.put("pet_sleigh", HatModels::pet_sleigh); MODELS.put("pet_buddy", HatModels::pet_buddy); MODELS.put("pet_ice_golem", HatModels::pet_ice_golem);
+        MODELS.put("pet_sleigh", HatModels::pet_sleigh); MODELS.put("pet_buddy", HatModels::pet_buddy);
+        MODELS.put("pet_owl", HatModels::pet_owl); MODELS.put("pet_frost_dragon", HatModels::pet_frost_dragon); MODELS.put("pet_ice_golem", HatModels::pet_ice_golem);
         MODELS.put("og", HatModels::og); MODELS.put("pet_og", HatModels::pet_og);
         MODELS.put("pet_snowman", HatModels::pet_snowman); MODELS.put("pet_penguin", HatModels::pet_penguin);
         MODELS.put("pet_present", HatModels::pet_present); MODELS.put("pet_tree", HatModels::pet_tree); MODELS.put("pet_reindeer", HatModels::pet_reindeer);

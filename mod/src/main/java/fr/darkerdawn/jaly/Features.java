@@ -76,6 +76,7 @@ public final class Features {
         if (Mods.on("minimap")) Minimap.tick(mc);
         trail(mc);
         snowSteps(mc);
+        petTick(mc);
         Vec3d p = mc.player.getPos();
         if (lastPos != null) {
             double dx = p.x - lastPos.x, dz = p.z - lastPos.z;
@@ -163,6 +164,25 @@ public final class Features {
         if (fx == null) return;
         double vx = t.equals("notes") ? RNG.nextInt(24) / 24.0 : (RNG.nextDouble() - 0.5) * 0.02;
         mc.world.addParticle(fx, p.x + (RNG.nextDouble() - 0.5) * 0.4, p.y + 0.1 + RNG.nextDouble() * 0.3, p.z + (RNG.nextDouble() - 0.5) * 0.4, vx, 0.01, (RNG.nextDouble() - 0.5) * 0.02);
+    }
+
+    /** How high you are above where you last stood: walking pets stay on the floor when you jump. */
+    public static float petAir;
+    private static double groundY = Double.NaN;
+    private static int petTick;
+
+    private static void petTick(MinecraftClient mc) {
+        if (mc.player.isOnGround() || Double.isNaN(groundY) || mc.player.getY() < groundY) groundY = mc.player.getY();
+        petAir = (float) net.minecraft.util.math.MathHelper.clamp(mc.player.getY() - groundY, 0, 2.5);
+        String pet = fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET);
+        if (!fr.darkerdawn.jaly.cosmetic.PlayerExtrasFeature.FLYERS.contains(pet) || petTick++ % 3 != 0 || mc.options.getPerspective().isFirstPerson()) return;
+        // a little magic under flying pets: that's what keeps them up
+        double a = Math.toRadians(180 - mc.player.bodyYaw);
+        double lx = 0.95 * 0.9375, lz = 0.2 * 0.9375;
+        double wx = lx * Math.cos(a) + lz * Math.sin(a), wz = -lx * Math.sin(a) + lz * Math.cos(a);
+        double y = mc.player.getY() + 1.1;
+        var fx = pet.equals("frost_dragon") ? ParticleTypes.SNOWFLAKE : pet.equals("sleigh") ? new DustParticleEffect(new Vector3f(1f, 0.85f, 0.3f), 0.7f) : ParticleTypes.WHITE_ASH;
+        mc.world.addParticle(fx, mc.player.getX() + wx + (RNG.nextDouble() - 0.5) * 0.3, y, mc.player.getZ() + wz + (RNG.nextDouble() - 0.5) * 0.3, 0, -0.03, 0);
     }
 
     private static boolean wasOnGround = true;

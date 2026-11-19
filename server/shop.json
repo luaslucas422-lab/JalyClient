@@ -1,25 +1,110 @@
 {
   "packs": [
-    {"id": "p100", "coins": 100, "cents": 100, "name": "100 Jolly Coins"},
-    {"id": "p550", "coins": 550, "cents": 500, "name": "550 Jolly Coins (+50 bonus)"},
-    {"id": "p1200", "coins": 1200, "cents": 1000, "name": "1200 Jolly Coins (+200 bonus)"},
-    {"id": "p2600", "coins": 2600, "cents": 2000, "name": "2600 Jolly Coins (+600 bonus)"}
+    {
+      "id": "p100",
+      "coins": 100,
+      "cents": 100,
+      "name": "100 Jolly Coins"
+    },
+    {
+      "id": "p550",
+      "coins": 550,
+      "cents": 500,
+      "name": "550 Jolly Coins (+50 bonus)"
+    },
+    {
+      "id": "p1200",
+      "coins": 1200,
+      "cents": 1000,
+      "name": "1200 Jolly Coins (+200 bonus)"
+    },
+    {
+      "id": "p2600",
+      "coins": 2600,
+      "cents": 2000,
+      "name": "2600 Jolly Coins (+600 bonus)"
+    }
   ],
   "items": [
-    {"id": "wings:frost_dragon", "name": "Frost Dragon Wings", "price": 1200},
-    {"id": "wings:aurora_phoenix", "name": "Aurora Phoenix Wings", "price": 1100},
-    {"id": "wings:royal_gold", "name": "Royal Gold Wings", "price": 900},
-    {"id": "cape:starlight", "name": "Starlight Cape", "price": 600},
-    {"id": "cape:ice_king", "name": "Ice King Cape", "price": 600},
-    {"id": "cape:royal_velvet", "name": "Royal Velvet Cape", "price": 600},
-    {"id": "hat:crystal_crown", "name": "Crystal Crown", "price": 500},
-    {"id": "hat:santa_mech", "name": "Santa Mech Helmet", "price": 600},
-    {"id": "hat:snow_globe", "name": "Snow Globe Head", "price": 500},
-    {"id": "pet:sleigh", "name": "Mini Sleigh", "price": 600},
-    {"id": "pet:ice_golem", "name": "Ice Golem", "price": 500},
-    {"id": "trail:fireworks", "name": "Fireworks Trail", "price": 200},
-    {"id": "trail:galaxy", "name": "Galaxy Trail", "price": 200},
-    {"id": "namefx:prism", "name": "Prism Name", "price": 200},
-    {"id": "namefx:inferno", "name": "Inferno Name", "price": 200}
+    {
+      "id": "wings:frost_dragon",
+      "name": "Frost Dragon Wings",
+      "price": 1200
+    },
+    {
+      "id": "wings:aurora_phoenix",
+      "name": "Aurora Phoenix Wings",
+      "price": 1100
+    },
+    {
+      "id": "wings:royal_gold",
+      "name": "Royal Gold Wings",
+      "price": 900
+    },
+    {
+      "id": "cape:starlight",
+      "name": "Starlight Cape",
+      "price": 600
+    },
+    {
+      "id": "cape:ice_king",
+      "name": "Ice King Cape",
+      "price": 600
+    },
+    {
+      "id": "cape:royal_velvet",
+      "name": "Royal Velvet Cape",
+      "price": 600
+    },
+    {
+      "id": "hat:crystal_crown",
+      "name": "Crystal Crown",
+      "price": 500
+    },
+    {
+      "id": "hat:santa_mech",
+      "name": "Santa Mech Helmet",
+      "price": 600
+    },
+    {
+      "id": "hat:snow_globe",
+      "name": "Snow Globe Head",
+      "price": 500
+    },
+    {
+      "id": "pet:frost_dragon",
+      "name": "Baby Frost Dragon",
+      "price": 700
+    },
+    {
+      "id": "pet:sleigh",
+      "name": "Mini Sleigh",
+      "price": 600
+    },
+    {
+      "id": "pet:ice_golem",
+      "name": "Ice Golem",
+      "price": 500
+    },
+    {
+      "id": "trail:fireworks",
+      "name": "Fireworks Trail",
+      "price": 200
+    },
+    {
+      "id": "trail:galaxy",
+      "name": "Galaxy Trail",
+      "price": 200
+    },
+    {
+      "id": "namefx:prism",
+      "name": "Prism Name",
+      "price": 200
+    },
+    {
+      "id": "namefx:inferno",
+      "name": "Inferno Name",
+      "price": 200
+    }
   ]
 }

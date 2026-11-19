@@ -37,7 +37,7 @@ public class LodgeScreen extends Screen {
         super(Text.literal("Jaly Lodge"));
         this.parent = parent;
         this.spots = new Spot[]{
-            new Spot("Pre Installs", "Turn the built-in JalyClient mods on and off", 90, 28, 144, 80, () -> new ModsScreen(this)),
+            new Spot("Tools", "Your JalyClient tools: HUD, PvP, festive and music mods", 90, 28, 144, 80, () -> new ModsScreen(this)),
             new Spot("Mods", "Get mods, resource packs and shaders", 196, 84, 228, 152, () -> new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD)),
             new Spot("Edit HUD", "Drag your HUD where you want it", 96, 90, 138, 124, () -> new HudEditorScreen(this)),
             new Spot("Cosmetics", "Hats, capes, wings, pets and trails", 158, 92, 194, 162, () -> new CosmeticsScreen(this)),
