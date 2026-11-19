@@ -266,9 +266,10 @@ public final class CustomDiscs {
             // World.getBlockEntity refuses other threads, so read the loaded chunk directly
             var chunk = sw == null ? null : sw.getChunkManager().getWorldChunk(pos.getX() >> 4, pos.getZ() >> 4);
             if (chunk != null && chunk.getBlockEntity(pos) instanceof JukeboxBlockEntity be) id = discId(be.getStack());
+            if (id == null) lastWhy = "server lookup: chunk=" + (chunk != null) + " be=" + (chunk == null ? null : chunk.getBlockEntity(pos));
         }
         if (id == null) id = INSERTED.get(pos);
-        if (id == null) { lastWhy = "no disc id at " + pos; return false; }
+        if (id == null) { lastWhy += " | no disc id at " + pos; return false; }
         Disc d = byId(id);
         if (d == null) { lastWhy = "unknown disc " + id; return false; }
         Path file = DIR.resolve(d.file);

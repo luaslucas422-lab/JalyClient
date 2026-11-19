@@ -299,6 +299,7 @@ final class Smoke {
                 c.getServer().execute(() -> {
                     sw.setBlockState(jb, net.minecraft.block.Blocks.JUKEBOX.getDefaultState());
                     var sp = c.getServer().getPlayerManager().getPlayer(c.player.getUuid());
+                    fr.darkerdawn.jaly.disc.CustomDiscs.rememberInsert(jb, d); // what right-clicking the jukebox does
                     var res = net.minecraft.component.type.JukeboxPlayableComponent.tryPlayStack(sw, jb, d, sp);
                     System.out.println("[JALY-SMOKE] jukebox insert: " + res + " has_record=" + sw.getBlockState(jb).get(net.minecraft.block.JukeboxBlock.HAS_RECORD));
                 });
