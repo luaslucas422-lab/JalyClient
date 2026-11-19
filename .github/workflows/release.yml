@@ -26,9 +26,14 @@ jobs:
           gh run download "$RUN" -R "${{ github.repository }}" -n JalyClient-mod -D out
           if [ "${{ inputs.tag }}" = "beta" ]; then
             # the extra Minecraft versions that already build (from the newest "More versions" run of the same commit or older)
-            VR=$(gh run list -R "${{ github.repository }}" -w "More versions" -b main -L 1 --json databaseId -q '.[0].databaseId')
+            RUNS=$(gh run list -R "${{ github.repository }}" -w "More versions" -b main -L 8 --json databaseId -q '.[].databaseId')
             for V in 1.21.4 1.21.5 1.21.8 1.21.10 1.21.11; do
-              gh run download "$VR" -R "${{ github.repository }}" -n "JalyClient-mc$V" -D "out/mc$V" 2>/dev/null && for j in out/mc$V/*.jar; do mv "$j" "out/JalyClient-mc$V.jar"; done || echo "no build for $V yet"
+              for VR in $RUNS; do
+                if gh run download "$VR" -R "${{ github.repository }}" -n "JalyClient-mc$V" -D "out/mc$V" 2>/dev/null; then
+                  for j in out/mc$V/*.jar; do mv "$j" "out/JalyClient-mc$V.jar"; done
+                  echo "mc$V from run $VR"; break
+                fi
+              done
             done
           fi
           ls -la out
