@@ -1,0 +1,189 @@
+{
+ "ambientocclusion": false,
+ "textures": {
+  "particle": "minecraft:block/fern",
+  "cross": "minecraft:block/fern"
+ },
+ "elements": [
+  {
+   "from": [
+    0.8,
+    0,
+    8
+   ],
+   "to": [
+    15.2,
+    19.95,
+    8
+   ],
+   "rotation": {
+    "origin": [
+     8,
+     9.975,
+     8
+    ],
+    "axis": "y",
+    "angle": 45,
+    "rescale": true
+   },
+   "shade": false,
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    }
+   }
+  },
+  {
+   "from": [
+    8,
+    0,
+    0.8
+   ],
+   "to": [
+    8,
+    19.95,
+    15.2
+   ],
+   "rotation": {
+    "origin": [
+     8,
+     9.975,
+     8
+    ],
+    "axis": "y",
+    "angle": 45,
+    "rescale": true
+   },
+   "shade": false,
+   "faces": {
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    }
+   }
+  },
+  {
+   "from": [
+    1.5,
+    0,
+    8
+   ],
+   "to": [
+    14.5,
+    17.955,
+    8
+   ],
+   "rotation": {
+    "origin": [
+     8,
+     9.975,
+     8
+    ],
+    "axis": "y",
+    "angle": -22.5,
+    "rescale": true
+   },
+   "shade": false,
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    }
+   }
+  },
+  {
+   "from": [
+    8,
+    0,
+    1.5
+   ],
+   "to": [
+    8,
+    16.9575,
+    14.5
+   ],
+   "rotation": {
+    "origin": [
+     8,
+     9.975,
+     8
+    ],
+    "axis": "y",
+    "angle": 22.5,
+    "rescale": true
+   },
+   "shade": false,
+   "faces": {
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#cross",
+     "tintindex": 0
+    }
+   }
+  }
+ ]
+}

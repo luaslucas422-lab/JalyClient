@@ -35,7 +35,7 @@ public class JalyClient implements ClientModInitializer {
     public static final Logger LOG = LoggerFactory.getLogger("JalyClient");
     public static final String VERSION = FabricLoader.getInstance().getModContainer("jalyclient").map(c -> c.getMetadata().getVersion().getFriendlyString().split("\\+")[0]).orElse("1.0.0");
     private static final String CATEGORY = "key.categories.jalyclient";
-    public static KeyBinding MENU_KEY, ZOOM_KEY, HUD_KEY;
+    public static KeyBinding MENU_KEY, ZOOM_KEY, HUD_KEY, DISC_KEY;
     private static final Snow PAUSE_SNOW = new Snow(70, 21);
 
     @Override
@@ -48,6 +48,7 @@ public class JalyClient implements ClientModInitializer {
         MENU_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY));
         ZOOM_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.zoom", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY));
         HUD_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY));
+        DISC_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.jalyclient.disc", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY));
 
         FabricLoader.getInstance().getModContainer("jalyclient").ifPresent(c -> {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_christmas"), c, Text.literal("Jaly Christmas"), ResourcePackActivationType.DEFAULT_ENABLED);
@@ -56,6 +57,10 @@ public class JalyClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_candy"), c, Text.literal("Jaly Candy Land"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_pvp"), c, Text.literal("Jaly PvP"), ResourcePackActivationType.NORMAL);
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_crystal"), c, Text.literal("Jaly Crystal"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_grass"), c, Text.literal("Jaly Tall Smooth Grass"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_grass_xl"), c, Text.literal("Jaly Extra Tall Grass"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_rain"), c, Text.literal("Jaly Realistic Rain"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_rain_blocky"), c, Text.literal("Jaly Blocky Rain"), ResourcePackActivationType.NORMAL);
         });
 
         net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STOPPING.register(client -> fr.darkerdawn.jaly.net.Friends.leaving());
@@ -64,12 +69,22 @@ public class JalyClient implements ClientModInitializer {
             while (MENU_KEY.wasPressed()) {
                 if (client.currentScreen == null) client.setScreen(new LodgeScreen(null));
             }
+            while (DISC_KEY.wasPressed()) {
+                if (client.currentScreen == null && fr.darkerdawn.jaly.disc.CustomDiscs.enabled()) client.setScreen(new fr.darkerdawn.jaly.disc.CustomDiscScreen(null));
+            }
             while (HUD_KEY.wasPressed()) {
                 if (client.currentScreen == null) client.setScreen(new HudEditorScreen(null));
             }
             Features.zoomHeld = Features.zoomKeyDown(client);
             Features.tick(client);
             fr.darkerdawn.jaly.net.Friends.tick(client);
+            fr.darkerdawn.jaly.visual.Ambience.tick(client);
+            fr.darkerdawn.jaly.visual.BetterRain.tick(client);
+            fr.darkerdawn.jaly.visual.BetterGlass.tick(client);
+            fr.darkerdawn.jaly.visual.InteractiveBlocks.tick(client);
+            fr.darkerdawn.jaly.visual.BetterSounds.tick(client);
+            PvpExtras.tick(client);
+            fr.darkerdawn.jaly.disc.CustomDiscs.tick(client);
             Music.tick();
             Radio.tick(client);
             if (client.world == null && client.getOverlay() == null && client.currentScreen != null && JalyConfig.get().menuMusic
@@ -82,6 +97,15 @@ public class JalyClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((ctx, tickCounter) -> Hud.render(ctx, MinecraftClient.getInstance()));
         WorldRenderEvents.AFTER_ENTITIES.register(SkyLyrics::render);
+        WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.Ambience::render);
+        WorldRenderEvents.AFTER_ENTITIES.register(fr.darkerdawn.jaly.visual.BetterRain::render);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(fr.darkerdawn.jaly.visual.BetterGlass::render);
+        net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
+            if (world.isClient && world.getBlockState(hit.getBlockPos()).isOf(net.minecraft.block.Blocks.JUKEBOX)) {
+                fr.darkerdawn.jaly.disc.CustomDiscs.rememberInsert(hit.getBlockPos(), player.getStackInHand(hand));
+            }
+            return ActionResult.PASS;
+        });
 
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
             if (renderer.getModel() instanceof BipedEntityModel) {
@@ -93,7 +117,10 @@ public class JalyClient implements ClientModInitializer {
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hit) -> {
-            if (world.isClient) Features.onAttack(entity);
+            if (world.isClient) {
+                Features.onAttack(entity);
+                PvpExtras.onHit(entity);
+            }
             return ActionResult.PASS;
         });
 

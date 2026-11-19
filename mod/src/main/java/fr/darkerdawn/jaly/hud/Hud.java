@@ -350,6 +350,9 @@ public final class Hud {
                 return si != null ? si.address : "Singleplayer";
             }),
         new TextModule("speed", "Speed", "How fast you move in blocks per second", false, 0.006f, 0.91f, "Speed", mc -> String.format("%.1f b/s", speed)),
+        new TextModule("cooldowns", "Item Cooldowns", "Pearl, chorus, wind charge and shield cooldowns", false, 0.45f, 0.82f, "Cooldown", fr.darkerdawn.jaly.PvpExtras::cooldownText),
+        new TextModule("totem_pops", "Totem Pops", "Counts totems popped by players near you", false, 0.02f, 0.62f, "Totems", fr.darkerdawn.jaly.PvpExtras::totemText),
+        new TextModule("kills", "Kill Counter", "Kills and kill streak this session", false, 0.02f, 0.67f, "Kills", fr.darkerdawn.jaly.PvpExtras::killsText),
         new TextModule("target", "Target HUD", "Health of whatever you last hit", false, 0.45f, 0.72f, "Target", fr.darkerdawn.jaly.Features::targetText),
         new TextModule("next_gift", "Next Gift", "Time until your next Jaly gift unlocks", false, 0.86f, 0.43f, "Gift",
             mc -> { var t = LocalTime.now(); int left = 24 * 60 - (t.getHour() * 60 + t.getMinute()); return left / 60 + "h " + left % 60 + "m"; }),
@@ -415,6 +418,8 @@ public final class Hud {
         if (mc.options.hudHidden || mc.getDebugHud().shouldShowDebugHud()) return;
         int sw = ctx.getScaledWindowWidth(), sh = ctx.getScaledWindowHeight();
         if (Mods.on("frost")) frost(ctx, sw, sh);
+        fr.darkerdawn.jaly.visual.BetterRain.renderHud(ctx);
+        fr.darkerdawn.jaly.PvpExtras.renderHud(ctx);
         if (Mods.on("low_health") && mc.player != null && !mc.player.isCreative() && mc.player.getHealth() > 0 && mc.player.getHealth() <= JalyConfig.get().lowHealthAt) {
             float pulse = 0.35f + 0.25f * (float) Math.sin(Gfx.now() / 160.0);
             int c = Gfx.alpha(0xFFC8102E, pulse);

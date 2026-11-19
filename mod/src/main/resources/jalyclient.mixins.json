@@ -19,7 +19,10 @@
     "SimpleOptionAccessor",
     "SplashOverlayMixin",
     "TexturedRenderLayersMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "LivingEntityStatusMixin",
+    "SpriteContentsMixin",
+    "WorldRendererJukeboxMixin"
   ],
   "injectors": {
     "defaultRequire": 1

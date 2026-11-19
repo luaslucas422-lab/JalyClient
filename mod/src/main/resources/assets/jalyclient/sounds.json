@@ -78,5 +78,75 @@
     "sounds": [
       "jalyclient:unwrap"
     ]
+  },
+  "amb_wind": {
+    "sounds": [
+      {
+        "name": "jalyclient:amb_wind",
+        "stream": true
+      }
+    ]
+  },
+  "amb_rain_roof": {
+    "sounds": [
+      {
+        "name": "jalyclient:amb_rain_roof",
+        "stream": true
+      }
+    ]
+  },
+  "amb_crickets": {
+    "sounds": [
+      {
+        "name": "jalyclient:amb_crickets",
+        "stream": true
+      }
+    ]
+  },
+  "amb_leaves": {
+    "sounds": [
+      {
+        "name": "jalyclient:amb_leaves",
+        "stream": true
+      }
+    ]
+  },
+  "amb_bird1": {
+    "sounds": [
+      "jalyclient:amb_bird1"
+    ]
+  },
+  "amb_bird2": {
+    "sounds": [
+      "jalyclient:amb_bird2"
+    ]
+  },
+  "amb_bird3": {
+    "sounds": [
+      "jalyclient:amb_bird3"
+    ]
+  },
+  "amb_drip1": {
+    "sounds": [
+      "jalyclient:amb_drip1"
+    ]
+  },
+  "amb_drip2": {
+    "sounds": [
+      "jalyclient:amb_drip2"
+    ]
+  },
+  "amb_owl": {
+    "sounds": [
+      "jalyclient:amb_owl"
+    ]
+  },
+  "custom_disc": {
+    "sounds": [
+      {
+        "name": "jalyclient:silence",
+        "stream": true
+      }
+    ]
   }
 }

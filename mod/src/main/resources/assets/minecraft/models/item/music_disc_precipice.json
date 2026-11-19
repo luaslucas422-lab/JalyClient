@@ -1,0 +1,56 @@
+{
+ "parent": "minecraft:item/template_music_disc",
+ "textures": {
+  "layer0": "minecraft:item/music_disc_precipice"
+ },
+ "overrides": [
+  {
+   "predicate": {
+    "custom_model_data": 9101
+   },
+   "model": "jalyclient:item/disc_red"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9102
+   },
+   "model": "jalyclient:item/disc_candy"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9103
+   },
+   "model": "jalyclient:item/disc_gold"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9104
+   },
+   "model": "jalyclient:item/disc_frost"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9105
+   },
+   "model": "jalyclient:item/disc_holly"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9106
+   },
+   "model": "jalyclient:item/disc_midnight"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9107
+   },
+   "model": "jalyclient:item/disc_ginger"
+  },
+  {
+   "predicate": {
+    "custom_model_data": 9108
+   },
+   "model": "jalyclient:item/disc_rainbow"
+  }
+ ]
+}

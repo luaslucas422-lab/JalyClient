@@ -15,7 +15,7 @@ public final class Mods {
     private Mods() {}
 
     public enum Category {
-        HUD("HUD"), FESTIVE("Festive"), MUSIC("Music"), PVP("PvP"), VISUAL("Visual");
+        HUD("HUD"), FESTIVE("Festive"), MUSIC("Music"), PVP("PvP"), VISUAL("Visuals");
         public final String label;
         Category(String l) { label = l; }
     }
@@ -89,7 +89,8 @@ public final class Mods {
     public static void init() {
         if (!ALL.isEmpty()) return;
         for (HudModule m : Hud.MODULES) {
-            Entry e = add(new Entry(m.id, m.name, m.desc, m.id.equals("now_playing") ? Category.MUSIC : Category.HUD, m.defaultOn, m));
+            Entry e = add(new Entry(m.id, m.name, m.desc, m.id.equals("now_playing") ? Category.MUSIC
+                : java.util.Set.of("cooldowns", "totem_pops", "kills", "target", "combo", "reach", "cps", "keystrokes").contains(m.id) ? Category.PVP : Category.HUD, m.defaultOn, m));
             if (m.id.equals("now_playing")) e.with(new Toggle("Show lyrics line", () -> JalyConfig.get().on("now_playing_lyrics", true), v -> JalyConfig.get().set("now_playing_lyrics", v)));
             hudSettings(e);
         }
@@ -134,6 +135,37 @@ public final class Mods {
         add(new Entry("snow_steps", "Snow Steps", "Little snow puffs where you walk and a burst when you jump", Category.FESTIVE, false, null));
         add(new Entry("low_health", "Low Health Warning", "Red pulsing edges and a bell when your health gets low", Category.PVP, false, null))
             .with(new Slider("Warn at (health)", 2, 14, 1, () -> c.lowHealthAt, v -> { c.lowHealthAt = v.floatValue(); JalyConfig.save(); }, ""));
+        // ---- Visuals: make the game look (and sound) better
+        add(new Entry("better_sounds", "Better Sounds", "Wind, rain on the roof, birds, crickets, owls and cave drips that follow where you are", Category.VISUAL, true, null));
+        add(new Entry("tall_grass", "Tall Smooth Grass", "Taller, softer grass that sways in the wind and blows harder in rain and storms", Category.VISUAL, false, null))
+            .with(new Cycle("Height", new String[]{"tall", "xl"}, new String[]{"Tall", "Extra tall"}, () -> c.grassHeight, v -> { c.grassHeight = v; JalyConfig.save(); fr.darkerdawn.jaly.visual.VisualPacks.sync(); }))
+            .with(new Cycle("Wind", new String[]{"calm", "breezy", "windy"}, new String[]{"Calm", "Breezy", "Windy"}, () -> c.grassWind, v -> { c.grassWind = v; JalyConfig.save(); }))
+            .with(new Toggle("Swaying (turn off for less lag)", () -> c.grassAnimate, v -> { c.grassAnimate = v; JalyConfig.save(); }));
+        add(new Entry("better_ambience", "Better Ambience", "A more alive sky: aurora borealis on some nights, shooting stars, glowing sunsets", Category.VISUAL, true, null))
+            .with(new Cycle("Aurora", new String[]{"never", "sometimes", "often", "always"}, new String[]{"Never", "Some nights", "Most nights", "Every night"}, () -> c.auroraChance, v -> { c.auroraChance = v; JalyConfig.save(); }))
+            .with(new Slider("Aurora brightness", 0.2, 2, 0.1, () -> c.auroraBrightness, v -> { c.auroraBrightness = v.floatValue(); JalyConfig.save(); }, "x"))
+            .with(new Toggle("Shooting stars", () -> c.shootingStars, v -> { c.shootingStars = v; JalyConfig.save(); }))
+            .with(new Toggle("Sunrise & sunset glow", () -> c.sunsetGlow, v -> { c.sunsetGlow = v; JalyConfig.save(); }));
+        add(new Entry("better_rain", "Better Rain", "Realistic (or blocky) rain falling right in front of you, splashes and drops on your view", Category.VISUAL, false, null))
+            .with(new Cycle("Style", new String[]{"real", "blocky"}, new String[]{"Realistic", "Blocky"}, () -> c.rainStyle, v -> { c.rainStyle = v; JalyConfig.save(); fr.darkerdawn.jaly.visual.VisualPacks.sync(); }))
+            .with(new Slider("Amount (less = less lag)", 0.2, 2, 0.1, () -> c.rainDensity, v -> { c.rainDensity = v.floatValue(); JalyConfig.save(); }, "x"))
+            .with(new Toggle("Rain right next to you", () -> c.rainNear, v -> { c.rainNear = v; JalyConfig.save(); }))
+            .with(new Toggle("Drops on your view", () -> c.rainLens, v -> { c.rainLens = v; JalyConfig.save(); }))
+            .with(new Toggle("Splashes", () -> c.rainSplashes, v -> { c.rainSplashes = v; JalyConfig.save(); }));
+        add(new Entry("better_glass", "Better Glass", "Rain drops gather and run down your windows, and frost creeps in when it's freezing", Category.VISUAL, false, null))
+            .with(new Toggle("Rain on windows", () -> c.glassDrops, v -> { c.glassDrops = v; JalyConfig.save(); }))
+            .with(new Toggle("Frost in the cold", () -> c.glassFrost, v -> { c.glassFrost = v; JalyConfig.save(); }))
+            .with(new Slider("Range (less = less lag)", 4, 16, 1, () -> c.glassRange, v -> { c.glassRange = v.floatValue(); JalyConfig.save(); }, " blocks"));
+        add(new Entry("interactive_blocks", "Interactive Blocks", "Grass you keep walking on wears into a path and plants get trampled (your singleplayer worlds)", Category.VISUAL, false, null))
+            .with(new Cycle("Wear speed", new String[]{"fast", "normal", "slow"}, new String[]{"Fast", "Normal", "Slow"}, () -> c.wearSpeed, v -> { c.wearSpeed = v; JalyConfig.save(); }))
+            .with(new Toggle("Trample plants", () -> c.tramplePlants, v -> { c.tramplePlants = v; JalyConfig.save(); }));
+        // ---- more PvP
+        add(new Entry("hit_markers", "Hit Markers", "A little X and a tick sound every time you land a hit", Category.PVP, false, null))
+            .with(new Swatch("Colour", TEXT_COLORS, () -> c.hitMarkerColor, v -> { c.hitMarkerColor = v; JalyConfig.save(); }));
+        add(new Entry("armor_warning", "Armor Break Warning", "Flashes and rings when a piece of your armor is about to break", Category.PVP, false, null))
+            .with(new Slider("Warn at", 0.05, 0.3, 0.01, () -> c.armorWarnAt, v -> { c.armorWarnAt = v.floatValue(); JalyConfig.save(); }, ""));
+        // ---- music
+        add(new Entry("custom_discs", "Custom Music Discs", "Press H to turn a song file or link into a music disc that plays in jukeboxes", Category.MUSIC, true, null));
         add(new Entry("low_fire", "Low Fire", "Lowers the fire overlay so you can see", Category.VISUAL, true, null));
     }
 }

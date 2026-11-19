@@ -227,6 +227,79 @@ final class Smoke {
                 c.options.setPerspective(net.minecraft.client.option.Perspective.FIRST_PERSON);
                 fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.clear();
             }
+            case 410 -> {
+                var sw = c.getServer().getOverworld();
+                sw.setTimeOfDay(18000);
+                sw.setWeather(6000, 0, false, false);
+                cfg.set("better_ambience", true);
+                fr.darkerdawn.jaly.visual.Ambience.forceAurora();
+                c.options.hudHidden = true;
+                c.player.setYaw(180f);
+                c.player.setPitch(-30f);
+            }
+            case 411 -> fr.darkerdawn.jaly.visual.Ambience.forceAurora();
+            case 422 -> {
+                shot(c, "aurora at night");
+                var sw = c.getServer().getOverworld();
+                sw.setTimeOfDay(6000);
+                sw.setWeather(0, 6000, true, false);
+                cfg.set("better_rain", true);
+                cfg.set("better_glass", true);
+                c.player.setPitch(0f);
+                net.minecraft.util.math.BlockPos base = c.player.getBlockPos();
+                c.getServer().execute(() -> {
+                    for (int dx = -2; dx <= 2; dx++) for (int dy = 0; dy <= 2; dy++)
+                        sw.setBlockState(base.add(dx, dy, -3), net.minecraft.block.Blocks.GLASS.getDefaultState());
+                });
+                check("grass + rain packs available", PacksScreen.profileId(c.getResourcePackManager(), "jaly_grass") != null && PacksScreen.profileId(c.getResourcePackManager(), "jaly_rain_blocky") != null);
+                check("wind grass knows the grass sprites", fr.darkerdawn.jaly.visual.WindGrass.isGrass(net.minecraft.util.Identifier.ofVanilla("block/short_grass")));
+            }
+            case 430 -> fr.darkerdawn.jaly.visual.BetterGlass.forceWet();
+            case 440 -> {
+                shot(c, "better rain and glass");
+                check("rainy windows found (" + fr.darkerdawn.jaly.visual.BetterGlass.faces() + ")", fr.darkerdawn.jaly.visual.BetterGlass.faces() > 0);
+                // custom music disc from a song file
+                try {
+                    java.nio.file.Path tmp = java.nio.file.Files.createTempFile("jaly-test", ".mp3");
+                    try (var in = Smoke.class.getResourceAsStream("/assets/jalyclient/test/disc_test.mp3")) { java.nio.file.Files.copy(in, tmp, java.nio.file.StandardCopyOption.REPLACE_EXISTING); }
+                    var song = fr.darkerdawn.jaly.disc.CustomDiscs.importSong(tmp.toString()).get(20, java.util.concurrent.TimeUnit.SECONDS);
+                    check("disc reads title + artist (" + song.suggestedName() + ")", "Smoke Test Carol - Jaly Choir".equals(song.suggestedName()));
+                    try (var st = fr.darkerdawn.jaly.disc.DiscAudio.open(song.file())) {
+                        var buf = st.read(8192);
+                        check("mp3 decodes to sound", buf != null && buf.remaining() > 1000 && st.getFormat().getChannels() == 1);
+                    }
+                    String msg = fr.darkerdawn.jaly.disc.CustomDiscScreen.createForTest(song, song.suggestedName(), 1);
+                    check("disc goes to your inventory (" + msg + ")", msg.contains("inventory!"));
+                    check("youtube links are refused", fr.darkerdawn.jaly.disc.CustomDiscs.isYouTube("https://www.youtube.com/watch?v=abc"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    check("custom disc import", false);
+                }
+            }
+            case 446 -> {
+                var inv = c.player.getInventory();
+                net.minecraft.item.ItemStack disc = net.minecraft.item.ItemStack.EMPTY;
+                for (int i = 0; i < inv.size(); i++) if (fr.darkerdawn.jaly.disc.CustomDiscs.discId(inv.getStack(i)) != null) disc = inv.getStack(i);
+                check("custom disc item in inventory", !disc.isEmpty());
+                net.minecraft.item.ItemStack d = disc.copy();
+                var sw = c.getServer().getOverworld();
+                net.minecraft.util.math.BlockPos jb = c.player.getBlockPos().add(3, 0, 0);
+                c.getServer().execute(() -> {
+                    sw.setBlockState(jb, net.minecraft.block.Blocks.JUKEBOX.getDefaultState());
+                    if (sw.getBlockEntity(jb) instanceof net.minecraft.block.entity.JukeboxBlockEntity be) be.setStack(d);
+                });
+            }
+            case 456 -> {
+                check("custom disc plays in a jukebox", fr.darkerdawn.jaly.disc.CustomDiscs.playing() > 0);
+                c.setScreen(new fr.darkerdawn.jaly.disc.CustomDiscScreen(null));
+            }
+            case 464 -> {
+                shot(c, "custom disc screen");
+                c.getServer().getOverworld().setWeather(6000, 0, false, false);
+                c.options.hudHidden = false;
+                cfg.set("better_rain", false);
+                cfg.set("better_glass", false);
+            }
             case 470 -> {
                 var data = fr.darkerdawn.jaly.net.UserContent.data();
                 check("mod installed from Modrinth in game (" + data.mods.size() + ")", data.mods.containsKey("EsAfCjCV") || data.mods.containsKey("YL57xq9U"));
