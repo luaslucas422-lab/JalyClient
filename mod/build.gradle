@@ -171,14 +171,17 @@ tasks.withType(JavaCompile).configureEach {
 tasks.register('apiDump') {
     doLast {
         def cp = sourceSets.main.compileClasspath.asPath
-        def classes = file('../tools/api_classes.txt').readLines().findAll { it.trim() }
-        def out = new File(buildDir, 'api.txt')
-        out.text = ''
-        classes.each { c ->
-            def proc = ['javap', '-protected', '-cp', cp, c].execute()
-            def txt = proc.text + proc.err.text
-            out << "#### ${c}\n" << txt << "\n"
+        def classes = file('../tools/api_classes.txt').readLines().findAll { it.trim() }.collect { c ->
+            def parts = c.trim().tokenize('.')
+            int first = parts.findIndexOf { Character.isUpperCase(it.charAt(0)) }
+            first < 0 ? c.trim() : (parts[0..first].join('.') + (first + 1 < parts.size() ? '$' + parts[(first + 1)..-1].join('$') : ''))
         }
+        def pb = new ProcessBuilder(['javap', '-protected', '-cp', cp] + classes)
+        pb.redirectErrorStream(true)
+        def proc = pb.start()
+        def out = new File(buildDir, 'api.txt')
+        out.text = proc.inputStream.getText('UTF-8')
+        proc.waitFor()
         println "API dump: ${out} (${out.length()} bytes)"
     }
 }
