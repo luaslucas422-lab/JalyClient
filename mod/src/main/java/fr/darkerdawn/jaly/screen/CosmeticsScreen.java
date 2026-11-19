@@ -152,8 +152,17 @@ public class CosmeticsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         if (mouseX >= cx() && mouseX < cx() + previewW() && mouseY >= cy() && mouseY < cy() + ch()) {
             dragging = true;
             return true;
@@ -193,17 +202,35 @@ public class CosmeticsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+//#endif
         if (dragging) {
             spin += (float) deltaX * 2.5f;
             return true;
         }
+//#if >=1.21.9
+        return super.mouseDragged(click, deltaX, deltaY);
+//#else
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+//#endif
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+//#endif
         dragging = false;
+//#if >=1.21.9
+        return super.mouseReleased(click);
+//#else
         return super.mouseReleased(mouseX, mouseY, button);
+//#endif
     }
 }

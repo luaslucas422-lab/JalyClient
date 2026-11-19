@@ -211,8 +211,17 @@ public class ModrinthScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         if (irisGate()) {
             int by = listTop() + 10;
             if (mouseX >= width / 2 - 60 && mouseX < width / 2 + 60 && mouseY >= by + 48 && mouseY < by + 68 && !UserContent.restartNeeded()) {

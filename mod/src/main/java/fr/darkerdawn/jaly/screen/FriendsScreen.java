@@ -241,8 +241,17 @@ public class FriendsScreen extends JalyScreen {
     private static boolean in(double mx, double my, int x, int y, int w, int h) { return mx >= x && mx < x + w && my >= y && my < y + h; }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mx = click.x(), my = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mx, double my, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mx, my, button)) return true;
+//#endif
         int top = listTop(), bottom = listBottom(), x = rx(), w = rw();
         if (button != 0 || my < top || my >= bottom || !ShopApi.signedIn) return false;
         if (!requestsTab) {
@@ -288,13 +297,26 @@ public class FriendsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+       int keyCode = input.key(), scanCode = input.scancode(), modifiers = input.modifiers();
+//#else
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//#endif
         if (nameField != null && nameField.isFocused() && (keyCode == 257 || keyCode == 335)) {
             addFriend();
             return true;
         }
+//#if >=1.21.9
+        if (nameField != null && nameField.isFocused() && keyCode != 256) return nameField.keyPressed(input);
+//#else
         if (nameField != null && nameField.isFocused() && keyCode != 256) return nameField.keyPressed(keyCode, scanCode, modifiers);
+//#endif
+//#if >=1.21.9
+        return super.keyPressed(input);
+//#else
         return super.keyPressed(keyCode, scanCode, modifiers);
+//#endif
     }
 
     @Override

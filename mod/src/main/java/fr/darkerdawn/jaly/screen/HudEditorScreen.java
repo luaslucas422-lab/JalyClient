@@ -64,8 +64,17 @@ public class HudEditorScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         HudModule m = at(mouseX, mouseY);
         if (m == null) return false;
         if (button == 1) {
@@ -81,8 +90,17 @@ public class HudEditorScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+//#endif
+//#if >=1.21.9
+        if (dragging == null) return super.mouseDragged(click, deltaX, deltaY);
+//#else
         if (dragging == null) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+//#endif
         int[] b = Hud.bounds(client, dragging, width, height, true);
         double x = mouseX - offX, y = mouseY - offY;
         if (Math.abs(x) < 4) x = 0;
@@ -98,11 +116,20 @@ public class HudEditorScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+//#endif
         if (dragging != null) JalyConfig.save();
         dragging = null;
         snapX = snapY = false;
+//#if >=1.21.9
+        return super.mouseReleased(click);
+//#else
         return super.mouseReleased(mouseX, mouseY, button);
+//#endif
     }
 
     @Override

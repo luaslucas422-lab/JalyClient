@@ -562,8 +562,17 @@ public class ShopScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mx = click.x(), my = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mx, double my, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mx, my, button)) return true;
+//#endif
         if (button != 0) return false;
         if (panel == Panel.ITEMS) {
             int top = panelY() + 24, bottom = panelY() + panelH() - 6;
@@ -606,12 +615,25 @@ public class ShopScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+       int keyCode = input.key(), scanCode = input.scancode(), modifiers = input.modifiers();
+//#else
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//#endif
+//#if >=1.21.9
+        if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(input)) {
+//#else
         if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(keyCode, scanCode)) {
+//#endif
             close();
             return true;
         }
+//#if >=1.21.9
+        return super.keyPressed(input);
+//#else
         return super.keyPressed(keyCode, scanCode, modifiers);
+//#endif
     }
 
     @Override

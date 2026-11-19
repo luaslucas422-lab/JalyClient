@@ -197,8 +197,17 @@ public class CustomDiscScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mx = click.x(), my = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mx, double my, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mx, my, button)) return true;
+//#endif
         if (step == Step.NAME) {
             int x = cx() + 8, w = cw() - 16, tw = Math.min(46, (w - 7 * 6) / 8);
             for (int i = 0; i < CustomDiscs.ICONS.length; i++) {
@@ -214,13 +223,26 @@ public class CustomDiscScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+       int keyCode = input.key(), scanCode = input.scancode(), modifiers = input.modifiers();
+//#else
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//#endif
         if ((keyCode == 257 || keyCode == 335) && field != null && field.isFocused()) {
             if (step == Step.SOURCE) next();
             else if (step == Step.NAME) create();
             return true;
         }
+//#if >=1.21.9
+        if (field != null && field.isFocused() && keyCode != 256) return field.keyPressed(input);
+//#else
         if (field != null && field.isFocused() && keyCode != 256) return field.keyPressed(keyCode, scanCode, modifiers);
+//#endif
+//#if >=1.21.9
+        return super.keyPressed(input);
+//#else
         return super.keyPressed(keyCode, scanCode, modifiers);
+//#endif
     }
 }

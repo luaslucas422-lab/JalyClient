@@ -78,13 +78,22 @@ public class JalyTitleScreen extends Screen {
     private boolean overGear(double mx, double my) { return mx >= 4 && mx < 26 && my >= height - 48 && my < height - 26; }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
         if (overGear(mouseX, mouseY)) {
             fr.darkerdawn.jaly.Sounds.play(fr.darkerdawn.jaly.Sounds.CLICK, 1.2f, 0.7f);
             client.setScreen(new CustomizerScreen(this));
             return true;
         }
+//#if >=1.21.9
+        return super.mouseClicked(click, doubled);
+//#else
         return super.mouseClicked(mouseX, mouseY, button);
+//#endif
     }
 
     private void drawGear(DrawContext ctx, int mouseX, int mouseY, long now) {

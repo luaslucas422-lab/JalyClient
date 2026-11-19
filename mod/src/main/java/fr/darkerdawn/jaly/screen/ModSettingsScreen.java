@@ -136,8 +136,17 @@ public class ModSettingsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         if (mouseY < listTop() || mouseY >= listBottom()) return false;
         for (int i = 0; i < rows.size(); i++) {
             int y = rowY(i);
@@ -174,18 +183,36 @@ public class ModSettingsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+//#endif
         if (dragging >= 0 && rows.get(dragging) instanceof Mods.Slider sl) {
             slide(sl, mouseX);
             return true;
         }
+//#if >=1.21.9
+        return super.mouseDragged(click, deltaX, deltaY);
+//#else
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+//#endif
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+//#endif
         dragging = -1;
+//#if >=1.21.9
+        return super.mouseReleased(click);
+//#else
         return super.mouseReleased(mouseX, mouseY, button);
+//#endif
     }
 
     @Override

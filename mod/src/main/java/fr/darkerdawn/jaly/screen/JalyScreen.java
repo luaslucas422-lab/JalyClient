@@ -77,12 +77,25 @@ public abstract class JalyScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+       int keyCode = input.key(), scanCode = input.scancode(), modifiers = input.modifiers();
+//#else
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//#endif
+//#if >=1.21.9
+        if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(input) && !(getFocused() instanceof net.minecraft.client.gui.widget.TextFieldWidget)) {
+//#else
         if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(keyCode, scanCode) && !(getFocused() instanceof net.minecraft.client.gui.widget.TextFieldWidget)) {
+//#endif
             client.setScreen(client.world != null ? null : parent);
             return true;
         }
+//#if >=1.21.9
+        return super.keyPressed(input);
+//#else
         return super.keyPressed(keyCode, scanCode, modifiers);
+//#endif
     }
 
     @Override

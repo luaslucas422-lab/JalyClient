@@ -154,7 +154,12 @@ public class GiftsScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
         if (card > 0) {
             int w = Math.min(250, width - 30), h = 150, x = (width - w) / 2, y = (height - h) / 2;
             boolean inside = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
@@ -166,7 +171,11 @@ public class GiftsScreen extends JalyScreen {
             }
             return true;
         }
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         int t = tile();
         for (int d = 1; d <= 25; d++) {
             int[] p = tilePos(d);

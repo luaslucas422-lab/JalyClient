@@ -173,7 +173,12 @@ public class LodgeScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
         if (choosing && button == 0) {
             if (inBox(optMods, mouseX, mouseY)) choose("mods");
             else if (inBox(optFriends, mouseX, mouseY)) choose("friends");
@@ -185,7 +190,11 @@ public class LodgeScreen extends Screen {
             }
             return true;
         }
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         int h = hovered(mouseX, mouseY);
         if (h >= 0 && button == 0 && spots[h].name.equals("Mods")) {
             pokeCharacter();
@@ -204,12 +213,25 @@ public class LodgeScreen extends Screen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+       int keyCode = input.key(), scanCode = input.scancode(), modifiers = input.modifiers();
+//#else
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+//#endif
+//#if >=1.21.9
+        if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(input)) {
+//#else
         if (JalyClient.MENU_KEY != null && JalyClient.MENU_KEY.matchesKey(keyCode, scanCode)) {
+//#endif
             close();
             return true;
         }
+//#if >=1.21.9
+        return super.keyPressed(input);
+//#else
         return super.keyPressed(keyCode, scanCode, modifiers);
+//#endif
     }
 
     @Override

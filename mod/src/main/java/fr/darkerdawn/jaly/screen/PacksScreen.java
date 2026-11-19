@@ -87,8 +87,17 @@ public class PacksScreen extends JalyScreen {
     }
 
     @Override
+//#if >=1.21.9
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+       double mouseX = click.x(), mouseY = click.y(); int button = click.button();
+//#else
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//#endif
+//#if >=1.21.9
+        if (super.mouseClicked(click, doubled)) return true;
+//#else
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
+//#endif
         for (int i = 0; i < PACKS.length; i++) {
             int x = cardX(i), y = cardY(i), w = cardW();
             if (mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 56) {
