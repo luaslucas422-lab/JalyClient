@@ -24,9 +24,6 @@ jobs:
           mkdir -p out
           gh run download "$RUN" -R "${{ github.repository }}" -n JalyClient-Setup -D out
           gh run download "$RUN" -R "${{ github.repository }}" -n JalyClient-mod -D out
-              done
-            done
-          fi
           ls -la out
       - name: Create release
         env:
