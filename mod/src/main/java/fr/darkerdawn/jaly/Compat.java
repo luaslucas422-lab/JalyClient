@@ -342,7 +342,7 @@ public final class Compat {
 
     /** A sprite from the block atlas, e.g. minecraft:block/sand. */
     public static net.minecraft.client.texture.Sprite blockSprite(net.minecraft.util.Identifier id) {
-        //#if >=1.21.11
+        //#if >=1.21.9
         return net.minecraft.client.MinecraftClient.getInstance().getAtlasManager().getSprite(new net.minecraft.client.util.SpriteIdentifier(net.minecraft.client.texture.SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, id));
         //#else
         return net.minecraft.client.MinecraftClient.getInstance().getSpriteAtlas(net.minecraft.client.texture.SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(id);

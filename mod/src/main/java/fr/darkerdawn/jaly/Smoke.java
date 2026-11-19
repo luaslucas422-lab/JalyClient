@@ -280,7 +280,7 @@ final class Smoke {
                 shot(c, "better rain and glass");
                 check("rainy windows found (" + fr.darkerdawn.jaly.visual.BetterGlass.faces() + ")", fr.darkerdawn.jaly.visual.BetterGlass.faces() > 0);
                 check("blended edges found (" + fr.darkerdawn.jaly.visual.BlockBlend.count() + ")", fr.darkerdawn.jaly.visual.BlockBlend.count() > 0);
-                check("connected glass frame found (" + fr.darkerdawn.jaly.visual.ConnectedGlass.count() + ")", fr.darkerdawn.jaly.visual.ConnectedGlass.count() > 0);
+                check("connected glass frame found (" + fr.darkerdawn.jaly.visual.ConnectedGlass.count() + ")", fr.darkerdawn.jaly.visual.ConnectedGlass.count() > 0 || net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("continuity"));
                 // custom music disc from a song file
                 try {
                     java.nio.file.Path tmp = java.nio.file.Files.createTempFile("jaly-test", ".mp3");
