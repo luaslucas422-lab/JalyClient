@@ -14,9 +14,16 @@ public abstract class SpriteContentsMixin {
     @Shadow
     public abstract Identifier getId();
 
+    //#if >=1.21.11
+    @Inject(method = "createAnimator", at = @At("RETURN"), require = 0)
+    private void jaly$wind(CallbackInfoReturnable<SpriteContents.Animator> cir) {
+        if (cir.getReturnValue() != null && WindGrass.isGrass(getId())) WindGrass.track(cir.getReturnValue());
+    }
+    //#else
     @Inject(method = "createAnimator", at = @At("RETURN"), cancellable = true, require = 0)
     private void jaly$wind(CallbackInfoReturnable<net.minecraft.client.texture.Animator> cir) {
         net.minecraft.client.texture.Animator a = cir.getReturnValue();
         if (a != null && WindGrass.isGrass(getId())) cir.setReturnValue(new WindGrass.Animator(a));
     }
+    //#endif
 }

@@ -43,7 +43,7 @@ public class HatFeature extends FeatureRenderer<net.minecraft.client.render.enti
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(t * 360f));
             l = LightmapTextureManager.MAX_LIGHT_COORDINATE;
         }
-        sink.part(part, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat)), l);
+        sink.part(part, matrices, fr.darkerdawn.jaly.Compat.cutoutNoCull(Cosmetics.hatTexture(hat)), l);
         matrices.pop();
     }
 }
@@ -75,7 +75,7 @@ public class HatFeature extends FeatureRenderer<LivingEntity, BipedEntityModel<L
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(t * 360f));
             l = LightmapTextureManager.MAX_LIGHT_COORDINATE;
         }
-        part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), l, OverlayTexture.DEFAULT_UV);
+        part.render(matrices, vertexConsumers.getBuffer(fr.darkerdawn.jaly.Compat.cutoutNoCull(Cosmetics.hatTexture(hat))), l, OverlayTexture.DEFAULT_UV);
         matrices.pop();
     }
 }

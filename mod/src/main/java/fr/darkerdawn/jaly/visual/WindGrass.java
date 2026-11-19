@@ -27,6 +27,23 @@ public final class WindGrass {
         return Math.min(4f, s);
     }
 
+    //#if >=1.21.11
+    /** 1.21.11: grass animators we speed up or slow down (see SpriteAnimatorMixin). */
+    private static final java.util.Map<Object, float[]> TRACKED = java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
+    public static boolean ticking;
+
+    public static void track(Object animator) { TRACKED.put(animator, new float[1]); }
+
+    /** How many real ticks this animator gets now (0 = skip, more = faster); -1 if it's not grass. */
+    public static int ticksFor(Object animator) {
+        float[] acc = TRACKED.get(animator);
+        if (acc == null) return -1;
+        acc[0] += speed();
+        int n = 0;
+        while (acc[0] >= 1f && n < 5) { acc[0] -= 1f; n++; }
+        return n;
+    }
+    //#else
     /** Wraps the vanilla animator and ticks it faster or slower. */
     public static final class Animator implements net.minecraft.client.texture.Animator {
         private final net.minecraft.client.texture.Animator inner;
@@ -59,4 +76,5 @@ public final class WindGrass {
         @Override
         public void close() { inner.close(); }
     }
+    //#endif
 }

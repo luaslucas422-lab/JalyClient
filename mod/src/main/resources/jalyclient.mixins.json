@@ -22,6 +22,9 @@
     "WorldRendererMixin",
     "LivingEntityStatusMixin",
     "SpriteContentsMixin",
+//#if >=1.21.11
+    "SpriteAnimatorMixin",
+//#endif
     "WorldRendererJukeboxMixin"
   ],
   "injectors": {

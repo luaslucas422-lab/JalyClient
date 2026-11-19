@@ -166,7 +166,7 @@ public final class AvatarPreview {
     private static void renderAll(MatrixStack ms, VertexConsumerProvider vc, PlayerEntityModel<AbstractClientPlayerEntity> m, Identifier st, float anim) {
     //#endif
         int light = LightmapTextureManager.MAX_LIGHT_COORDINATE;
-        m.render(ms, vc.getBuffer(RenderLayer.getEntityTranslucent(st)), light, OverlayTexture.DEFAULT_UV);
+        m.render(ms, vc.getBuffer(fr.darkerdawn.jaly.Compat.translucent(st)), light, OverlayTexture.DEFAULT_UV);
         // cape
         String cape = Cosmetics.selected(Cosmetics.Type.CAPE);
         if (!cape.equals("none")) {
@@ -183,9 +183,9 @@ public final class AvatarPreview {
             //#else
             if (capeModel == null) capeModel = new net.minecraft.client.render.entity.model.PlayerCapeModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_CAPE));
             //#endif
-            capeModel.render(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
+            capeModel.render(ms, vc.getBuffer(fr.darkerdawn.jaly.Compat.solid(tex)), light, OverlayTexture.DEFAULT_UV);
             //#else
-            m.renderCape(ms, vc.getBuffer(RenderLayer.getEntitySolid(tex)), light, OverlayTexture.DEFAULT_UV);
+            m.renderCape(ms, vc.getBuffer(fr.darkerdawn.jaly.Compat.solid(tex)), light, OverlayTexture.DEFAULT_UV);
             //#endif
             ms.pop();
         }
@@ -196,7 +196,7 @@ public final class AvatarPreview {
             ms.push();
             fr.darkerdawn.jaly.Compat.applyTransform(m.head, ms);
             if (hat.equals("halo")) ms.translate(0, -0.75f + MathHelper.sin(anim * 0.08f) * 0.03f, 0);
-            hatPart.render(ms, vc.getBuffer(RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(hat))), light, OverlayTexture.DEFAULT_UV);
+            hatPart.render(ms, vc.getBuffer(fr.darkerdawn.jaly.Compat.cutoutNoCull(Cosmetics.hatTexture(hat))), light, OverlayTexture.DEFAULT_UV);
             ms.pop();
         }
         PlayerExtrasFeature.renderWings(ms, PartSink.of(vc), light, m.body, anim, true);

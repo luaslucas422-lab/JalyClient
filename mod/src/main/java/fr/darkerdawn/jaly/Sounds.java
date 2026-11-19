@@ -30,7 +30,7 @@ public final class Sounds {
         if (mc == null || mc.getSoundManager() == null) return;
         float v = volume * JalyConfig.get().sfxVolume;
         if (v <= 0.01f) return;
-        mc.getSoundManager().play(PositionedSoundInstance.master(e, pitch, v));
+        mc.getSoundManager().play(fr.darkerdawn.jaly.Compat.ui(e, pitch, v));
     }
 
     public static SoundEvent hitSound() {
@@ -59,7 +59,7 @@ public final class Sounds {
         stopMenuMusic(mc);
         mc.getMusicTracker().stop();
         if (shopMusic == null || !mc.getSoundManager().isPlaying(shopMusic)) {
-            shopMusic = PositionedSoundInstance.master(SoundEvent.of(Identifier.of("jalyclient", "shop_music")), 1f, 0.55f);
+            shopMusic = fr.darkerdawn.jaly.Compat.ui(SoundEvent.of(Identifier.of("jalyclient", "shop_music")), 1f, 0.55f);
             mc.getSoundManager().play(shopMusic);
         }
     }

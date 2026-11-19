@@ -26,7 +26,7 @@ final class WorldDraw {
 
     /** Coloured quads. additive = glowy (aurora, stars); otherwise normal see-through colour. */
     static void colored(boolean additive, boolean depthTest, Consumer<VertexConsumer> draw) {
-        RenderLayer layer = additive ? RenderLayer.getLightning() : RenderLayer.getDebugQuads();
+        RenderLayer layer = additive ? fr.darkerdawn.jaly.Compat.lightning() : fr.darkerdawn.jaly.Compat.debugQuads();
         VertexConsumerProvider.Immediate imm = imm();
         draw.accept(imm.getBuffer(layer));
         imm.draw(layer);
@@ -34,7 +34,7 @@ final class WorldDraw {
 
     /** Textured + tinted quads (glass rain, frost). */
     static void textured(Identifier tex, boolean depthTest, Consumer<VertexConsumer> draw) {
-        RenderLayer layer = RenderLayer.getEntityTranslucent(tex);
+        RenderLayer layer = fr.darkerdawn.jaly.Compat.translucent(tex);
         VertexConsumerProvider.Immediate imm = imm();
         draw.accept(imm.getBuffer(layer));
         imm.draw(layer);

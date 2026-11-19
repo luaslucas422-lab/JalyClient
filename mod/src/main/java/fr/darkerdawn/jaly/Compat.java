@@ -45,7 +45,9 @@ public final class Compat {
     }
 
     public static net.minecraft.client.sound.PositionedSoundInstance music(net.minecraft.sound.SoundEvent ev) {
-        //#if >=1.21.6
+        //#if >=1.21.11
+        return net.minecraft.client.sound.PositionedSoundInstance.music(ev);
+        //#elif >=1.21.6
         return net.minecraft.client.sound.PositionedSoundInstance.music(ev, 1f);
         //#else
         return net.minecraft.client.sound.PositionedSoundInstance.music(ev);
@@ -277,6 +279,55 @@ public final class Compat {
         return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).body().texturePath();
         //#else
         return net.minecraft.client.util.DefaultSkinHelper.getSkinTextures(id).texture();
+        //#endif
+    }
+
+    // ---- render layers (1.21.11 moved the factories to RenderLayers)
+    public static net.minecraft.client.render.RenderLayer cutoutNoCull(net.minecraft.util.Identifier id) {
+        //#if >=1.21.11
+        return net.minecraft.client.render.RenderLayers.entityCutoutNoCull(id);
+        //#else
+        return net.minecraft.client.render.RenderLayer.getEntityCutoutNoCull(id);
+        //#endif
+    }
+
+    public static net.minecraft.client.render.RenderLayer translucent(net.minecraft.util.Identifier id) {
+        //#if >=1.21.11
+        return net.minecraft.client.render.RenderLayers.entityTranslucent(id);
+        //#else
+        return net.minecraft.client.render.RenderLayer.getEntityTranslucent(id);
+        //#endif
+    }
+
+    public static net.minecraft.client.render.RenderLayer solid(net.minecraft.util.Identifier id) {
+        //#if >=1.21.11
+        return net.minecraft.client.render.RenderLayers.entitySolid(id);
+        //#else
+        return net.minecraft.client.render.RenderLayer.getEntitySolid(id);
+        //#endif
+    }
+
+    public static net.minecraft.client.render.RenderLayer lightning() {
+        //#if >=1.21.11
+        return net.minecraft.client.render.RenderLayers.lightning();
+        //#else
+        return net.minecraft.client.render.RenderLayer.getLightning();
+        //#endif
+    }
+
+    public static net.minecraft.client.render.RenderLayer debugQuads() {
+        //#if >=1.21.11
+        return net.minecraft.client.render.RenderLayers.debugQuads();
+        //#else
+        return net.minecraft.client.render.RenderLayer.getDebugQuads();
+        //#endif
+    }
+
+    public static net.minecraft.client.sound.PositionedSoundInstance ui(net.minecraft.sound.SoundEvent e, float pitch, float volume) {
+        //#if >=1.21.11
+        return net.minecraft.client.sound.PositionedSoundInstance.ui(e, pitch, volume);
+        //#else
+        return net.minecraft.client.sound.PositionedSoundInstance.master(e, pitch, volume);
         //#endif
     }
 

@@ -84,7 +84,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
         r.roll = 0.2f;
         matrices.push();
         fr.darkerdawn.jaly.Compat.applyTransform(body, matrices);
-        vertexConsumers.part(m, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.wingTexture(w)), light);
+        vertexConsumers.part(m, matrices, fr.darkerdawn.jaly.Compat.cutoutNoCull(Cosmetics.wingTexture(w)), light);
         matrices.pop();
     }
 
@@ -134,7 +134,7 @@ public class PlayerExtrasFeature extends FeatureRenderer<AbstractClientPlayerEnt
             matrices.scale(0.72f, 0.72f * squash, 0.72f);
             animate(part, key, walk, amt, anim * 0.35f, p);
         }
-        vertexConsumers.part(part, matrices, RenderLayer.getEntityCutoutNoCull(Cosmetics.hatTexture(key)), light);
+        vertexConsumers.part(part, matrices, fr.darkerdawn.jaly.Compat.cutoutNoCull(Cosmetics.hatTexture(key)), light);
         matrices.pop();
     }
 
