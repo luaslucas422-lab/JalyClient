@@ -263,7 +263,9 @@ public final class CustomDiscs {
         String id = null;
         if (mc.getServer() != null && mc.world != null) {
             var sw = mc.getServer().getWorld(mc.world.getRegistryKey());
-            if (sw != null && sw.getBlockEntity(pos) instanceof JukeboxBlockEntity be) id = discId(be.getStack());
+            // World.getBlockEntity refuses other threads, so read the loaded chunk directly
+            var chunk = sw == null ? null : sw.getChunkManager().getWorldChunk(pos.getX() >> 4, pos.getZ() >> 4);
+            if (chunk != null && chunk.getBlockEntity(pos) instanceof JukeboxBlockEntity be) id = discId(be.getStack());
         }
         if (id == null) id = INSERTED.get(pos);
         if (id == null) { lastWhy = "no disc id at " + pos; return false; }
