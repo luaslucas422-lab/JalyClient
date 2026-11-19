@@ -152,6 +152,78 @@ export default {
       return json(Object.fromEntries(rows.results.map((r) => [r.uuid, JSON.parse(r.data)])));
     }
 
+    // ---------- friends
+    if (path.startsWith("/friends") || path === "/presence") {
+      const p = await player(env, req);
+      if (!p) return err("not signed in", 401);
+      const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+      const STATUSES = ["online", "dnd", "sleeping", "invisible"];
+
+      if (path === "/presence" && req.method === "POST") {
+        const status = STATUSES.includes(body.status) ? body.status : "online";
+        const server = typeof body.server === "string" ? body.server.slice(0, 80) : "";
+        if (body.leaving) await env.DB.prepare("DELETE FROM presence WHERE uuid = ?").bind(p.uuid).run();
+        else await env.DB.prepare("INSERT INTO presence (uuid, status, server, updated) VALUES (?, ?, ?, ?) ON CONFLICT(uuid) DO UPDATE SET status = excluded.status, server = excluded.server, updated = excluded.updated")
+          .bind(p.uuid, status, server, now()).run();
+        return json({ ok: true });
+      }
+
+      if (path === "/friends" && req.method === "GET") {
+        const rows = await env.DB.prepare(`SELECT pl.uuid, pl.name, pr.status, pr.server, pr.updated FROM friends f JOIN players pl ON pl.uuid = f.b
+          LEFT JOIN presence pr ON pr.uuid = f.b WHERE f.a = ?`).bind(p.uuid).all();
+        const friends = rows.results.map((r) => {
+          const fresh = r.updated && now() - r.updated < 150;
+          const hidden = !fresh || r.status === "invisible";
+          return { uuid: r.uuid, name: r.name, status: hidden ? "offline" : r.status, server: hidden ? "" : (r.server || ""), lastSeen: r.updated || 0 };
+        });
+        const inc = await env.DB.prepare("SELECT pl.uuid, pl.name FROM requests r JOIN players pl ON pl.uuid = r.from_uuid WHERE r.to_uuid = ?").bind(p.uuid).all();
+        const out = await env.DB.prepare("SELECT pl.uuid, pl.name FROM requests r JOIN players pl ON pl.uuid = r.to_uuid WHERE r.from_uuid = ?").bind(p.uuid).all();
+        return json({ friends, incoming: inc.results, outgoing: out.results });
+      }
+
+      const makeFriends = async (a, b) => {
+        await env.DB.batch([
+          env.DB.prepare("INSERT OR IGNORE INTO friends (a, b, created) VALUES (?, ?, ?)").bind(a, b, now()),
+          env.DB.prepare("INSERT OR IGNORE INTO friends (a, b, created) VALUES (?, ?, ?)").bind(b, a, now()),
+          env.DB.prepare("DELETE FROM requests WHERE (from_uuid = ? AND to_uuid = ?) OR (from_uuid = ? AND to_uuid = ?)").bind(a, b, b, a),
+        ]);
+      };
+
+      if (path === "/friends/add" && req.method === "POST") {
+        const name = String(body.name || "").trim();
+        if (!/^[A-Za-z0-9_]{2,16}$/.test(name)) return err("That isn't a Minecraft name");
+        const t = await env.DB.prepare("SELECT uuid, name FROM players WHERE name = ? COLLATE NOCASE").bind(name).first();
+        if (!t) return err(`${name} hasn't used JalyClient's friends yet`, 404);
+        if (t.uuid === p.uuid) return err("You can't friend yourself (nice try)");
+        const already = await env.DB.prepare("SELECT 1 FROM friends WHERE a = ? AND b = ?").bind(p.uuid, t.uuid).first();
+        if (already) return json({ result: "already", name: t.name });
+        const count = await env.DB.prepare("SELECT COUNT(*) AS n FROM friends WHERE a = ?").bind(p.uuid).first();
+        if (count.n >= 200) return err("You have 200 friends already!");
+        const theirs = await env.DB.prepare("SELECT 1 FROM requests WHERE from_uuid = ? AND to_uuid = ?").bind(t.uuid, p.uuid).first();
+        if (theirs) { await makeFriends(p.uuid, t.uuid); return json({ result: "friends", name: t.name }); }
+        const pending = await env.DB.prepare("SELECT COUNT(*) AS n FROM requests WHERE from_uuid = ?").bind(p.uuid).first();
+        if (pending.n >= 50) return err("Too many requests waiting. Give people time to answer!");
+        await env.DB.prepare("INSERT OR IGNORE INTO requests (from_uuid, to_uuid, created) VALUES (?, ?, ?)").bind(p.uuid, t.uuid, now()).run();
+        return json({ result: "sent", name: t.name });
+      }
+      const other = String(body.uuid || "");
+      if (path === "/friends/accept" && req.method === "POST") {
+        const r = await env.DB.prepare("SELECT 1 FROM requests WHERE from_uuid = ? AND to_uuid = ?").bind(other, p.uuid).first();
+        if (!r) return err("That request is gone", 404);
+        await makeFriends(p.uuid, other);
+        return json({ ok: true });
+      }
+      if (path === "/friends/decline" && req.method === "POST") {
+        await env.DB.prepare("DELETE FROM requests WHERE (from_uuid = ? AND to_uuid = ?) OR (from_uuid = ? AND to_uuid = ?)").bind(other, p.uuid, p.uuid, other).run();
+        return json({ ok: true });
+      }
+      if (path === "/friends/remove" && req.method === "POST") {
+        await env.DB.prepare("DELETE FROM friends WHERE (a = ? AND b = ?) OR (a = ? AND b = ?)").bind(p.uuid, other, other, p.uuid).run();
+        return json({ ok: true });
+      }
+      return err("not found", 404);
+    }
+
     if (path === "/paid") return page("Thank you!", "Your Jolly Coins are on their way. Go back to Minecraft - the shopkeeper is waiting (grumpily).");
     if (path === "/cancelled") return page("No worries", "Nothing was charged. You can close this tab.");
     return err("not found", 404);

@@ -58,6 +58,7 @@ public class JalyClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of("jalyclient", "jaly_crystal"), c, Text.literal("Jaly Crystal"), ResourcePackActivationType.NORMAL);
         });
 
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents.CLIENT_STOPPING.register(client -> fr.darkerdawn.jaly.net.Friends.leaving());
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (Smoke.ON) Smoke.tick(client);
             while (MENU_KEY.wasPressed()) {
@@ -68,6 +69,7 @@ public class JalyClient implements ClientModInitializer {
             }
             Features.zoomHeld = Features.zoomKeyDown(client);
             Features.tick(client);
+            fr.darkerdawn.jaly.net.Friends.tick(client);
             Music.tick();
             Radio.tick(client);
             if (client.world == null && client.getOverlay() == null && client.currentScreen != null && JalyConfig.get().menuMusic

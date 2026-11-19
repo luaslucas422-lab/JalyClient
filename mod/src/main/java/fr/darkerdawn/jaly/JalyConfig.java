@@ -75,6 +75,12 @@ public class JalyConfig {
     public boolean menuSnow = true;
     public boolean menuMusic = true;
     public float lowHealthAt = 6f;
+    public boolean modrinthIcons = true;
+    public String friendStatus = "online";
+    public boolean friendShareServer = true;
+    public boolean friendsUsed;
+    public boolean friendBuddy;
+    public boolean friendToasts = true;
     public float musicVolume = 0.7f;
     public boolean hoverSounds = true;
     public float hudScale = 1f;

@@ -29,5 +29,23 @@ check("buy crystal crown", bought.status === 200 && bought.body.owned.includes("
 check("unknown item refused", (await j("/buy", { method: "POST", headers: auth, body: JSON.stringify({ item: "hat:free_money" }) })).status === 400);
 check("equip + public cosmetics", (await j("/equip", { method: "POST", headers: auth, body: JSON.stringify({ hat: "crystal_crown" }) })).status === 200
   && (await j("/cosmetics?uuids=11111111-2222-3333-4444-555555555555")).body["11111111-2222-3333-4444-555555555555"].hat === "crystal_crown");
+// friends
+sql("INSERT INTO players (uuid,name,coins,token,created) VALUES ('aaaaaaaa-2222-3333-4444-555555555555','Buddy',0,'tok456',0)");
+const b = { authorization: "Bearer tok456" };
+const post = (path, h, body) => j(path, { method: "POST", headers: h, body: JSON.stringify(body) });
+check("can't friend yourself", (await post("/friends/add", auth, { name: "tester" })).status === 400);
+check("unknown name refused", (await post("/friends/add", auth, { name: "Nobody123" })).status === 404);
+check("request sent", (await post("/friends/add", auth, { name: "buddy" })).body.result === "sent");
+const inc = (await j("/friends", { headers: b })).body;
+check("buddy sees the request", inc.incoming.length === 1 && inc.incoming[0].name === "Tester");
+check("accept", (await post("/friends/accept", b, { uuid: "11111111-2222-3333-4444-555555555555" })).status === 200);
+await post("/presence", b, { status: "dnd", server: "play.hypixel.net" });
+let mine = (await j("/friends", { headers: auth })).body;
+check("now friends, sees dnd + server", mine.friends.length === 1 && mine.friends[0].status === "dnd" && mine.friends[0].server === "play.hypixel.net");
+await post("/presence", b, { status: "invisible", server: "play.hypixel.net" });
+mine = (await j("/friends", { headers: auth })).body;
+check("appear offline hides server", mine.friends[0].status === "offline" && mine.friends[0].server === "");
+check("remove friend", (await post("/friends/remove", b, { uuid: "11111111-2222-3333-4444-555555555555" })).status === 200 && (await j("/friends", { headers: auth })).body.friends.length === 0);
+check("friends need sign-in", (await j("/friends")).status === 401);
 console.log(fails ? `FAILED ${fails}` : "ALL SERVER TESTS PASSED");
 process.exit(fails ? 1 : 0);

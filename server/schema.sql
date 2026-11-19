@@ -4,3 +4,7 @@ CREATE TABLE IF NOT EXISTS payments (session_id TEXT PRIMARY KEY, uuid TEXT, coi
 CREATE TABLE IF NOT EXISTS nonces (server_id TEXT PRIMARY KEY, created INTEGER);
 CREATE TABLE IF NOT EXISTS equipped (uuid TEXT PRIMARY KEY, data TEXT, updated INTEGER);
 CREATE INDEX IF NOT EXISTS players_token ON players(token);
+CREATE TABLE IF NOT EXISTS presence (uuid TEXT PRIMARY KEY, status TEXT, server TEXT, updated INTEGER);
+CREATE TABLE IF NOT EXISTS friends (a TEXT, b TEXT, created INTEGER, PRIMARY KEY (a, b));
+CREATE TABLE IF NOT EXISTS requests (from_uuid TEXT, to_uuid TEXT, created INTEGER, PRIMARY KEY (from_uuid, to_uuid));
+CREATE INDEX IF NOT EXISTS players_name ON players(name COLLATE NOCASE);

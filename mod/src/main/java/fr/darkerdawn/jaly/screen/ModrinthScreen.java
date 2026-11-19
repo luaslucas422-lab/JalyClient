@@ -162,8 +162,14 @@ public class ModrinthScreen extends JalyScreen {
             Gfx.round(ctx, cx(), y, cw(), ROW - 3, hov ? 0xF0203A18 : feat ? 0xE0241E0A : 0xE0162A12);
             if (feat) Gfx.outline(ctx, cx(), y, cw(), ROW - 3, 0x88C99E02);
             int tile = 0xFF000000 | (p.title().hashCode() & 0x7F7F7F) | 0x303030;
-            Gfx.round(ctx, cx() + 4, y + 3, 25, 25, tile);
-            Gfx.centered(ctx, p.title().isEmpty() ? "?" : p.title().substring(0, 1).toUpperCase(Locale.ROOT), cx() + 17, y + 11, 0xFFFFFFFF);
+            var icon = fr.darkerdawn.jaly.net.RemoteImages.modrinthIcon(p.id());
+            if (icon != null) {
+                Gfx.round(ctx, cx() + 4, y + 3, 25, 25, 0xFF0C170B);
+                Gfx.tex(ctx, icon, cx() + 4, y + 3, 25, 25, 0, 0, 64, 64, 64, 64, 1f);
+            } else {
+                Gfx.round(ctx, cx() + 4, y + 3, 25, 25, tile);
+                Gfx.centered(ctx, p.title().isEmpty() ? "?" : p.title().substring(0, 1).toUpperCase(Locale.ROOT), cx() + 17, y + 11, 0xFFFFFFFF);
+            }
             String head = Gfx.trim(p.title(), cw() - 150) + (feat ? "  * Featured" : "");
             Gfx.text(ctx, head, cx() + 35, y + 4, feat ? Gfx.GOLD_LIGHT : Gfx.SNOW, true);
             String sub = (p.author().isEmpty() ? "" : "by " + p.author() + "  ") + (p.downloads() > 0 ? fmt(p.downloads()) + " downloads" : "");

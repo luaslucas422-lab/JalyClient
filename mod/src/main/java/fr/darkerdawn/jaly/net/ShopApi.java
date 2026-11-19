@@ -93,7 +93,7 @@ public final class ShopApi {
         return endpoint = res.body().trim();
     }
 
-    private static JsonObject call(String method, String path, String body) throws Exception {
+    static JsonObject call(String method, String path, String body) throws Exception {
         HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(endpoint() + path)).timeout(Duration.ofSeconds(20)).header("content-type", "application/json");
         if (token != null) b.header("authorization", "Bearer " + token);
         b.method(method, body == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body));

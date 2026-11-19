@@ -52,6 +52,7 @@ public final class Modrinth {
 
     private static Project project(JsonObject o) {
         String id = o.has("project_id") ? o.get("project_id").getAsString() : o.get("id").getAsString();
+        RemoteImages.rememberIcon(id, str(o, "icon_url"));
         return new Project(id, str(o, "slug"), str(o, "title"), str(o, "description"), o.has("author") ? str(o, "author") : "",
             o.has("downloads") ? o.get("downloads").getAsLong() : 0);
     }
@@ -82,6 +83,7 @@ public final class Modrinth {
             List<Project> out = new ArrayList<>();
             for (JsonElement e : j.getAsJsonArray()) {
                 JsonObject o = e.getAsJsonObject();
+                RemoteImages.rememberIcon(str(o, "id"), str(o, "icon_url"));
                 out.add(new Project(str(o, "id"), str(o, "slug"), str(o, "title"), str(o, "description"), "", o.get("downloads").getAsLong()));
             }
             out.sort((x, y) -> Integer.compare(ids.indexOf(x.slug()), ids.indexOf(y.slug())));

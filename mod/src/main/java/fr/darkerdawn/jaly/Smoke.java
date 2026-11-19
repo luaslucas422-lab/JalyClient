@@ -34,7 +34,7 @@ import java.time.LocalDate;
 final class Smoke {
     private Smoke() {}
 
-    static final boolean ON = Boolean.getBoolean("jaly.smoke");
+    public static final boolean ON = Boolean.getBoolean("jaly.smoke");
     private static int ticks, worldTicks, titleTicks = -1, fails;
     private static boolean loadingShot;
 
@@ -193,7 +193,11 @@ final class Smoke {
                 l.pokeCharacter();
             }
             case 330 -> shot(c, "lodge character grumpy");
-            case 332 -> ((LodgeScreen) c.currentScreen).pokeCharacter();
+            case 332, 340 -> ((LodgeScreen) c.currentScreen).pokeCharacter();
+            case 346 -> {
+                shot(c, "lodge what do you want");
+                ((LodgeScreen) c.currentScreen).choose("mods");
+            }
             case 375 -> {
                 check("character opens the Mods tab", c.currentScreen instanceof fr.darkerdawn.jaly.screen.ModrinthScreen);
                 shot(c, "modrinth mods tab");
@@ -239,12 +243,21 @@ final class Smoke {
             case 667 -> ((fr.darkerdawn.jaly.screen.ShopScreen) c.currentScreen).openCoins();
             case 680 -> shot(c, "coin packs");
             case 682 -> c.setScreen(new LodgeScreen(null));
-            case 688 -> c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen(null));
-            case 694 -> { shot(c, "credits"); c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen.MoreCreditsScreen(null)); }
-            case 699 -> shot(c, "more credits");
+            case 690 -> {
+                fr.darkerdawn.jaly.net.Friends.fakeForTest();
+                c.setScreen(new fr.darkerdawn.jaly.screen.FriendsScreen(null));
+            }
+            case 697 -> {
+                shot(c, "friends list");
+                check("Ginger Buddy pet locked until a real friend", !fr.darkerdawn.jaly.cosmetic.Cosmetics.unlocked(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.PET, "buddy"));
+                check("Modrinth icons loaded (" + fr.darkerdawn.jaly.net.RemoteImages.loaded() + ")", fr.darkerdawn.jaly.net.RemoteImages.loaded() > 0);
+            }
+            case 698 -> c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen(null));
+            case 704 -> { shot(c, "credits"); c.setScreen(new fr.darkerdawn.jaly.screen.CreditsScreen.MoreCreditsScreen(null)); }
+            case 709 -> shot(c, "more credits");
             case 686 -> check("try-on cleared after leaving the shop", fr.darkerdawn.jaly.cosmetic.Cosmetics.PREVIEW.isEmpty()
                 && "none".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)) || !"frost_dragon".equals(fr.darkerdawn.jaly.cosmetic.Cosmetics.selected(fr.darkerdawn.jaly.cosmetic.Cosmetics.Type.WINGS)));
-            case 700 -> {
+            case 712 -> {
                 cfg.logoStyle = "minecraft";
                 cfg.splashText = "Merry Christmas from the test!";
                 cfg.buttonStyle = "aurora";

@@ -7,3 +7,4 @@ launcher/embed/*.jar
 launcher/*.exe
 launcher/*.syso
 dist/
+tools/__pycache__/

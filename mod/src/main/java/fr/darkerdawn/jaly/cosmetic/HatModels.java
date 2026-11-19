@@ -213,6 +213,28 @@ final class HatModels {
         return TexturedModelData.of(data, 64, 64);
     }
 
+    static TexturedModelData pet_buddy() {
+        ModelData data = new ModelData();
+        ModelPartData r = data.getRoot();
+        r.addChild("p0", ModelPartBuilder.create().uv(0, 0).cuboid(-2f, -4f, -1f, 2f, 4f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p1", ModelPartBuilder.create().uv(8, 0).cuboid(0f, -4f, -1f, 2f, 4f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p2", ModelPartBuilder.create().uv(16, 0).cuboid(-2.5f, -9f, -1.5f, 5f, 5f, 3f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p3", ModelPartBuilder.create().uv(32, 0).cuboid(-4.5f, -9f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p4", ModelPartBuilder.create().uv(40, 0).cuboid(2.5f, -9f, -1f, 2f, 2f, 2f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p5", ModelPartBuilder.create().uv(48, 0).cuboid(-2f, -13f, -2f, 4f, 4f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p6", ModelPartBuilder.create().uv(0, 8).cuboid(-1.5f, -12f, -2.5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p7", ModelPartBuilder.create().uv(4, 8).cuboid(0.5f, -12f, -2.5f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p8", ModelPartBuilder.create().uv(8, 8).cuboid(-1f, -10.5f, -2.5f, 2f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p9", ModelPartBuilder.create().uv(14, 8).cuboid(-2.5f, -9.5f, -2f, 5f, 1f, 4f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p10", ModelPartBuilder.create().uv(32, 8).cuboid(1.5f, -9.5f, -2.5f, 1f, 3f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p11", ModelPartBuilder.create().uv(36, 8).cuboid(-0.5f, -8f, -2.2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p12", ModelPartBuilder.create().uv(40, 8).cuboid(-0.5f, -6.5f, -2.2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p13", ModelPartBuilder.create().uv(44, 8).cuboid(3.5f, -11f, -2f, 2f, 2f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p14", ModelPartBuilder.create().uv(50, 8).cuboid(4.5f, -10f, -2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        r.addChild("p15", ModelPartBuilder.create().uv(54, 8).cuboid(3f, -10f, -2f, 1f, 1f, 1f), ModelTransform.pivot(0f, 0f, 0f));
+        return TexturedModelData.of(data, 64, 64);
+    }
+
     static TexturedModelData pet_snowman() {
         ModelData data = new ModelData();
         ModelPartData r = data.getRoot();

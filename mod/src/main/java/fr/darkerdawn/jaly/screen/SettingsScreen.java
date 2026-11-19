@@ -26,6 +26,8 @@ public final class SettingsScreen {
                 JalyConfig.save();
                 if (!v) Sounds.stopMenuMusic(MinecraftClient.getInstance());
             }),
+            new Mods.Toggle("Icons in the Mods tab (slower to load)", () -> c.modrinthIcons, v -> { c.modrinthIcons = v; JalyConfig.save(); }),
+            new Mods.Toggle("Friend pop-ups (online, requests)", () -> c.friendToasts, v -> { c.friendToasts = v; JalyConfig.save(); }),
             new Mods.Toggle("Button hover sounds", () -> c.hoverSounds, v -> { c.hoverSounds = v; JalyConfig.save(); }),
             new Mods.Slider("Effects volume", 0, 1, 0.05, () -> c.sfxVolume, v -> { c.sfxVolume = v.floatValue(); JalyConfig.save(); }, "%"),
             new Mods.Slider("HUD size", 0.5, 2, 0.05, () -> c.hudScale, v -> { c.hudScale = v.floatValue(); JalyConfig.save(); }, "x"),

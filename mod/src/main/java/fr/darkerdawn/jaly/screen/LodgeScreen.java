@@ -174,6 +174,17 @@ public class LodgeScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (choosing && button == 0) {
+            if (inBox(optMods, mouseX, mouseY)) choose("mods");
+            else if (inBox(optFriends, mouseX, mouseY)) choose("friends");
+            else if (!inBox(choiceBox, mouseX, mouseY)) {
+                choosing = false;
+                pokes = 0;
+                speech = "Whatever.";
+                speechAt = Gfx.now();
+            }
+            return true;
+        }
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
         int h = hovered(mouseX, mouseY);
         if (h >= 0 && button == 0 && spots[h].name.equals("Mods")) {
@@ -206,35 +217,54 @@ public class LodgeScreen extends Screen {
         client.setScreen(parent);
     }
 
-    private static final String[] GRUMPY = {"Leave me alone.", "Leave me alone.", "Leave me alone.", "I'm on my break!", "Not again...", "Shh, I'm napping."};
+    private static final String[] GRUMPY1 = {"Leave me alone.", "Leave me alone.", "I'm on my break!", "Not again...", "Shh, I'm napping.", "Can't you see I'm leaning?",
+        "Go poke the tree instead.", "Do I look like a button?", "Five more minutes...", "I was here first.", "The fire's warm. Go away.", "Who let you in?"};
+    private static final String[] GRUMPY2 = {"I SAID leave me alone.", "You're really doing this, huh?", "Poke me ONE more time...", "*grumbles in pixel*",
+        "I'm counting to three.", "Ugh. You again.", "Has anyone told you you're annoying?", "I'm not your elf.", "My cocoa is getting cold!"};
     private int pokes;
     private String speech = "";
-    private long speechAt, openModsAt = -1;
+    private long speechAt, openAt = -1;
+    private boolean choosing, toFriends;
+    private int[] optMods, optFriends, choiceBox;
 
-    /** Click your skin: first it grumbles, then it hands over the mods. Public for the smoke test. */
+    /** Click your skin 3 times: it grumbles twice, then asks what you want (Mods or Friends). Public for the smoke test. */
     public void pokeCharacter() {
-        if (openModsAt > 0) return; // already handing over the mods
+        if (openAt > 0 || choosing) return;
         if (pokes >= 1 && Gfx.now() - speechAt < 350) return; // ignore double-click spam
         pokes++;
         speechAt = Gfx.now();
         if (pokes == 1) {
-            speech = GRUMPY[(int) (Math.random() * GRUMPY.length)];
+            speech = GRUMPY1[(int) (Math.random() * GRUMPY1.length)];
             Sounds.play(Sounds.CLICK, 0.6f, 0.7f);
+        } else if (pokes == 2) {
+            speech = GRUMPY2[(int) (Math.random() * GRUMPY2.length)];
+            Sounds.play(Sounds.CLICK, 0.45f, 0.8f);
         } else {
-            speech = "Fine, here's the mods and resource packs.";
+            speech = "*sigh* ...What do you want?";
+            choosing = true;
             Sounds.play(Sounds.JINGLE, 0.8f, 0.7f);
-            openModsAt = Gfx.now() + 1300;
         }
+    }
+
+    /** Picks an option from the chat box ("mods" or "friends"). Public for the smoke test. */
+    public void choose(String which) {
+        if (!choosing) return;
+        choosing = false;
+        speechAt = Gfx.now();
+        toFriends = which.equals("friends");
+        speech = toFriends ? "Friends? YOU? ...Fine, here." : "Fine, here's the mods and resource packs.";
+        Sounds.play(Sounds.CHIME, 1f, 0.7f);
+        openAt = Gfx.now() + 1100;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (openModsAt > 0 && Gfx.now() >= openModsAt) {
-            openModsAt = -1;
+        if (openAt > 0 && Gfx.now() >= openAt) {
+            openAt = -1;
             pokes = 0;
             speech = "";
-            client.setScreen(new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD));
+            client.setScreen(toFriends ? new FriendsScreen(this) : new ModrinthScreen(this, fr.darkerdawn.jaly.net.Modrinth.Kind.MOD));
         }
     }
 
@@ -278,14 +308,42 @@ public class LodgeScreen extends Screen {
             ctx.getMatrices().pop();
         }
         ctx.getMatrices().pop();
-        if (!speech.isEmpty() && now - speechAt < 3500) {
-            float a = Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3000 ? (3500 - (now - speechAt)) / 500f : 1f);
+        if (!speech.isEmpty() && (choosing || now - speechAt < 3500)) {
+            float a = choosing ? 1f : Math.min(1f, (now - speechAt) / 150f) * (now - speechAt > 3000 ? (3500 - (now - speechAt)) / 500f : 1f);
             int tw = textRenderer.getWidth(speech) + 10;
             int bx = Math.max(4, Math.min(width - tw - 4, sx(212) - tw / 2)), by = sy(150) - Math.round(46 * scale * 1.5f) - 14;
             Gfx.round(ctx, bx, by, tw, 14, Gfx.alpha(0xFFFFFFFF, a));
             Gfx.outline(ctx, bx, by, tw, 14, Gfx.alpha(0xFF1A2414, a));
             ctx.fill(sx(212) - 2, by + 14, sx(212) + 2, by + 17, Gfx.alpha(0xFFFFFFFF, a));
             Gfx.text(ctx, speech, bx + 5, by + 3, Gfx.alpha(0xFF1A2414, a), false);
+        }
+        if (choosing) drawChoice(ctx, now);
+    }
+
+    private static boolean inBox(int[] r, double x, double y) { return r != null && x >= r[0] && x < r[0] + r[2] && y >= r[1] && y < r[1] + r[3]; }
+
+    /** The little chat box with the two answers. */
+    private void drawChoice(DrawContext ctx, long now) {
+        int w = 150, h = 62;
+        int x = Math.min(width - w - 6, sx(232) + 6), y = Math.max(20, Math.min(height - h - 44, sy(84)));
+        float pop = Math.min(1f, (now - speechAt) / 180f);
+        choiceBox = new int[]{x, y, w, h};
+        Gfx.round(ctx, x, y, w, h, Gfx.alpha(0xF0101C0E, pop));
+        Gfx.outline(ctx, x, y, w, h, Gfx.alpha(Gfx.GOLD, pop));
+        Gfx.candy(ctx, x + 4, y + 2, w - 8, 2, (int) (now / 90 % 8), pop);
+        Gfx.text(ctx, "Pick one. Quickly.", x + 7, y + 7, Gfx.alpha(Gfx.MUTED, pop), false);
+        double mx = client.mouse.getX() * width / client.getWindow().getWidth(), my = client.mouse.getY() * height / client.getWindow().getHeight();
+        optMods = new int[]{x + 5, y + 19, w - 10, 18};
+        optFriends = new int[]{x + 5, y + 39, w - 10, 18};
+        String[][] opts = {{"Mods & resource packs", "\u2726"}, {"Friends", "\u2665"}};
+        int[][] rects = {optMods, optFriends};
+        for (int i = 0; i < 2; i++) {
+            int[] rr = rects[i];
+            boolean hov = inBox(rr, mx, my);
+            Gfx.round(ctx, rr[0], rr[1], rr[2], rr[3], Gfx.alpha(hov ? 0xFF2A4A1E : 0xFF1A3016, pop));
+            if (hov) Gfx.outline(ctx, rr[0], rr[1], rr[2], rr[3], Gfx.alpha(Gfx.GOLD_LIGHT, pop));
+            Gfx.text(ctx, (hov ? "> " : "  ") + opts[i][0], rr[0] + 5, rr[1] + 5, Gfx.alpha(hov ? Gfx.GOLD_LIGHT : Gfx.SNOW, pop), false);
+            Gfx.text(ctx, opts[i][1], rr[0] + rr[2] - 12, rr[1] + 5, Gfx.alpha(i == 0 ? 0xFF4CC3FF : 0xFFE0384F, pop), false);
         }
     }
 
