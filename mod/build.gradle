@@ -62,3 +62,19 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
     options.encoding = 'UTF-8'
 }
+
+// Prints the public/protected API of every Minecraft/Fabric class JalyClient uses (for porting to other versions).
+tasks.register('apiDump') {
+    doLast {
+        def cp = sourceSets.main.compileClasspath.asPath
+        def classes = file('../tools/api_classes.txt').readLines().findAll { it.trim() }
+        def out = new File(buildDir, 'api.txt')
+        out.text = ''
+        classes.each { c ->
+            def proc = ['javap', '-protected', '-cp', cp, c].execute()
+            def txt = proc.text + proc.err.text
+            out << "#### ${c}\n" << txt << "\n"
+        }
+        println "API dump: ${out} (${out.length()} bytes)"
+    }
+}

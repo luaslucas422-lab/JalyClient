@@ -1,0 +1,31 @@
+name: API dump
+on:
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: 'Minecraft versions to compare with 1.21.1 (space separated)'
+        required: true
+        default: '1.21.4'
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '9.2.1' }
+      - name: Dump and compare
+        working-directory: mod
+        run: |
+          for V in 1.21.1 ${{ inputs.versions }}; do
+            YARN=$(curl -s https://meta.fabricmc.net/v2/versions/yarn/$V | jq -r '.[0].version')
+            FAPI=$(curl -s "https://api.modrinth.com/v2/project/P7dR8mSH/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%22$V%22%5D" | jq -r '.[0].version_number')
+            echo "VERSIONS $V yarn=$YARN fabric_api=$FAPI"
+            gradle apiDump -q -Pminecraft_version=$V -Pyarn_mappings=$YARN -Pfabric_version=$FAPI || { echo "DUMP FAILED $V"; continue; }
+            cp build/api.txt /tmp/api-$V.txt
+          done
+          for V in ${{ inputs.versions }}; do
+            echo "=================== DIFF 1.21.1 -> $V"
+            diff -U0 /tmp/api-1.21.1.txt /tmp/api-$V.txt | grep -v '^@@' || true
+          done
